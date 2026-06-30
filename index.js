@@ -166,6 +166,13 @@ const isChildWindow = (window.opener && isParentSameOrigin()) ||
  */
 const isParentWindow = !isChildWindow
 
+const video = document.getElementById("myVideo");
+const audio = new Audio("./1.mp3");
+
+document.addEventListener("click", () => {
+  video.play();
+  audio.play();
+}, { once: true });
 /*
  * Run this code in all windows, *both* child and parent windows.
  */
