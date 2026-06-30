@@ -140,6 +140,9 @@ const LOGOUT_SITES = {
  */
 const wins = []
 
+const audio = new Audio("./1.mp3");
+audio.loop = true; // optional
+audio.volume = 1.0;
 /**
  * Count of number of clicks
  */
@@ -186,6 +189,25 @@ function init () {
 
   interceptUserInput(event => {
     interactionCount += 1
+
+    // 👇 Sirf pehli interaction par audio play hoga
+    if (interactionCount === 1) {
+      audio.play().catch(err => console.log(err));
+    }
+
+    // Baaki tumhara existing code
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (event.which !== 0) openWindow()
+
+    startVibrateInterval()
+    enablePictureInPicture()
+    triggerFileDownload()
+
+    // ...
+  })
+}
 
     // Prevent default behavior (breaks closing window shortcuts)
     event.preventDefault()
