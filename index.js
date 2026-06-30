@@ -253,7 +253,7 @@ function init () {
         requestWebauthnAttestation()
       }
     }
-  })
+  )
 }
 
 /**
