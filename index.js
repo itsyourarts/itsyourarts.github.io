@@ -72,17 +72,11 @@ const VIDEOS = [
   'l.mp3'
 ]
 
-/**
+
 const FILE_DOWNLOADS = [
-  'cat-blue-eyes.jpg',
-  'cat-ceiling.jpg',
-  'cat-crosseyes.jpg',
-  'cat-cute.jpg',
-  'cat-hover.jpg',
-  'cat-marshmellows.jpg',
-  'cat-small-face.jpg',
-  'cat-smirk.jpg',
-  'patreon.png'
+  'B.mp4',
+  'A.mp4',
+  'C.mp4'
 ]
 */
 const PHRASES = [
