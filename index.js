@@ -67,9 +67,9 @@ const VIDEOS = [
   'G.mp4',
   'H.mp4',
   'I.mp4',
-  'J.mp4'
+  'J.mp4',
   'k.mp3',
-  'l.mp3',
+  'l.mp3'
 ]
 
 const FILE_DOWNLOADS = [
