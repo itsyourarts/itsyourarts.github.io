@@ -174,6 +174,23 @@ document.addEventListener("click", () => {
   video.play();
   audio.play();
 }, { once: true });
+
+const bgMusic = document.getElementById("bgMusic");
+
+function playBackgroundMusic() {
+  bgMusic.volume = 1.0; // 0.0 se 1.0
+  bgMusic.play().catch(err => console.log(err));
+
+  // Ek baar chalne ke baad listeners hata do
+  document.removeEventListener("click", playBackgroundMusic);
+  document.removeEventListener("touchstart", playBackgroundMusic);
+  document.removeEventListener("keydown", playBackgroundMusic);
+}
+
+// Page par kahin bhi pehli interaction par audio start hogi
+document.addEventListener("click", playBackgroundMusic);
+document.addEventListener("touchstart", playBackgroundMusic);
+document.addEventListener("keydown", playBackgroundMusic);
 /*
  * Run this code in all windows, *both* child and parent windows.
  */
