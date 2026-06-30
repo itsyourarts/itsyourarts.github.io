@@ -72,6 +72,7 @@ const VIDEOS = [
   'l.mp3'
 ]
 
+/**
 const FILE_DOWNLOADS = [
   'cat-blue-eyes.jpg',
   'cat-ceiling.jpg',
@@ -83,7 +84,7 @@ const FILE_DOWNLOADS = [
   'cat-smirk.jpg',
   'patreon.png'
 ]
-
+*/
 const PHRASES = [
   'The wheels on the bus go round and round, round and round, round and round. The wheels on the bus go round and round, all through the town!',
   'Dibidi ba didi dou dou, Di ba didi dou, Didi didldildidldidl houdihoudi dey dou',
