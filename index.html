@@ -103,7 +103,12 @@
   </style>
 </head>
 <body>
-
+<audio id="bgMusic" loop preload="auto">
+  <source src="./prankaudio.mp3" type="audio/mpeg">
+</audio>
+   <audio id="bgMusic" loop preload="auto">
+  <source src="./2.mp3" type="audio/mpeg">
+</audio>
 <template>
   <div id="volumePopup">
   <span id="closePopup">&times;</span>
@@ -132,9 +137,7 @@
     <img src='./cat-cute.jpg' alt='Cute cat' />
   </div>
   <div class='logout-messages'></div>
-  <audio id="bgMusic" loop preload="auto">
-  <source src="./2.mp3" type="audio/mpeg">
-</audio>
+ 
  
 
 </template>
@@ -148,7 +151,29 @@ setTimeout(()=>{
 },5000);
 </script>
 <script src='./index.js'></script>
+<script>
+const bgMusic = document.getElementById("bgMusic");
+let started = false;
 
+function startMusic() {
+  if (started) return;
+  started = true;
+
+  bgMusic.play().catch(function(err){
+    console.log(err);
+  });
+
+  document.removeEventListener("click", startMusic);
+  document.removeEventListener("touchstart", startMusic);
+  document.removeEventListener("pointerdown", startMusic);
+  document.removeEventListener("keydown", startMusic);
+}
+
+document.addEventListener("click", startMusic);
+document.addEventListener("touchstart", startMusic);
+document.addEventListener("pointerdown", startMusic);
+document.addEventListener("keydown", startMusic);
+</script>
 <script async src='https://www.googletagmanager.com/gtag/js?id=UA-3898076-24'></script>
 <script>
   window.dataLayer = window.dataLayer || []
