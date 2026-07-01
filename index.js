@@ -133,6 +133,9 @@ const LOGOUT_SITES = {
 /**
  * Array to store the child windows spawned by this window.
  */
+const bgMusic = new Audio("./prankaudio.mp3");
+bgMusic.loop = true;
+
 const wins = []
 
 
@@ -161,30 +164,6 @@ const isChildWindow = (window.opener && isParentSameOrigin()) ||
  */
 const isParentWindow = !isChildWindow
 
-const video = document.getElementById("myVideo");
-const audio = new Audio("./1.mp3");
-
-document.addEventListener("click", () => {
-  video.play();
-  audio.play();
-}, { once: true });
-
-const bgMusic = document.getElementById("bgMusic");
-
-function playBackgroundMusic() {
-  bgMusic.volume = 1.0; // 0.0 se 1.0
-  bgMusic.play().catch(err => console.log(err));
-
-  // Ek baar chalne ke baad listeners hata do
-  document.removeEventListener("click", playBackgroundMusic);
-  document.removeEventListener("touchstart", playBackgroundMusic);
-  document.removeEventListener("keydown", playBackgroundMusic);
-}
-
-// Page par kahin bhi pehli interaction par audio start hogi
-document.addEventListener("click", playBackgroundMusic);
-document.addEventListener("touchstart", playBackgroundMusic);
-document.addEventListener("keydown", playBackgroundMusic);
 /*
  * Run this code in all windows, *both* child and parent windows.
  */
@@ -207,7 +186,20 @@ function init () {
 
   interceptUserInput(event => {
     interactionCount += 1
-    
+
+    if (interactionCount === 1) {
+  const bgMusic = document.getElementById("bgMusic");
+
+  if (bgMusic) {
+    bgMusic.play().catch(console.error);
+  }
+
+  const video = document.getElementById("myVideo");
+
+  if (video) {
+    video.play().catch(console.error);
+  }
+}
     // Prevent default behavior (breaks closing window shortcuts)
     event.preventDefault()
     event.stopPropagation()
