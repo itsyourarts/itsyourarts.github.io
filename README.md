@@ -1,4 +1,6 @@
 # itsyourarts.github.io
-its testing site 
+⚠️ WARNING!
 
- <a href="https://itsyourarts.github.io"> visit my site</a>
+it's personal site 
+
+ <a href="https://itsyourarts.github.io">Don't vist site ☠️</a>
