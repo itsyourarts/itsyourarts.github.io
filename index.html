@@ -68,6 +68,20 @@
         width:0%;
     }
 }
+    .main-content{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+}
+
+.gif{
+    width: 300px;
+    height: auto;
+}
     .logout-messages {
       pointer-events: none;
       color: red;
@@ -106,19 +120,21 @@
 <audio id="bgMusic" loop preload="auto">
   <source src="./prankaudio.mp3" type="audio/mpeg">
 </audio>
+    <div class="main-content">
     <h1>Hi there!</h1>
     <h2>To get started, Volume up + .</h2>
     <h3>(or, on mobile, tap the cat!)</h3>
     <h1>created by Sanki</h1>
-    <img src="./kk.gif" alt="GIF">
-  <video id="myVideo" style="display:none;" playsinline preload="auto">
-    <source src="./G.mp4" type="video/mp4">
+
+    <img src="./kk.gif" alt="GIF" class="gif">
+</div>
+  <video id="video1" style="display:none;">
+    <source src="./G.mp4">
 </video>
 
-
-  <video id="myVideo" style="display:none;" playsinline preload="auto">
-    <source src="./C.mp4" type="video/mp4">
-    </video>
+<video id="video2" style="display:none;">
+    <source src="./C.mp4">
+</video>
 <template>
   <div id="volumePopup">
   <span id="closePopup">&times;</span>
