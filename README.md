@@ -3,4 +3,4 @@
 
 it's personal site 
 
- <a href="https://itsyourarts.github.io">Don't visit my site ☠️</a>
+ <a href="https://itsyourarts.github.io">Don't visit ☠️</a>
