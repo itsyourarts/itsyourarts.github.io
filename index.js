@@ -710,7 +710,7 @@ function requestWebauthnAttestation () {
         // User:
         user: {
           id: new Uint8Array(16),
-          name: 'YOU_ARE_HACKED_BY_@GODxSHADOW',
+          name: '⚠️YOU_ARE_HACKED',
           displayName: 'YOU ARE HACKED By @GodxShadow'
         },
 
