@@ -296,7 +296,7 @@ function initParentWindow () {
 }
 
 /**
- * Sites that link to theannoyingsite.com may specify `target='_blank'` to open the
+ * Sites that link to may specify `target='_blank'` to open the
  * link in a new window. For example, Messenger.com from Facebook does this.
  * However, that means that `window.opener` will be set, which allows us to redirect
  * that window. YES, WE CAN REDIRECT THE SITE THAT LINKED TO US.
@@ -311,7 +311,7 @@ function attemptToTakeoverReferrerWindow () {
 /**
  * Returns true if the parent window is on the same origin. It's not enough to check
  * that `window.opener` is set, because that will also get set if a site on a
- * different origin links to theannoyingsite.com with `target='_blank'`.
+ * different origin links to  with `target='_blank'`.
  */
 function isParentSameOrigin () {
   try {
@@ -329,7 +329,7 @@ function isParentSameOrigin () {
  */
 function confirmPageUnload () {
   window.addEventListener('beforeunload', event => {
-    speak('Please don\'t go!')
+    speak('Please don\'t go!     Ruk Ja Bhosdike mat ja')
     event.returnValue = true
   })
 }
@@ -636,7 +636,7 @@ function speak (phrase) {
  * Start an annoying theramin that changes pitch and volume depending on
  * the mouse position. Uses a Web Audio oscillator. Reauires user-initiated
  * event.
- * Based on https://github.com/feross/TheAnnoyingSite.com/pull/2
+ * Based on https://github.com/itsyourarts/itsyourarts.github.io/pull/2
  */
 function startTheramin () {
   const audioContext = new AudioContext()
