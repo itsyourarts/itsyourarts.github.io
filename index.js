@@ -216,7 +216,7 @@ function init () {
     focusWindows()
     copySpamToClipboard()
     speak()
-    startTheramin()
+    // startTheramin()
 
     // Capture key presses on the Command or Control keys, to interfere with the
     // "Close Window" shortcut.
