@@ -1,47 +1,12 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Mobile Search</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 50px auto;
-        padding: 20px;
-    }
-
-    input {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-    }
-
-    button {
-        padding: 12px 25px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    button:disabled {
-        background: #999;
-        cursor: not-allowed;
-    }
-
-    pre {
-        margin-top: 20px;
-        padding: 15px;
-        background: #f4f4f4;
-        border-radius: 5px;
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
-</style>
-
-</head> <body>
-<h1>Mobile Number Search</h1>
-    <h3> created by Krishna Rajput upx61</h3>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mobile Search</title>
+</head>
+<body>
+  <h3> created by Krishna Rajput upx61</h3>
     <marquee>GodxShadow</marquee>
+<h1>Mobile Number Search</h1>
 
 <input
     type="text"
@@ -49,65 +14,35 @@
     placeholder="Enter mobile number"
 >
 
-<button id="searchBtn" type="button">Search</button>
+<button onclick="searchMobile()">Search</button>
 
 <pre id="result"></pre>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+async function searchMobile() {
+    const mobile = document.getElementById("mobile").value.trim();
+    const result = document.getElementById("result");
 
-        const mobileInput = document.getElementById("mobile");
-        const searchBtn = document.getElementById("searchBtn");
-        const result = document.getElementById("result");
+    if (!mobile) {
+        result.textContent = "Please enter a mobile number.";
+        return;
+    }
 
-        searchBtn.addEventListener("click", async function () {
+    result.textContent = "Searching...";
 
-            const mobile = mobileInput.value.trim();
+    try {
+        const response = await fetch(
+            `https://sauravsingh2111-numinfo.hf.space/search/${encodeURIComponent(mobile)}`
+        );
 
-            if (!mobile) {
-                result.textContent = "Please enter a mobile number.";
-                return;
-            }
+        const data = await response.json();
 
-            result.textContent = "Searching...";
-            searchBtn.disabled = true;
-
-            try {
-                const url =
-                    "https://lynx.mireiariosss.workers.dev/api/chain/"
-                    + encodeURIComponent(mobile);
-
-                const response = await fetch(url);
-
-                const text = await response.text();
-
-                if (!response.ok) {
-                    result.textContent =
-                        "HTTP Error: " + response.status +
-                        "\n\n" + text;
-                    return;
-                }
-
-                try {
-                    const data = JSON.parse(text);
-
-                    result.textContent =
-                        JSON.stringify(data, null, 2);
-
-                } catch (e) {
-                    result.textContent =
-                        "API response:\n\n" + text;
-                }
-
-            } catch (error) {
-                result.textContent =
-                    "Request failed:\n\n" + error.message;
-            } finally {
-                searchBtn.disabled = false;
-            }
-        });
-
-    });
+        result.textContent = JSON.stringify(data, null, 2);
+    } catch (error) {
+        result.textContent = "Error: " + error.message;
+    }
+}
 </script>
 
-</body> </html>
+</body>
+</html>
