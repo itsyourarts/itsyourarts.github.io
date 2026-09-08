@@ -1,0 +1,41 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Mobile Search</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    pre {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f4f4f4;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+</style>
+
+</head> <body> <h1>Mobile Number Search</h1>
+
+<input
+type="text"
+id="mobile"
+placeholder="Enter mobile number"
+
+<button onclick="searchMobile()">Search</button>
+
+<pre id="result"></pre> <script> async function searchMobile() { const mobile = document.getElementById("mobile").value.trim(); const result = document.getElementById("result"); if (!mobile) { result.textContent = "Please enter a mobile number."; return; } result.textContent = "Searching..."; try { const url = `https://lynx.mireiariosss.workers.dev/api/chain/${encodeURIComponent(mobile)}`; const response = await fetch(url); // Read the response as text first. const text = await response.text(); if (!response.ok) { result.textContent = `HTTP Error ${response.status}\n\n${text}`; return; } // Try to parse JSON. try { const data = JSON.parse(text); result.textContent = JSON.stringify(data, null, 2); } catch (jsonError) { // API did not return valid JSON. result.textContent = "API returned invalid/non-JSON response:\n\n" + text; } } catch (error) { result.textContent = "Request failed:\n\n" + error.message; } } </script> </body> </html>
