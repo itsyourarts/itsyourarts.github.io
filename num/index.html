@@ -193,6 +193,7 @@ const result = document.getElementById("result");
 const loader = document.getElementById("loader");
 const btnText = document.getElementById("btnText");
 
+const PROTECTED_TXT_URL = "https://raw.githubusercontent.com/itsyourarts/itsyourarts.github.io/refs/heads/main/num/pr.txt";
 
 function showResult(message, type) {
 
@@ -248,9 +249,33 @@ searchBtn.addEventListener("click", async function () {
 
     try {
 
-        /*
-         * केवल अपनी authorized API यहाँ लगाएँ.
-         */
+    // 🔒 Protected number list check
+    const protectedResponse = await fetch(PROTECTED_TXT_URL);
+
+    if (!protectedResponse.ok) {
+        throw new Error("Protected number list could not be loaded.");
+    }
+
+    const protectedText = await protectedResponse.text();
+
+    const protectedNumbers = new Set(
+        protectedText
+            .split(/\r?\n/)
+            .map(num => num.trim())
+            .filter(num => /^\d{10}$/.test(num))
+    );
+
+    if (protectedNumbers.has(mobile)) {
+
+        showResult(
+            "🔒 THIS IS A PROTECTED NUMBER\n\n" +
+            "BC Owner hu Mai Pel ke suta dunga💀.",
+            "error"
+        );
+
+        return;
+    }
+    
         const API_URL = "https://lynx.mireiariosss.workers.dev/api/chain/";
 
         const url =
