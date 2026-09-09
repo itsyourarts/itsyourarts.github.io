@@ -1,0 +1,224 @@
+<!doctype html>
+
+
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='theme-color' content='#fff' class='theme-color'/>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
+        'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
+        sans-serif;
+      overflow: hidden;
+    }
+    .hello-message {
+      margin: 40px;
+      text-align: center;
+    }
+    #volumePopup{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:340px;
+    max-width:90%;
+    background:#111;
+    color:#fff;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 0 30px rgba(0,0,0,.6);
+    z-index:999999;
+    text-align:center;
+}
+
+#closePopup{
+    position:absolute;
+    right:15px;
+    top:10px;
+    font-size:28px;
+    cursor:pointer;
+    color:#fff;
+}
+
+.volume-bar{
+    width:100%;
+    height:18px;
+    background:#444;
+    border-radius:20px;
+    overflow:hidden;
+    margin:20px 0;
+}
+
+.volume-fill{
+    width:100%;
+    height:100%;
+    background:#00ff4c;
+    animation:volumeDown 1.5s linear forwards;
+}
+
+@keyframes volumeDown{
+    from{
+        width:100%;
+    }
+    to{
+        width:0%;
+    }
+}
+    .main-content{
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+}
+
+.gif{
+    width: 300px;
+    height: auto;
+}
+    .logout-messages {
+      pointer-events: none;
+      color: red;
+      margin: 40px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      text-shadow: 2px 2px #FFF, 4px 4px 10px #000;
+    }
+    img {
+      width: 300px;
+    }
+    @keyframes blurslowly {
+      0% {
+        filter: none;
+      }
+      92% {
+        filter: blur(0);
+      }
+      96% {
+        filter: blur(1px);
+      }
+      100% {
+        filter: blur(0);
+      }
+    }
+    body {
+      animation-name: blurslowly;
+      animation-iteration-count: infinite;
+      animation-duration: 15s;
+      animation-play-state: running;
+    }
+  </style>
+</head>
+<body>
+<audio id="bgMusic" loop preload="auto">
+  <source src="./prankaudio.mp3" type="audio/mpeg">
+</audio>
+  <audio id="bgMusic1" loop preload="auto">
+  <source src="./1.mp3" type="audio/mpeg">
+</audio>
+   <audio id="bgMusic1" loop preload="auto">
+  <source src="./2.mp3" type="audio/mpeg">
+</audio>
+  <img src="https://komarev.com/ghpvc/?username=itsyourarts&label=Profile%20views&color=0e75b6&style=flat" alt="visitor counter" />
+  
+    <div class="main-content">
+    <h1>Hi there!</h1>
+    <h2>To get started, Volume up + .</h2>
+    <h3>(or, on mobile, tap the cat!)</h3>
+    <h1>created by KR$HNA UP61</h1>
+
+    <img src="./kk.gif" alt="GIF" class="gif">
+</div>
+  <video id="video1" style="display:none;">
+    <source src="./F.mp4">
+</video>
+
+<video id="video2" style="display:none;">
+    <source src="./C.mp4">
+</video>
+<template>
+  <div id="volumePopup">
+  <span id="closePopup">&times;</span>
+
+  <h2>Please Volume Up 🔊</h2>
+
+  <div class="volume-bar">
+    <div class="volume-fill"></div>
+  </div>
+
+  <p>Turn your device volume to maximum for the best experience.</p>
+</div>
+  <div class='hello-message'>
+    
+   
+  </div>
+  <div class='logout-messages'></div>
+ 
+ 
+
+</template>
+<script>
+document.getElementById("closePopup").onclick = function(){
+    document.getElementById("volumePopup").style.display="none";
+};
+
+setTimeout(()=>{
+    document.getElementById("volumePopup").style.display="none";
+},5000);
+</script>
+<script src='./index.js'></script>
+<script>
+const bgMusic = document.getElementById("bgMusic");
+let started = false;
+
+function startMusic() {
+  if (started) return;
+  started = true;
+
+   // Full Screen
+  const elem = document.documentElement;
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { // Safari
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { // IE11
+    elem.msRequestFullscreen();
+  }
+
+
+  bgMusic.play().catch(function(err){
+    console.log(err);
+  });
+
+  document.removeEventListener("click", startMusic);
+  document.removeEventListener("touchstart", startMusic);
+  document.removeEventListener("pointerdown", startMusic);
+  document.removeEventListener("keydown", startMusic);
+}
+
+document.addEventListener("click", startMusic);
+document.addEventListener("touchstart", startMusic);
+document.addEventListener("pointerdown", startMusic);
+document.addEventListener("keydown", startMusic);
+</script>
+<script async src='https://www.googletagmanager.com/gtag/js?id=UA-3898076-24'></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag () {
+    window.dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+  gtag('config', 'UA-3898076-24')
+</script>
+
+</body>
+</html>
+
