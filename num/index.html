@@ -1,114 +1,349 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Mobile Search</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mobile Search</title>
+
 <style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px 12px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 25px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+    backdrop-filter: blur(12px);
+}
+
+marquee {
+    color: #ff1744;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff1744;
+    margin-bottom: 10px;
+}
+
+h3 {
+    text-align: center;
+    margin: 5px 0 15px;
+    color: #ffd54f;
+}
+
+h1 {
+    text-align: center;
+    font-size: 28px;
+    margin: 10px 0 25px;
+    background: linear-gradient(90deg, #00e5ff, #7c4dff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    outline: none;
+    background: rgba(0,0,0,0.35);
+    color: white;
+    font-size: 16px;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+input:focus {
+    border-color: #00e5ff;
+    box-shadow: 0 0 12px rgba(0,229,255,0.5);
+}
+
+button {
+    width: 100%;
+    min-height: 50px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #007bff, #7c4dff);
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+.loader {
+    display: none;
+    width: 23px;
+    height: 23px;
+    margin: auto;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#result {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    min-height: 70px;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.success {
+    color: #00ff9d;
+}
+
+.error {
+    color: #ff5252;
+}
+
+.searching {
+    color: #00e5ff;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
     body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 5px auto;
-        padding: 10px;
+        padding: 10px 8px;
     }
 
-    input {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
+    .container {
+        padding: 20px 15px;
+        margin-top: 15px;
     }
 
-    button {
-        padding: 12px 25px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    h1 {
+        font-size: 24px;
     }
-
-    button:disabled {
-        background: #999;
-        cursor: not-allowed;
-    }
-
-    pre {
-        margin-top: 20px;
-        padding: 15px;
-        background: #f4f4f4;
-        border-radius: 5px;
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
+}
 </style>
+</head>
 
-</head> <body><marquee>GodxShadow</marquee>
-    <h3> Krishna Rajput upx61</h3>
-<h1>Mobile Number Search</h1>
-    
-    
+<body>
 
-<input
-    type="text"
-    id="mobile"
-    placeholder="Enter mobile number"
->
+<div class="container">
 
-<button id="searchBtn" type="button">Search</button>
+    <marquee>GodxShadow</marquee>
 
-<pre id="result"></pre>
+    <h3>Krishna Rajput upx61</h3>
+
+    <h1>Mobile Search</h1>
+
+    <input
+        type="text"
+        id="mobile"
+        placeholder="Enter mobile number"
+        autocomplete="off"
+    >
+
+    <button id="searchBtn" type="button">
+
+        <span id="btnText">🔍 Search</span>
+
+        <span id="loader" class="loader"></span>
+
+    </button>
+
+    <pre id="result"></pre>
+
+</div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
 
-        const mobileInput = document.getElementById("mobile");
-        const searchBtn = document.getElementById("searchBtn");
-        const result = document.getElementById("result");
+const mobileInput = document.getElementById("mobile");
+const searchBtn = document.getElementById("searchBtn");
+const result = document.getElementById("result");
+const loader = document.getElementById("loader");
+const btnText = document.getElementById("btnText");
 
-        searchBtn.addEventListener("click", async function () {
 
-            const mobile = mobileInput.value.trim();
+function showResult(message, type) {
 
-            if (!mobile) {
-                result.textContent = "Please enter a mobile number.";
-                return;
-            }
+    result.style.display = "block";
+    result.className = type;
+    result.textContent = message;
 
-            result.textContent = "Searching...";
-            searchBtn.disabled = true;
+}
 
-            try {
-                const url =
-                    "https://lynx.mireiariosss.workers.dev/api/chain/"
-                    + encodeURIComponent(mobile);
 
-                const response = await fetch(url);
+function setLoading(loading) {
 
-                const text = await response.text();
+    searchBtn.disabled = loading;
 
-                if (!response.ok) {
-                    result.textContent =
-                        "HTTP Error: " + response.status +
-                        "\n\n" + text;
-                    return;
-                }
+    if (loading) {
 
-                try {
-                    const data = JSON.parse(text);
+        btnText.style.display = "none";
+        loader.style.display = "block";
 
-                    result.textContent =
-                        JSON.stringify(data, null, 2);
+        showResult(
+            "🔄 Searching...\n\nPlease wait...",
+            "searching"
+        );
 
-                } catch (e) {
-                    result.textContent =
-                        "API response:\n\n" + text;
-                }
+    } else {
 
-            } catch (error) {
-                result.textContent =
-                    "Request failed:\n\n" + error.message;
-            } finally {
-                searchBtn.disabled = false;
-            }
-        });
+        btnText.style.display = "inline";
+        loader.style.display = "none";
 
-    });
+    }
+
+}
+
+
+
+searchBtn.addEventListener("click", async function () {
+
+    const mobile = mobileInput.value.trim();
+
+    if (!mobile) {
+
+        showResult(
+            "❌ Please enter a mobile number.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    setLoading(true);
+
+
+    try {
+
+        /*
+         * केवल अपनी authorized API यहाँ लगाएँ.
+         */
+        const API_URL = "https://lynx.mireiariosss.workers.dev/api/chain/";
+
+        const url =
+            API_URL + encodeURIComponent(mobile);
+
+
+        const response = await fetch(url);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " +
+                response.status +
+                " - " +
+                response.statusText
+            );
+
+        }
+
+
+        const text = await response.text();
+
+
+        if (!text.trim()) {
+
+            throw new Error(
+                "Server returned an empty response."
+            );
+
+        }
+
+
+        try {
+
+            const data = JSON.parse(text);
+            delete data.description;
+            delete data.api_by;
+            delete data.title;
+            delete data.join;
+            
+
+            showResult(
+                JSON.stringify(data, null, 2),
+                "success"
+            );
+
+        } catch (jsonError) {
+
+            showResult(
+                "API Response:\n\n" + text,
+                "success"
+            );
+
+        }
+
+
+    } catch (error) {
+
+        showResult(
+            "❌ REQUEST FAILED\n\n" +
+            "Error: " +
+            error.message +
+            "\n\n" +
+            "Possible causes:\n" +
+            "• Network connection problem\n" +
+            "• API server unavailable\n" +
+            "• CORS restriction\n" +
+            "• Invalid API URL\n" +
+            "• Server returned an error",
+            "error"
+        );
+
+
+    } finally {
+
+        setLoading(false);
+
+    }
+
+});
+
+
+/* Enter key से भी Search */
+mobileInput.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        searchBtn.click();
+    }
+
+});
+
 </script>
 
-</body> </html>
+</body>
+</html>
