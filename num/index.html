@@ -159,16 +159,12 @@ button:disabled {
 <body>
 
 <div class="container">
-<div id="visitorCount"
-     style="text-align:center; margin-bottom:15px; color:#00e5ff; font-weight:bold;">
-    👥 Visitors: Loading...
-</div>
 
     <marquee>GodxShadow</marquee>
 
     <h3>Krishna Rajput upx61</h3>
 
-    <h1>Mobile Search</h1>
+    <h1>Mobile Number Search</h1>
 
     <input
         type="text"
@@ -207,24 +203,6 @@ function showResult(message, type) {
 
 }
 
-async function loadVisitorCount() {
-    try {
-        const response = await fetch(
-            "https://api.counterapi.dev/v1/godxshadow/visits/up"
-        );
-
-        const data = await response.json();
-
-        document.getElementById("visitorCount").textContent =
-            "👥 Visitors: " + data.count;
-
-    } catch (error) {
-        document.getElementById("visitorCount").textContent =
-            "👥 Visitors: —";
-    }
-}
-
-loadVisitorCount();
 
 function setLoading(loading) {
 
