@@ -1,222 +1,348 @@
-<!doctype html>
-
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <meta name='theme-color' content='#fff' class='theme-color'/>
-  <style>
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
-        'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
-        sans-serif;
-      overflow: hidden;
-    }
-    .hello-message {
-      margin: 40px;
-      text-align: center;
-    }
-    #volumePopup{
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:340px;
-    max-width:90%;
-    background:#111;
-    color:#fff;
-    border-radius:15px;
-    padding:25px;
-    box-shadow:0 0 30px rgba(0,0,0,.6);
-    z-index:999999;
-    text-align:center;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mobile Search</title>
+
+<style>
+* {
+    box-sizing: border-box;
 }
 
-#closePopup{
-    position:absolute;
-    right:15px;
-    top:10px;
-    font-size:28px;
-    cursor:pointer;
-    color:#fff;
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px 12px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
 }
 
-.volume-bar{
-    width:100%;
-    height:18px;
-    background:#444;
-    border-radius:20px;
-    overflow:hidden;
-    margin:20px 0;
-}
-
-.volume-fill{
-    width:100%;
-    height:100%;
-    background:#00ff4c;
-    animation:volumeDown 1.5s linear forwards;
-}
-
-@keyframes volumeDown{
-    from{
-        width:100%;
-    }
-    to{
-        width:0%;
-    }
-}
-    .main-content{
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+.container {
     width: 100%;
-    z-index: 1;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 25px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+    backdrop-filter: blur(12px);
 }
 
-.gif{
-    width: 300px;
-    height: auto;
+marquee {
+    color: #ff1744;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff1744;
+    margin-bottom: 10px;
 }
-    .logout-messages {
-      pointer-events: none;
-      color: red;
-      margin: 40px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      text-shadow: 2px 2px #FFF, 4px 4px 10px #000;
+
+h3 {
+    text-align: center;
+    margin: 5px 0 15px;
+    color: #ffd54f;
+}
+
+h1 {
+    text-align: center;
+    font-size: 28px;
+    margin: 10px 0 25px;
+    background: linear-gradient(90deg, #00e5ff, #7c4dff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    outline: none;
+    background: rgba(0,0,0,0.35);
+    color: white;
+    font-size: 16px;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+input:focus {
+    border-color: #00e5ff;
+    box-shadow: 0 0 12px rgba(0,229,255,0.5);
+}
+
+button {
+    width: 100%;
+    min-height: 50px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #007bff, #7c4dff);
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+.loader {
+    display: none;
+    width: 23px;
+    height: 23px;
+    margin: auto;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
     }
-    img {
-      width: 300px;
-    }
-    @keyframes blurslowly {
-      0% {
-        filter: none;
-      }
-      92% {
-        filter: blur(0);
-      }
-      96% {
-        filter: blur(1px);
-      }
-      100% {
-        filter: blur(0);
-      }
-    }
+}
+
+#result {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    min-height: 70px;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.success {
+    color: #00ff9d;
+}
+
+.error {
+    color: #ff5252;
+}
+
+.searching {
+    color: #00e5ff;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
     body {
-      animation-name: blurslowly;
-      animation-iteration-count: infinite;
-      animation-duration: 15s;
-      animation-play-state: running;
+        padding: 10px 8px;
     }
-  </style>
+
+    .container {
+        padding: 20px 15px;
+        margin-top: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
+</style>
 </head>
+
 <body>
-<audio id="bgMusic" loop preload="auto">
-  <source src="./prankaudio.mp3" type="audio/mpeg">
-</audio>
-  <audio id="bgMusic1" loop preload="auto">
-  <source src="./1.mp3" type="audio/mpeg">
-</audio>
-   <audio id="bgMusic1" loop preload="auto">
-  <source src="./2.mp3" type="audio/mpeg">
-</audio>
-  <img src="https://komarev.com/ghpvc/?username=itsyourarts&label=Profile%20views&color=0e75b6&style=flat" alt="visitor counter" />
-  
-    <div class="main-content">
-    <h1>Hi there!</h1>
-    <h2>To get started, Volume up + .</h2>
-    <h3>(or, on mobile, tap the cat!)</h3>
-    <h1>created by KR$HNA UP61</h1>
 
-    <img src="./kk.gif" alt="GIF" class="gif">
+<div class="container">
+
+    <marquee>GodxShadow</marquee>
+
+    <h3>Krishna Rajput upx61</h3>
+
+    <h1>Mobile Search</h1>
+
+    <input
+        type="text"
+        id="mobile"
+        placeholder="Enter mobile number"
+        autocomplete="off"
+    >
+
+    <button id="searchBtn" type="button">
+
+        <span id="btnText">🔍 Search</span>
+
+        <span id="loader" class="loader"></span>
+
+    </button>
+
+    <pre id="result"></pre>
+
 </div>
-  <video id="video1" style="display:none;">
-    <source src="./F.mp4">
-</video>
 
-<video id="video2" style="display:none;">
-    <source src="./C.mp4">
-</video>
-<template>
-  <div id="volumePopup">
-  <span id="closePopup">&times;</span>
-
-  <h2>Please Volume Up 🔊</h2>
-
-  <div class="volume-bar">
-    <div class="volume-fill"></div>
-  </div>
-
-  <p>Turn your device volume to maximum for the best experience.</p>
-</div>
-  <div class='hello-message'>
-    
-   
-  </div>
-  <div class='logout-messages'></div>
- 
- 
-
-</template>
 <script>
-document.getElementById("closePopup").onclick = function(){
-    document.getElementById("volumePopup").style.display="none";
-};
 
-setTimeout(()=>{
-    document.getElementById("volumePopup").style.display="none";
-},5000);
-</script>
-<script src='./index.js'></script>
-<script>
-const bgMusic = document.getElementById("bgMusic");
-let started = false;
-
-function startMusic() {
-  if (started) return;
-  started = true;
-
-   // Full Screen
-  const elem = document.documentElement;
-
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { // Safari
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { // IE11
-    elem.msRequestFullscreen();
-  }
+const mobileInput = document.getElementById("mobile");
+const searchBtn = document.getElementById("searchBtn");
+const result = document.getElementById("result");
+const loader = document.getElementById("loader");
+const btnText = document.getElementById("btnText");
 
 
-  bgMusic.play().catch(function(err){
-    console.log(err);
-  });
+function showResult(message, type) {
 
-  document.removeEventListener("click", startMusic);
-  document.removeEventListener("touchstart", startMusic);
-  document.removeEventListener("pointerdown", startMusic);
-  document.removeEventListener("keydown", startMusic);
+    result.style.display = "block";
+    result.className = type;
+    result.textContent = message;
+
 }
 
-document.addEventListener("click", startMusic);
-document.addEventListener("touchstart", startMusic);
-document.addEventListener("pointerdown", startMusic);
-document.addEventListener("keydown", startMusic);
-</script>
-<script async src='https://www.googletagmanager.com/gtag/js?id=UA-3898076-24'></script>
-<script>
-  window.dataLayer = window.dataLayer || []
-  function gtag () {
-    window.dataLayer.push(arguments)
-  }
-  gtag('js', new Date())
-  gtag('config', 'UA-3898076-24')
+
+function setLoading(loading) {
+
+    searchBtn.disabled = loading;
+
+    if (loading) {
+
+        btnText.style.display = "none";
+        loader.style.display = "block";
+
+        showResult(
+            "🔄 Searching...\n\nPlease wait...",
+            "searching"
+        );
+
+    } else {
+
+        btnText.style.display = "inline";
+        loader.style.display = "none";
+
+    }
+
+}
+
+
+
+searchBtn.addEventListener("click", async function () {
+
+    const mobile = mobileInput.value.trim();
+
+    if (!mobile) {
+
+        showResult(
+            "❌ Please enter a mobile number.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    setLoading(true);
+
+
+    try {
+
+        /*
+         * केवल अपनी authorized API यहाँ लगाएँ.
+         */
+        const API_URL = "https://lynx.mireiariosss.workers.dev/api/chain/";
+
+        const url =
+            API_URL + encodeURIComponent(mobile);
+
+
+        const response = await fetch(url);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " +
+                response.status +
+                " - " +
+                response.statusText
+            );
+
+        }
+
+
+        const text = await response.text();
+
+
+        if (!text.trim()) {
+
+            throw new Error(
+                "Server returned an empty response."
+            );
+
+        }
+
+
+        try {
+
+            const data = JSON.parse(text);
+            delete data.description;
+            delete data.api_by;
+            delete data.title;
+            delete data.join;
+            
+
+            showResult(
+                JSON.stringify(data, null, 2),
+                "success"
+            );
+
+        } catch (jsonError) {
+
+            showResult(
+                "API Response:\n\n" + text,
+                "success"
+            );
+
+        }
+
+
+    } catch (error) {
+
+        showResult(
+            "❌ REQUEST FAILED\n\n" +
+            "Error: " +
+            error.message +
+            "\n\n" +
+            "Possible causes:\n" +
+            "• Network connection problem\n" +
+            "• API server unavailable\n" +
+            "• CORS restriction\n" +
+            "• Invalid API URL\n" +
+            "• Server returned an error",
+            "error"
+        );
+
+
+    } finally {
+
+        setLoading(false);
+
+    }
+
+});
+
+
+/* Enter key से भी Search */
+mobileInput.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+        searchBtn.click();
+    }
+
+});
+
 </script>
 
 </body>
