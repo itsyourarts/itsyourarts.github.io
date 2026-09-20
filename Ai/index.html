@@ -705,3 +705,834 @@ textarea::placeholder{
 
 
 <script>
+/* =========================
+   API CONFIG
+========================= */
+
+const API_URL =
+"https://anshapi.vercel.app/api/deepseek";
+
+const API_KEY =
+"ansh";
+
+const MODEL =
+"deepseek-v4-flash";
+
+
+/* =========================
+   STATE
+========================= */
+
+let conversation = [];
+
+let selectedImage = null;
+
+let isSending = false;
+
+
+/* =========================
+   TEXTAREA AUTO RESIZE
+========================= */
+
+const promptInput =
+document.getElementById("prompt");
+
+promptInput.addEventListener(
+  "input",
+  function(){
+
+    this.style.height = "auto";
+
+    this.style.height =
+      Math.min(
+        this.scrollHeight,
+        150
+      ) + "px";
+  }
+);
+
+
+/* =========================
+   ENTER KEY
+========================= */
+
+function handleKey(event){
+
+  if(
+    event.key === "Enter" &&
+    !event.shiftKey
+  ){
+
+    event.preventDefault();
+
+    sendMessage();
+  }
+}
+
+
+/* =========================
+   IMAGE PREVIEW
+========================= */
+
+function previewFile(event){
+
+  const file =
+    event.target.files[0];
+
+  if(!file) return;
+
+  selectedImage = file;
+
+  const reader =
+    new FileReader();
+
+  reader.onload =
+    function(e){
+
+      document.getElementById(
+        "previewImage"
+      ).src = e.target.result;
+
+      document.getElementById(
+        "previewArea"
+      ).style.display = "block";
+    };
+
+  reader.readAsDataURL(file);
+}
+
+
+/* =========================
+   REMOVE IMAGE
+========================= */
+
+function removeImage(){
+
+  selectedImage = null;
+
+  document.getElementById(
+    "imageInput"
+  ).value = "";
+
+  document.getElementById(
+    "previewArea"
+  ).style.display = "none";
+}
+
+
+/* =========================
+   FILE → DATA URL
+========================= */
+
+function fileToDataURL(file){
+
+  return new Promise(
+    function(resolve,reject){
+
+      const reader =
+        new FileReader();
+
+      reader.onload =
+        function(){
+
+          resolve(
+            reader.result
+          );
+        };
+
+      reader.onerror =
+        reject;
+
+      reader.readAsDataURL(file);
+
+    }
+  );
+}
+
+
+/* =========================
+   ADD MESSAGE
+========================= */
+
+function addMessage(
+  text,
+  type,
+  image = null
+){
+
+  const chat =
+    document.getElementById("chat");
+
+  const message =
+    document.createElement("div");
+
+  message.className =
+    "message " + type;
+
+  const avatar =
+    type === "ai"
+      ? "AI"
+      : "YOU";
+
+  let html = "";
+
+  if(image){
+
+    html += `
+      <img
+        class="preview"
+        src="${image}"
+        alt="Uploaded image"
+      >
+    `;
+  }
+
+  if(text){
+
+    html += formatText(text);
+  }
+
+  message.innerHTML = `
+    <div class="avatar">
+      ${avatar}
+    </div>
+
+    <div class="content">
+      ${html}
+    </div>
+  `;
+
+  chat.appendChild(message);
+
+  scrollChat();
+
+  return message;
+}
+
+
+/* =========================
+   SCROLL
+========================= */
+
+function scrollChat(){
+
+  const chat =
+    document.getElementById("chat");
+
+  chat.scrollTop =
+    chat.scrollHeight;
+}
+
+
+/* =========================
+   FORMAT RESPONSE
+========================= */
+
+function formatText(text){
+
+  if(!text) return "";
+
+  let safe =
+    escapeHTML(
+      String(text)
+    );
+
+
+  /* CODE BLOCK */
+
+  safe =
+    safe.replace(
+      /```([\s\S]*?)```/g,
+      "<pre><code>$1</code></pre>"
+    );
+
+
+  /* BOLD */
+
+  safe =
+    safe.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+
+
+  /* INLINE CODE */
+
+  safe =
+    safe.replace(
+      /`([^`]+)`/g,
+      "<code>$1</code>"
+    );
+
+
+  /* NEW LINE */
+
+  safe =
+    safe.replace(
+      /\n/g,
+      "<br>"
+    );
+
+
+  return safe;
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(text){
+
+  return text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+}
+
+
+/* =========================
+   TYPING EFFECT
+========================= */
+
+async function typeText(
+  element,
+  text
+){
+
+  element.innerHTML = "";
+
+  let output = "";
+
+  for(
+    let i = 0;
+    i < text.length;
+    i++
+  ){
+
+    output += text[i];
+
+    element.innerHTML =
+      formatText(output);
+
+    scrollChat();
+
+    await new Promise(
+      function(resolve){
+
+        setTimeout(
+          resolve,
+          8
+        );
+
+      }
+    );
+  }
+}
+
+
+/* =========================
+   BUILD CONVERSATION
+========================= */
+
+function buildPrompt(
+  latestPrompt
+){
+
+  let history = "";
+
+  const recent =
+    conversation.slice(-12);
+
+  recent.forEach(
+    function(message){
+
+      history +=
+        message.role +
+        ": " +
+        message.content +
+        "\n";
+    }
+  );
+
+
+  return `
+You are a helpful AI assistant.
+
+Previous conversation:
+
+${history}
+
+Latest user message:
+
+${latestPrompt}
+
+Answer the user naturally and clearly.
+Do not return unnecessary metadata.
+`;
+}
+
+
+/* =========================
+   EXTRACT ONLY RESPONSE
+========================= */
+
+function extractResponse(data){
+
+  /* Direct string */
+
+  if(
+    typeof data === "string"
+  ){
+
+    return data;
+  }
+
+
+  /* response */
+
+  if(
+    data.response !== undefined &&
+    typeof data.response !== "object"
+  ){
+
+    return String(
+      data.response
+    );
+  }
+
+
+  /* answer */
+
+  if(
+    data.answer !== undefined &&
+    typeof data.answer !== "object"
+  ){
+
+    return String(
+      data.answer
+    );
+  }
+
+
+  /* result */
+
+  if(
+    data.result !== undefined &&
+    typeof data.result !== "object"
+  ){
+
+    return String(
+      data.result
+    );
+  }
+
+
+  /* content */
+
+  if(
+    data.content !== undefined &&
+    typeof data.content !== "object"
+  ){
+
+    return String(
+      data.content
+    );
+  }
+
+
+  /* text */
+
+  if(
+    data.text !== undefined &&
+    typeof data.text !== "object"
+  ){
+
+    return String(
+      data.text
+    );
+  }
+
+
+  /* message */
+
+  if(
+    data.message !== undefined &&
+    typeof data.message !== "object"
+  ){
+
+    return String(
+      data.message
+    );
+  }
+
+
+  /* OpenAI style */
+
+  if(
+    data.choices &&
+    data.choices[0] &&
+    data.choices[0].message &&
+    data.choices[0].message.content
+  ){
+
+    return String(
+      data.choices[0].message.content
+    );
+  }
+
+
+  /* Nested response */
+
+  if(
+    data.data &&
+    data.data.response !== undefined
+  ){
+
+    return String(
+      data.data.response
+    );
+  }
+
+
+  /* Nested content */
+
+  if(
+    data.data &&
+    data.data.content !== undefined
+  ){
+
+    return String(
+      data.data.content
+    );
+  }
+
+
+  /* Don't show raw JSON */
+
+  return "No response received from API.";
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+async function sendMessage(){
+
+  if(isSending) return;
+
+
+  const input =
+    document.getElementById(
+      "prompt"
+    );
+
+  const sendButton =
+    document.getElementById(
+      "sendButton"
+    );
+
+
+  const prompt =
+    input.value.trim();
+
+
+  if(
+    !prompt &&
+    !selectedImage
+  ){
+
+    return;
+  }
+
+
+  isSending = true;
+
+  sendButton.disabled = true;
+
+
+  /* Image */
+
+  let imageData = null;
+
+  if(selectedImage){
+
+    try{
+
+      imageData =
+        await fileToDataURL(
+          selectedImage
+        );
+
+    }catch(error){
+
+      imageData = null;
+    }
+  }
+
+
+  /* User message */
+
+  const userText =
+    prompt ||
+    "Analyze this image.";
+
+
+  addMessage(
+    userText,
+    "user",
+    imageData
+  );
+
+
+  conversation.push({
+
+    role:"user",
+
+    content:userText
+  });
+
+
+  /* Clear input */
+
+  input.value = "";
+
+  input.style.height = "auto";
+
+
+  /* Thinking */
+
+  const loading =
+    addMessage(
+      "",
+      "ai"
+    );
+
+
+  const loadingContent =
+    loading.querySelector(
+      ".content"
+    );
+
+
+  loadingContent.innerHTML =
+    `
+    <span class="thinking">
+      Thinking...
+    </span>
+    `;
+
+
+  scrollChat();
+
+
+  try{
+
+    /* Build prompt */
+
+    const finalPrompt =
+      buildPrompt(
+        userText
+      );
+
+
+    /* API URL */
+
+    const url =
+      API_URL +
+      "?key=" +
+      encodeURIComponent(
+        API_KEY
+      ) +
+      "&prompt=" +
+      encodeURIComponent(
+        finalPrompt
+      ) +
+      "&model=" +
+      encodeURIComponent(
+        MODEL
+      );
+
+
+    /* Request */
+
+    const response =
+      await fetch(
+        url,
+        {
+          method:"GET",
+
+          headers:{
+            "Accept":
+              "application/json"
+          }
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "API Error: " +
+        response.status
+      );
+    }
+
+
+    /* JSON */
+
+    const data =
+      await response.json();
+
+
+    /* ONLY RESPONSE */
+
+    const answer =
+      extractResponse(
+        data
+      );
+
+
+    /* Save */
+
+    conversation.push({
+
+      role:"assistant",
+
+      content:answer
+    });
+
+
+    /* Typing */
+
+    await typeText(
+      loadingContent,
+      answer
+    );
+
+
+  }catch(error){
+
+    loadingContent.innerHTML =
+      `
+      <span style="
+        color:#ff4d6d;
+      ">
+        ❌ ${escapeHTML(
+          error.message
+        )}
+      </span>
+      `;
+
+  }finally{
+
+    isSending = false;
+
+    sendButton.disabled = false;
+
+    removeImage();
+
+    scrollChat();
+  }
+}
+
+
+/* =========================
+   IMAGE MODAL
+========================= */
+
+function openImageMode(){
+
+  document.getElementById(
+    "imageMode"
+  ).style.display = "flex";
+}
+
+
+function closeImageMode(){
+
+  document.getElementById(
+    "imageMode"
+  ).style.display = "none";
+}
+
+
+/* =========================
+   IMAGE GENERATION UI
+========================= */
+
+function generateImage(){
+
+  const prompt =
+    document.getElementById(
+      "imagePrompt"
+    ).value.trim();
+
+  const result =
+    document.getElementById(
+      "generatedImage"
+    );
+
+
+  if(!prompt){
+
+    result.innerHTML =
+      `
+      <div class="generated-result">
+        Please enter an image prompt.
+      </div>
+      `;
+
+    return;
+  }
+
+
+  result.innerHTML =
+    `
+    <div class="generated-result">
+
+      🎨 Image prompt:
+
+      <br><br>
+
+      <strong>
+        ${escapeHTML(prompt)}
+      </strong>
+
+      <br><br>
+
+      Your current API is a text-chat
+      endpoint, so an actual generated
+      image requires an image-generation
+      API endpoint.
+
+    </div>
+    `;
+}
+
+
+/* =========================
+   CLOSE MODAL
+========================= */
+
+document.getElementById(
+  "imageMode"
+).addEventListener(
+  "click",
+  function(event){
+
+    if(
+      event.target === this
+    ){
+
+      closeImageMode();
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
