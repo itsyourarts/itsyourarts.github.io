@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1 Minute Code Chat</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  width: min(700px, 94%);
+  margin: 40px auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+input, textarea, button {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+input {
+  padding: 14px;
+  background: #1e293b;
+  color: white;
+}
+
+textarea {
+  min-height: 250px;
+  padding: 15px;
+  background: #020617;
+  color: #e2e8f0;
+  font-family: monospace;
+  resize: vertical;
+}
+
+button {
+  padding: 14px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.room {
+  display: flex;
+  gap: 8px;
+}
+
+.room input {
+  flex: 1;
+}
+
+.status {
+  text-align: center;
+  margin: 15px 0;
+  color: #94a3b8;
+}
+
+#messages {
+  margin-top: 20px;
+}
+
+.message {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.timer {
+  color: #fbbf24;
+  margin-bottom: 10px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #020617;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.copy {
+  background: #475569;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>💻 1 Minute Code Chat</h1>
+
+<div class="room">
+  <input id="roomId" placeholder="Room ID">
+  <button onclick="joinRoom()">Join</button>
+</div>
+
+<div class="status" id="status">
+  Enter the same Room ID on both systems.
+</div>
+
+<textarea id="code" placeholder="Paste your code here..."></textarea>
+
+<button onclick="sendCode()">🚀 Send Code</button>
+
+<div id="messages"></div>
+
+</div>
+
+<!-- Firebase -->
+<script type="module">
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  push,
+  onChildAdded,
+  remove
+} from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+
+/* ==============================
+   PUT YOUR FIREBASE CONFIG HERE
+   ============================== */
+
+const firebaseConfig = {
+
+  apiKey: "YOUR_API_KEY",
+
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+
+  projectId: "YOUR_PROJECT",
+
+  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+
+  messagingSenderId: "YOUR_SENDER_ID",
+
+  appId: "YOUR_APP_ID"
+
+};
+
+
+/* ============================== */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+let currentRoom = "";
+
+
+/* JOIN ROOM */
+
+window.joinRoom = function() {
+
+  const room = document
+    .getElementById("roomId")
+    .value
+    .trim();
+
+  if (!room) {
+    alert("Room ID enter karo");
+    return;
+  }
+
+  currentRoom = room;
+
+  document.getElementById("status").innerText =
+    "Connected to room: " + room;
+
+  document.getElementById("messages").innerHTML = "";
+
+  const messagesRef =
+    ref(db, "rooms/" + currentRoom + "/messages");
+
+
+  onChildAdded(messagesRef, snapshot => {
+
+    const data = snapshot.val();
+
+    if (!data) return;
+
+    const messageId = snapshot.key;
+
+    const messageTime = data.time;
+
+    const age = Date.now() - messageTime;
+
+    /* Already expired */
+
+    if (age >= 60000) {
+
+      remove(
+        ref(
+          db,
+          "rooms/" +
+          currentRoom +
+          "/messages/" +
+          messageId
+        )
+      );
+
+      return;
+    }
+
+
+    showMessage(messageId, data);
+
+
+    /* Automatically delete after 60 seconds */
+
+    const remaining = 60000 - age;
+
+    setTimeout(() => {
+
+      remove(
+        ref(
+          db,
+          "rooms/" +
+          currentRoom +
+          "/messages/" +
+          messageId
+        )
+      );
+
+      const element =
+        document.getElementById(messageId);
+
+      if (element) {
+        element.remove();
+      }
+
+    }, remaining);
+
+  });
+
+};
+
+
+/* SEND CODE */
+
+window.sendCode = function() {
+
+  if (!currentRoom) {
+    alert("Pehle Room ID join karo");
+    return;
+  }
+
+  const code =
+    document.getElementById("code").value;
+
+  if (!code.trim()) {
+    alert("Code empty hai");
+    return;
+  }
+
+
+  const messagesRef =
+    ref(db, "rooms/" + currentRoom + "/messages");
+
+
+  push(messagesRef, {
+
+    code: code,
+
+    time: Date.now()
+
+  });
+
+
+  document.getElementById("code").value = "";
+
+};
+
+
+/* SHOW MESSAGE */
+
+function showMessage(id, data) {
+
+  const container =
+    document.getElementById("messages");
+
+
+  const box =
+    document.createElement("div");
+
+  box.className = "message";
+
+  box.id = id;
+
+
+  const timer =
+    document.createElement("div");
+
+  timer.className = "timer";
+
+  timer.innerText =
+    "⏱️ This code will disappear in 1 minute";
+
+
+  const pre =
+    document.createElement("pre");
+
+  pre.textContent = data.code;
+
+
+  const copy =
+    document.createElement("button");
+
+  copy.className = "copy";
+
+  copy.innerText = "📋 Copy Code";
+
+
+  copy.onclick = async () => {
+
+    await navigator.clipboard.writeText(
+      data.code
+    );
+
+    copy.innerText = "✅ Copied!";
+
+    setTimeout(() => {
+
+      copy.innerText = "📋 Copy Code";
+
+    }, 1000);
+
+  };
+
+
+  box.appendChild(timer);
+
+  box.appendChild(pre);
+
+  box.appendChild(copy);
+
+  container.prepend(box);
+
+}
+
+</script>
+
+</body>
+  </html>
