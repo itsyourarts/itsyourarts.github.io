@@ -364,3 +364,344 @@ textarea::placeholder{
   opacity:.5;
   cursor:not-allowed;
 }
+/* =========================
+   IMAGE GENERATOR
+========================= */
+
+.image-mode{
+  display:none;
+
+  position:fixed;
+  inset:0;
+
+  z-index:20;
+
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(0,0,0,.72);
+
+  backdrop-filter:blur(12px);
+}
+
+.image-panel{
+  width:min(90%,500px);
+
+  padding:22px;
+
+  border-radius:20px;
+
+  background:#0c0c1c;
+
+  border:1px solid #ff00e6;
+
+  box-shadow:
+    0 0 25px rgba(255,0,230,.4);
+}
+
+.image-panel h2{
+  color:#ff00e6;
+  margin-bottom:15px;
+
+  text-shadow:
+    0 0 10px #ff00e6;
+}
+
+.image-panel textarea{
+  width:100%;
+
+  min-height:110px;
+
+  margin-bottom:12px;
+
+  padding:12px;
+
+  border-radius:12px;
+
+  border:1px solid rgba(255,0,230,.3);
+
+  background:#080812;
+}
+
+.generate{
+  width:100%;
+
+  padding:12px;
+
+  border:0;
+
+  border-radius:12px;
+
+  background:#ff00e6;
+
+  color:#fff;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 0 20px rgba(255,0,230,.5);
+}
+
+.close{
+  float:right;
+
+  border:0;
+
+  background:none;
+
+  color:#fff;
+
+  font-size:22px;
+
+  cursor:pointer;
+}
+
+.generated-result{
+  margin-top:15px;
+
+  padding:14px;
+
+  border-radius:12px;
+
+  background:rgba(255,0,230,.05);
+
+  border:1px solid rgba(255,0,230,.2);
+
+  color:#aaa;
+
+  line-height:1.5;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+  .header{
+    height:58px;
+  }
+
+  .logo{
+    font-size:18px;
+  }
+
+  .chat{
+    padding:
+      18px
+      10px
+      150px;
+  }
+
+  .message{
+    gap:8px;
+  }
+
+  .avatar{
+    width:30px;
+    height:30px;
+    min-width:30px;
+
+    font-size:9px;
+  }
+
+  .content{
+    font-size:14px;
+  }
+
+  .input-area{
+    padding:10px;
+  }
+
+  .input-box{
+    border-radius:17px;
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <div class="logo">
+      ⚡ NEON AI
+    </div>
+
+    <div class="status">
+      ● ONLINE
+    </div>
+
+  </header>
+
+
+  <!-- CHAT -->
+
+  <main
+    class="chat"
+    id="chat"
+  >
+
+    <div class="message ai">
+
+      <div class="avatar">
+        AI
+      </div>
+
+      <div class="content">
+
+        Hello 👋<br>
+
+        I'm your Neon AI assistant.
+        Ask me anything.
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- INPUT -->
+
+  <div class="input-area">
+
+    <div class="input-box">
+
+
+      <!-- IMAGE PREVIEW -->
+
+      <div
+        class="preview-area"
+        id="previewArea"
+      >
+
+        <img
+          id="previewImage"
+          alt="Uploaded image"
+        >
+
+        <button
+          class="remove-image"
+          onclick="removeImage()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- TEXT INPUT -->
+
+      <textarea
+        id="prompt"
+        placeholder="Message Neon AI..."
+        onkeydown="handleKey(event)"
+      ></textarea>
+
+
+      <!-- BUTTONS -->
+
+      <div class="controls">
+
+
+        <!-- UPLOAD IMAGE -->
+
+        <button
+          class="tool"
+          onclick="document.getElementById('imageInput').click()"
+          title="Upload image"
+        >
+          📎
+        </button>
+
+
+        <input
+          type="file"
+          id="imageInput"
+          accept="image/*"
+          hidden
+          onchange="previewFile(event)"
+        >
+
+
+        <!-- CREATE IMAGE -->
+
+        <button
+          class="tool"
+          onclick="openImageMode()"
+          title="Create image"
+        >
+          🎨
+        </button>
+
+
+        <!-- SEND -->
+
+        <button
+          class="send"
+          id="sendButton"
+          onclick="sendMessage()"
+        >
+          ➤
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- IMAGE GENERATOR MODAL -->
+
+<div
+  class="image-mode"
+  id="imageMode"
+>
+
+  <div class="image-panel">
+
+    <button
+      class="close"
+      onclick="closeImageMode()"
+    >
+      ×
+    </button>
+
+    <h2>
+      🎨 Create Image
+    </h2>
+
+    <textarea
+      id="imagePrompt"
+      placeholder="Describe the image you want..."
+    ></textarea>
+
+    <button
+      class="generate"
+      onclick="generateImage()"
+    >
+      Generate Image
+    </button>
+
+    <div
+      id="generatedImage"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<script>
