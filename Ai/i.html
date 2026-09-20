@@ -1671,3 +1671,1020 @@ function formatText(text){
 /* =========================
    NORMAL TEXT
 ==================
+function formatNormalText(text){
+
+  if(!text) return "";
+
+  let safe =
+    escapeHTML(
+      String(text)
+    );
+
+  safe =
+    safe.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+
+  safe =
+    safe.replace(
+      /`([^`]+)`/g,
+      "<code>$1</code>"
+    );
+
+  safe =
+    safe.replace(
+      /\n/g,
+      "<br>"
+    );
+
+  return safe;
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(text){
+
+  return text
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    );
+
+}
+
+
+/* =========================
+   TYPING EFFECT
+========================= */
+
+async function typeText(
+  element,
+  text
+){
+
+  element.innerHTML = "";
+
+  let output = "";
+
+  for(
+    let i = 0;
+    i < text.length;
+    i++
+  ){
+
+    if(!isSending){
+      break;
+    }
+
+    output += text[i];
+
+    element.innerHTML =
+      formatText(output);
+
+    scrollChat();
+
+    await new Promise(
+      function(resolve){
+
+        setTimeout(
+          resolve,
+          8
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================
+   BUILD CONVERSATION
+========================= */
+
+function buildPrompt(
+  latestPrompt
+){
+
+  let history = "";
+
+  const recent =
+    conversation.slice(-12);
+
+  recent.forEach(
+    function(message){
+
+      history +=
+        message.role +
+        ": " +
+        message.content +
+        "\n";
+
+    }
+  );
+
+  return `
+You are a helpful AI web automation assistant.
+
+Previous conversation:
+
+${history}
+
+Latest user message:
+
+${latestPrompt}
+
+Execute the user's request using the available browser tools when web automation is requested.
+
+Answer clearly after completing the task.
+`;
+
+}
+
+
+/* =========================
+   PARSE GRADIO RESULT
+========================= */
+
+function parseGradioResponse(
+  text
+){
+
+  try{
+
+    const match =
+      text.match(
+        /event:\s*complete\s*data:\s*([\s\S]*)/
+      );
+
+    if(!match){
+
+      return null;
+
+    }
+
+    let jsonText =
+      match[1].trim();
+
+    const lines =
+      jsonText
+        .split("\n")
+        .filter(
+          line =>
+            line.trim() &&
+            !line.startsWith(
+              "event:"
+            )
+        );
+
+    jsonText =
+      lines.join("\n");
+
+    const parsed =
+      JSON.parse(
+        jsonText
+      );
+
+    const history =
+      parsed?.[0];
+
+    if(
+      !Array.isArray(history) ||
+      history.length === 0
+    ){
+
+      return null;
+
+    }
+
+    const lastMessage =
+      history[
+        history.length - 1
+      ];
+
+    if(
+      Array.isArray(lastMessage) &&
+      lastMessage.length >= 2
+    ){
+
+      return String(
+        lastMessage[1] || ""
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Gradio parse error:",
+      error
+    );
+
+  }
+
+  return null;
+
+}
+
+
+/* =========================
+   STOP GENERATION
+========================= */
+
+function stopGeneration(){
+
+  if(!isSending) return;
+
+  if(currentController){
+
+    currentController.abort();
+
+  }
+
+  isSending = false;
+
+  const sendButton =
+    document.getElementById(
+      "sendButton"
+    );
+
+  const stopButton =
+    document.getElementById(
+      "stopButton"
+    );
+
+  sendButton.style.display =
+    "block";
+
+  sendButton.disabled =
+    false;
+
+  stopButton.style.display =
+    "none";
+
+  const thinking =
+    document.querySelector(
+      ".thinking"
+    );
+
+  if(thinking){
+
+    thinking.parentElement.innerHTML = `
+
+      <span style="
+        color:#ffb000;
+      ">
+        ⏹ Generation stopped.
+      </span>
+
+    `;
+
+  }
+
+  scrollChat();
+
+}
+
+
+/* =========================
+   SEND MESSAGE
+========================= */
+
+async function sendMessage(){
+
+  if(isSending) return;
+
+  currentController =
+    new AbortController();
+
+  const input =
+    document.getElementById(
+      "prompt"
+    );
+
+  const sendButton =
+    document.getElementById(
+      "sendButton"
+    );
+
+  const stopButton =
+    document.getElementById(
+      "stopButton"
+    );
+
+  const prompt =
+    input.value.trim();
+
+  if(
+    !prompt &&
+    !selectedImage
+  ){
+
+    return;
+
+  }
+
+  isSending = true;
+
+  sendButton.style.display =
+    "none";
+
+  stopButton.style.display =
+    "block";
+
+
+  /* =========================
+     IMAGE DATA
+  ========================= */
+
+  let imageData = null;
+
+  if(selectedImage){
+
+    try{
+
+      imageData =
+        await fileToDataURL(
+          selectedImage
+        );
+
+    }catch(error){
+
+      imageData = null;
+
+    }
+
+  }
+
+
+  /* =========================
+     USER MESSAGE
+  ========================= */
+
+  const userText =
+    prompt ||
+    "Analyze this image.";
+
+  addMessage(
+    userText,
+    "user",
+    imageData
+  );
+
+  conversation.push({
+
+    role:"user",
+
+    content:userText
+
+  });
+
+
+  /*
+    SEND KE BAAD
+    UPLOAD PREVIEW HATAO
+  */
+
+  if(selectedImage){
+
+    removeImage();
+
+  }
+
+
+  input.value = "";
+
+  input.style.height =
+    "auto";
+
+  updateChatBottomSpace();
+
+
+  /* =========================
+     THINKING MESSAGE
+  ========================= */
+
+  const loading =
+    addMessage(
+      "",
+      "ai"
+    );
+
+  const loadingContent =
+    loading.querySelector(
+      ".content"
+    );
+
+  loadingContent.innerHTML = `
+
+    <span class="thinking">
+      Thinking...
+    </span>
+
+  `;
+
+  scrollChat();
+
+
+  try{
+
+    /* =========================
+       BUILD PROMPT
+    ========================= */
+
+    const finalPrompt =
+      buildPrompt(
+        userText
+      );
+
+
+    /* =========================
+       START GRADIO JOB
+    ========================= */
+
+    const startResponse =
+      await fetch(
+        AGENT_API,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json",
+
+            "Accept":
+              "application/json"
+          },
+
+          signal:
+            currentController.signal,
+
+          body:JSON.stringify({
+
+            data:[
+              finalPrompt,
+              []
+            ]
+
+          })
+
+        }
+      );
+
+
+    if(!startResponse.ok){
+
+      throw new Error(
+        "Agent API Error: " +
+        startResponse.status
+      );
+
+    }
+
+
+    const startData =
+      await startResponse.json();
+
+    const eventId =
+      startData.event_id;
+
+    if(!eventId){
+
+      throw new Error(
+        "No event_id received from Agent API."
+      );
+
+    }
+
+
+    /* =========================
+       GET RESULT
+    ========================= */
+
+    const resultResponse =
+      await fetch(
+        `${AGENT_API}/${eventId}`,
+        {
+          method:"GET",
+
+          headers:{
+            "Accept":
+              "text/event-stream"
+          },
+
+          signal:
+            currentController.signal
+        }
+      );
+
+
+    if(!resultResponse.ok){
+
+      throw new Error(
+        "Agent Result Error: " +
+        resultResponse.status
+      );
+
+    }
+
+
+    const resultText =
+      await resultResponse.text();
+
+
+    console.log(
+      "Raw Agent Response:",
+      resultText
+    );
+
+
+    /* =========================
+       EXTRACT ANSWER
+    ========================= */
+
+    let answer =
+      parseGradioResponse(
+        resultText
+      );
+
+    if(!answer){
+
+      answer =
+        "Agent completed the task, but no readable response was returned.";
+
+    }
+
+
+    /* =========================
+       SAVE CONVERSATION
+    ========================= */
+
+    conversation.push({
+
+      role:"assistant",
+
+      content:answer
+
+    });
+
+
+    /* =========================
+       TYPE RESPONSE
+    ========================= */
+
+    await typeText(
+      loadingContent,
+      answer
+    );
+
+
+  }catch(error){
+
+    if(
+      error.name ===
+      "AbortError"
+    ){
+
+      loadingContent.innerHTML = `
+
+        <span style="
+          color:#ffb000;
+        ">
+          ⏹ Generation stopped.
+        </span>
+
+      `;
+
+    }else{
+
+      console.error(
+        "Agent Error:",
+        error
+      );
+
+      loadingContent.innerHTML = `
+
+        <span style="
+          color:#ff4d6d;
+        ">
+          ❌ ${escapeHTML(
+            error.message
+          )}
+        </span>
+
+      `;
+
+    }
+
+  }finally{
+
+    isSending = false;
+
+    currentController = null;
+
+    sendButton.style.display =
+      "block";
+
+    sendButton.disabled =
+      false;
+
+    stopButton.style.display =
+      "none";
+
+    updateChatBottomSpace();
+
+    scrollChat();
+
+  }
+
+}
+
+
+/* =========================
+   GET CODE
+========================= */
+
+function getCode(codeId){
+
+  const element =
+    document.getElementById(
+      codeId
+    );
+
+  if(!element){
+
+    return "";
+
+  }
+
+  try{
+
+    return decodeURIComponent(
+      element.dataset.raw || ""
+    );
+
+  }catch(error){
+
+    return element.textContent || "";
+
+  }
+
+}
+
+
+/* =========================
+   COPY CODE
+========================= */
+
+async function copyCode(
+  codeId
+){
+
+  const code =
+    getCode(codeId);
+
+  if(!code) return;
+
+  try{
+
+    await navigator.clipboard.writeText(
+      code
+    );
+
+  }catch(error){
+
+    const textarea =
+      document.createElement(
+        "textarea"
+      );
+
+    textarea.value =
+      code;
+
+    document.body.appendChild(
+      textarea
+    );
+
+    textarea.select();
+
+    document.execCommand(
+      "copy"
+    );
+
+    textarea.remove();
+
+  }
+
+  showCodeMessage(
+    codeId,
+    "✓ Copied"
+  );
+
+}
+
+
+/* =========================
+   CODE BUTTON STATUS
+========================= */
+
+function showCodeMessage(
+  codeId,
+  text
+){
+
+  const code =
+    document.getElementById(
+      codeId
+    );
+
+  if(!code) return;
+
+  const wrapper =
+    code.closest(
+      ".code-wrapper"
+    );
+
+  if(!wrapper) return;
+
+  const buttons =
+    wrapper.querySelectorAll(
+      ".code-btn"
+    );
+
+  if(buttons.length){
+
+    const button =
+      buttons[0];
+
+    const oldText =
+      button.innerText;
+
+    button.innerText =
+      text;
+
+    setTimeout(
+      function(){
+
+        button.innerText =
+          oldText;
+
+      },
+      1200
+    );
+
+  }
+
+}
+
+
+/* =========================
+   RUN CODE
+========================= */
+
+function runCode(codeId){
+
+  const code =
+    getCode(codeId);
+
+  if(!code) return;
+
+  openPreview(
+    code,
+    "Run Preview"
+  );
+
+}
+
+
+/* =========================
+   FULL PREVIEW
+========================= */
+
+function fullPreview(codeId){
+
+  const code =
+    getCode(codeId);
+
+  if(!code) return;
+
+  openPreview(
+    code,
+    "Full Preview"
+  );
+
+}
+
+
+/* =========================
+   OPEN PREVIEW
+========================= */
+
+function openPreview(
+  code,
+  title
+){
+
+  const modal =
+    document.getElementById(
+      "previewModal"
+    );
+
+  const frame =
+    document.getElementById(
+      "fullPreviewFrame"
+    );
+
+  const titleElement =
+    document.querySelector(
+      ".preview-title"
+    );
+
+  titleElement.textContent =
+    "⚡ " + title;
+
+  frame.srcdoc =
+    code;
+
+  modal.style.display =
+    "flex";
+
+}
+
+
+/* =========================
+   CLOSE PREVIEW
+========================= */
+
+function closeFullPreview(){
+
+  const modal =
+    document.getElementById(
+      "previewModal"
+    );
+
+  const frame =
+    document.getElementById(
+      "fullPreviewFrame"
+    );
+
+  frame.srcdoc = "";
+
+  modal.style.display =
+    "none";
+
+}
+
+
+/* =========================
+   IMAGE MODAL
+========================= */
+
+function openImageMode(){
+
+  document.getElementById(
+    "imageMode"
+  ).style.display =
+    "flex";
+
+}
+
+
+function closeImageMode(){
+
+  document.getElementById(
+    "imageMode"
+  ).style.display =
+    "none";
+
+}
+
+
+/* =========================
+   IMAGE GENERATION UI
+========================= */
+
+function generateImage(){
+
+  const prompt =
+    document.getElementById(
+      "imagePrompt"
+    ).value.trim();
+
+  const result =
+    document.getElementById(
+      "generatedImage"
+    );
+
+  if(!prompt){
+
+    result.innerHTML = `
+
+      <div class="generated-result">
+        Please enter an image prompt.
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  result.innerHTML = `
+
+    <div class="generated-result">
+
+      🎨 Image prompt:
+
+      <br><br>
+
+      <strong>
+        ${escapeHTML(prompt)}
+      </strong>
+
+      <br><br>
+
+      Your current Julia Browser Agent
+      is a web automation API.
+
+      <br><br>
+
+      An actual image-generation API
+      is required to generate an image.
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================
+   CLOSE IMAGE MODAL
+========================= */
+
+document.getElementById(
+  "imageMode"
+).addEventListener(
+  "click",
+  function(event){
+
+    if(
+      event.target === this
+    ){
+
+      closeImageMode();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   CLOSE PREVIEW MODAL
+========================= */
+
+document.getElementById(
+  "previewModal"
+).addEventListener(
+  "click",
+  function(event){
+
+    if(
+      event.target === this
+    ){
+
+      closeFullPreview();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   INITIAL UPDATE
+========================= */
+
+updateChatBottomSpace();
+
+scrollChat();
+
+</script>
+
+</body>
+</html>
