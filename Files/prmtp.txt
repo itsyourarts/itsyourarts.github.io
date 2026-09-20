@@ -1,0 +1,244 @@
+Build a complete Android-first Library Study Center Management App using FlutterFlow.
+
+IMPORTANT:
+- This is NOT a book/library inventory management app.
+- Do NOT create any book management, book catalog, ISBN, author, issue/return-book, or book inventory features.
+- "Library" here means a study center where students come to study and use seats.
+- The backend database is already created in Supabase.
+- Do NOT recreate, rename, delete, or modify the existing Supabase tables.
+- The app must use the existing Supabase database and existing authentication.
+- Design the app for Android phones first.
+- Use a clean, modern, simple UI suitable for a study center.
+- Keep navigation simple and beginner-friendly.
+
+USER ROLES:
+
+1. STUDENT
+2. ADMIN
+
+STUDENT FEATURES:
+- Student signup
+- Student login
+- Forgot password
+- Student dashboard
+- Profile
+- Today's attendance status
+- Check-in button
+- Check-out button
+- Attendance history
+- Available seats
+- Seat booking
+- Current seat booking
+- Release seat
+- Fees
+- Payment history
+- Notifications
+- Logout
+
+ADMIN FEATURES:
+- Admin login
+- Admin dashboard
+- Student management
+- View student details
+- Attendance management
+- View all attendance logs
+- Seat management
+- View available/occupied seats
+- Manage seat status
+- Seat booking management
+- Fees management
+- Payment management
+- Notifications management
+- Library/study-center settings
+- Admin profile
+- Logout
+
+EXISTING SUPABASE TABLES:
+
+profiles
+- id
+- full_name
+- phone
+- email
+- role
+- created_at
+
+students
+- id
+- user_id
+- membership_id
+- father_name
+- phone
+- address
+- joining_date
+- status
+- created_at
+
+attendance
+- id
+- student_id
+- attendance_date
+- check_in
+- check_out
+- status
+- created_at
+
+seats
+- id
+- seat_number
+- status
+- created_at
+
+seat_bookings
+- id
+- student_id
+- seat_id
+- booking_date
+- start_time
+- end_time
+- status
+- created_at
+
+fees
+- id
+- student_id
+- amount
+- due_date
+- status
+- description
+- created_at
+
+payments
+- id
+- student_id
+- fee_id
+- amount
+- payment_method
+- transaction_id
+- paid_at
+- notes
+- created_at
+
+library_settings
+- id
+- library_name
+- opening_time
+- closing_time
+- address
+- phone
+- updated_at
+
+notifications
+- id
+- title
+- message
+- target_role
+- created_at
+
+notification_reads
+- id
+- notification_id
+- user_id
+- read_at
+
+SUPABASE AUTH:
+Use Supabase Authentication for login/signup.
+
+IMPORTANT EXISTING SUPABASE FUNCTIONS:
+
+public.check_in()
+- Marks today's attendance for the currently authenticated student.
+
+public.check_out()
+- Checks out the currently authenticated student.
+
+public.book_seat(selected_seat_id bigint)
+- Books a seat for the currently authenticated student.
+
+public.release_seat()
+- Releases the currently authenticated student's active seat booking.
+
+Use these existing functions instead of directly implementing duplicate attendance or seat-booking logic in the frontend.
+
+STUDENT DASHBOARD:
+Create a modern dashboard showing:
+- Student name
+- Membership ID
+- Today's attendance status
+- Check-in / Check-out action
+- Current seat
+- Seat booking action
+- Pending fees
+- Recent notifications
+
+ATTENDANCE:
+- Show today's attendance clearly.
+- If attendance has not been marked, show Check In.
+- If checked in but not checked out, show Check Out.
+- Prevent unnecessary duplicate actions in the UI.
+- Show attendance history in a clean list/table.
+- Display date, check-in time, check-out time and status.
+
+SEATS:
+- Display all seats from the seats table.
+- Clearly show Available and Occupied seats.
+- Allow a student to select an available seat.
+- Call public.book_seat(selected_seat_id) when booking.
+- Show the student's current active booking.
+- Allow the student to release the seat using public.release_seat().
+- Refresh seat status after booking/releasing.
+
+FEES:
+- Show student's fees from the fees table.
+- Show amount, due date, status and description.
+- Show payment history from payments.
+- Do not implement a fake payment gateway.
+
+NOTIFICATIONS:
+- Show notifications relevant to the logged-in student's role.
+- Allow the student to mark notifications as read using notification_reads.
+
+ADMIN DASHBOARD:
+Show useful summary cards:
+- Total students
+- Today's attendance
+- Available seats
+- Occupied seats
+- Pending fees
+
+Admin must be able to view and manage students, attendance, seats, bookings, fees, payments, notifications and settings according to the existing Supabase permissions.
+
+AUTHORIZATION:
+- After login, read the user's profile role from profiles.
+- If role = student, open Student Dashboard.
+- If role = admin, open Admin Dashboard.
+- Never expose admin screens to students.
+- Never hard-code a specific user's email as admin.
+- Use the role stored in Supabase profiles.
+
+UI:
+- Android-first responsive design.
+- Clean professional study-center look.
+- Simple bottom navigation for students.
+- Appropriate icons.
+- Clear loading states.
+- Empty states.
+- Error messages.
+- Success messages/snackbars.
+- Confirmation dialogs for releasing a seat and logout.
+- Do not use unnecessary animations.
+- Keep the interface fast and simple.
+
+SECURITY:
+- Never put Supabase service-role keys in the FlutterFlow app.
+- Use the authenticated Supabase user session.
+- Respect the existing Supabase Row Level Security policies.
+- Do not bypass Supabase RLS.
+- Do not create fake/local student data when Supabase data is available.
+
+FIRST TASK:
+Create the complete app structure, navigation, authentication screens, Student Dashboard, Admin Dashboard, and the required pages/screens based on the above requirements.
+
+Do not invent additional database tables.
+Do not modify the existing database schema.
+Do not add book management features.
