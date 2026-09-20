@@ -2,1361 +2,365 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neon AI</title>
 
 <style>
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 html,body{
-    width:100%;
-    height:100%;
+  width:100%;
+  height:100%;
 }
 
 body{
-    font-family:Arial,Helvetica,sans-serif;
-    color:#fff;
-    background:
-        radial-gradient(circle at 15% 20%,#17135c 0%,transparent 32%),
-        radial-gradient(circle at 85% 75%,#4b063d 0%,transparent 32%),
-        #05050d;
-    overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#fff;
+  background:
+    radial-gradient(circle at 15% 20%,#17135c 0%,transparent 32%),
+    radial-gradient(circle at 85% 75%,#4b063d 0%,transparent 32%),
+    #05050d;
+  overflow:hidden;
 }
-
-/* =========================
-   APP
-========================= */
 
 .app{
-    height:100vh;
-    display:flex;
-    flex-direction:column;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-/* =========================
-   HEADER
-========================= */
-
 .header{
-    height:65px;
-    flex-shrink:0;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 18px;
-
-    background:rgba(5,5,15,.78);
-    border-bottom:1px solid rgba(255,255,255,.08);
-
-    backdrop-filter:blur(20px);
-
-    box-shadow:
-        0 0 25px rgba(0,255,255,.08);
+  height:65px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  background:rgba(5,5,15,.78);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 25px rgba(0,255,255,.08);
 }
 
 .logo{
-    color:#00f7ff;
-    font-size:21px;
-    font-weight:bold;
-
-    text-shadow:
-        0 0 8px #00f7ff,
-        0 0 20px #00f7ff;
+  color:#00f7ff;
+  font-size:21px;
+  font-weight:bold;
+  text-shadow:
+    0 0 8px #00f7ff,
+    0 0 20px #00f7ff;
 }
 
 .status{
-    color:#66ffcc;
-    font-size:12px;
+  color:#66ffcc;
+  font-size:12px;
 }
 
-/* =========================
-   CHAT
-========================= */
-
 .chat{
-    flex:1;
-    overflow-y:auto;
-
-    padding:25px 15px 155px;
-
-    scroll-behavior:smooth;
+  flex:1;
+  overflow-y:auto;
+  padding:25px 15px 155px;
+  scroll-behavior:smooth;
 }
 
 .chat::-webkit-scrollbar{
-    width:5px;
+  width:5px;
 }
 
 .chat::-webkit-scrollbar-thumb{
-    background:#00f7ff;
-    border-radius:10px;
+  background:#00f7ff;
+  border-radius:10px;
 }
 
-/* =========================
-   MESSAGE
-========================= */
-
 .message{
-    width:100%;
-    max-width:850px;
-
-    margin:0 auto 22px;
-
-    display:flex;
-    gap:12px;
-
-    animation:messageIn .25s ease;
+  width:100%;
+  max-width:850px;
+  margin:0 auto 22px;
+  display:flex;
+  gap:12px;
+  animation:messageIn .25s ease;
 }
 
 @keyframes messageIn{
-    from{
-        opacity:0;
-        transform:translateY(8px);
-    }
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
 
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
-/* =========================
-   AVATAR
-========================= */
-
 .avatar{
-    width:36px;
-    height:36px;
-    min-width:36px;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:11px;
-    font-weight:bold;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:bold;
 }
 
 .ai .avatar{
-    color:#00f7ff;
-
-    border:1px solid #00f7ff;
-
-    box-shadow:
-        0 0 10px #00f7ff,
-        0 0 20px rgba(0,255,255,.4);
+  color:#00f7ff;
+  border:1px solid #00f7ff;
+  box-shadow:
+    0 0 10px #00f7ff,
+    0 0 20px rgba(0,255,255,.4);
 }
 
 .user .avatar{
-    color:#ff00e6;
-
-    border:1px solid #ff00e6;
-
-    box-shadow:
-        0 0 10px #ff00e6,
-        0 0 20px rgba(255,0,230,.4);
+  color:#ff00e6;
+  border:1px solid #ff00e6;
+  box-shadow:
+    0 0 10px #ff00e6,
+    0 0 20px rgba(255,0,230,.4);
 }
 
-/* =========================
-   CONTENT
-========================= */
-
 .content{
-    flex:1;
-
-    min-width:0;
-
-    font-size:15px;
-    line-height:1.7;
-
-    word-wrap:break-word;
+  flex:1;
+  min-width:0;
+  font-size:15px;
+  line-height:1.7;
+  word-wrap:break-word;
 }
 
 .user .content{
-    padding:12px 15px;
-
-    border-radius:15px;
-
-    background:rgba(255,0,230,.06);
-
-    border:1px solid rgba(255,0,230,.15);
+  padding:12px 15px;
+  border-radius:15px;
+  background:rgba(255,0,230,.06);
+  border:1px solid rgba(255,0,230,.15);
 }
 
 .ai .content{
-    padding-top:5px;
+  padding-top:5px;
 }
 
-/* =========================
-   CODE
-========================= */
-
 pre{
-    margin:12px 0;
-
-    padding:15px;
-
-    overflow:auto;
-
-    border-radius:12px;
-
-    background:#020208;
-
-    border:1px solid rgba(0,255,255,.2);
-
-    box-shadow:
-        inset 0 0 20px rgba(0,255,255,.04);
+  margin:12px 0;
+  padding:15px;
+  overflow:auto;
+  border-radius:12px;
+  background:#020208;
+  border:1px solid rgba(0,255,255,.2);
+  box-shadow:
+    inset 0 0 20px rgba(0,255,255,.04);
 }
 
 pre code{
-    font-family:Consolas,monospace;
-    font-size:13px;
+  font-family:Consolas,monospace;
+  font-size:13px;
 }
 
-/* =========================
-   THINKING SHIMMER
-========================= */
+/* THINKING LEFT → RIGHT FLASH */
 
 .thinking{
-    display:inline-block;
+  display:inline-block;
 
-    background:linear-gradient(
-        90deg,
-        #666 0%,
-        #aaa 20%,
-        #ffffff 40%,
-        #00f7ff 50%,
-        #ffffff 60%,
-        #aaa 80%,
-        #666 100%
-    );
+  background:linear-gradient(
+    90deg,
+    #666 0%,
+    #aaa 20%,
+    #fff 40%,
+    #00f7ff 50%,
+    #fff 60%,
+    #aaa 80%,
+    #666 100%
+  );
 
-    background-size:250% 100%;
+  background-size:250% 100%;
 
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
 
-    background-clip:text;
-
-    animation:
-        thinkingFlash 1.3s linear infinite;
+  animation:
+    thinkingFlash 1.3s linear infinite;
 }
 
 @keyframes thinkingFlash{
 
-    0%{
-        background-position:250% 0;
-    }
+  0%{
+    background-position:250% 0;
+  }
 
-    100%{
-        background-position:-250% 0;
-    }
+  100%{
+    background-position:-250% 0;
+  }
 }
 
-/* =========================
-   IMAGE PREVIEW
-========================= */
+/* IMAGE */
 
 .preview{
-    display:block;
-
-    max-width:240px;
-    max-height:250px;
-
-    object-fit:cover;
-
-    margin-bottom:9px;
-
-    border-radius:14px;
-
-    border:1px solid #00f7ff;
-
-    box-shadow:
-        0 0 18px rgba(0,255,255,.3);
+  display:block;
+  max-width:240px;
+  max-height:250px;
+  object-fit:cover;
+  margin-bottom:9px;
+  border-radius:14px;
+  border:1px solid #00f7ff;
+  box-shadow:
+    0 0 18px rgba(0,255,255,.3);
 }
 
-/* =========================
-   INPUT AREA
-========================= */
+/* INPUT */
 
 .input-area{
-    position:fixed;
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:5;
+  padding:15px;
 
-    left:0;
-    right:0;
-    bottom:0;
-
-    z-index:5;
-
-    padding:15px;
-
-    background:
-        linear-gradient(
-            transparent,
-            rgba(5,5,15,.97) 28%
-        );
+  background:
+    linear-gradient(
+      transparent,
+      rgba(5,5,15,.97) 28%
+    );
 }
 
 .input-box{
-    max-width:850px;
+  max-width:850px;
+  margin:auto;
+  padding:10px;
+  border-radius:20px;
 
-    margin:auto;
+  background:rgba(12,12,28,.9);
 
-    padding:10px;
+  border:1px solid rgba(0,255,255,.25);
 
-    border-radius:20px;
+  backdrop-filter:blur(20px);
 
-    background:rgba(12,12,28,.9);
-
-    border:1px solid rgba(0,255,255,.25);
-
-    backdrop-filter:blur(20px);
-
-    box-shadow:
-        0 0 20px rgba(0,255,255,.08),
-        0 0 50px rgba(255,0,200,.04);
+  box-shadow:
+    0 0 20px rgba(0,255,255,.08),
+    0 0 50px rgba(255,0,200,.04);
 }
 
-/* =========================
-   UPLOADED IMAGE
-========================= */
-
 .preview-area{
-    display:none;
-
-    position:relative;
-
-    padding:5px;
+  display:none;
+  position:relative;
+  padding:5px;
 }
 
 .preview-area img{
-    width:80px;
-    height:80px;
-
-    object-fit:cover;
-
-    border-radius:10px;
-
-    border:1px solid #00f7ff;
+  width:80px;
+  height:80px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid #00f7ff;
 }
 
 .remove-image{
-    position:absolute;
+  position:absolute;
+  left:76px;
+  top:0;
 
-    left:76px;
-    top:0;
+  width:20px;
+  height:20px;
 
-    width:20px;
-    height:20px;
+  border:0;
+  border-radius:50%;
 
-    border:0;
-    border-radius:50%;
+  background:#ff1744;
+  color:#fff;
 
-    background:#ff1744;
-
-    color:white;
-
-    cursor:pointer;
+  cursor:pointer;
 }
 
-/* =========================
-   TEXTAREA
-========================= */
-
 textarea{
-    width:100%;
+  width:100%;
+  min-height:48px;
+  max-height:150px;
 
-    min-height:48px;
-    max-height:150px;
+  resize:none;
 
-    resize:none;
+  border:0;
+  outline:0;
 
-    border:0;
-    outline:0;
+  background:transparent;
+  color:#fff;
 
-    background:transparent;
+  padding:10px;
 
-    color:white;
-
-    padding:10px;
-
-    font-size:15px;
-
-    font-family:Arial,Helvetica,sans-serif;
+  font-size:15px;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 textarea::placeholder{
-    color:#777;
+  color:#777;
 }
 
-/* =========================
-   CONTROLS
-========================= */
-
 .controls{
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
 .tool{
-    width:40px;
-    height:40px;
+  width:40px;
+  height:40px;
 
-    border-radius:12px;
+  border-radius:12px;
 
-    background:#111126;
+  background:#111126;
+  color:#00f7ff;
 
-    color:#00f7ff;
+  border:1px solid rgba(0,255,255,.2);
 
-    border:1px solid rgba(0,255,255,.2);
+  cursor:pointer;
 
-    cursor:pointer;
-
-    transition:.2s;
+  transition:.2s;
 }
 
 .tool:hover{
-    transform:translateY(-1px);
+  transform:translateY(-1px);
 
-    box-shadow:
-        0 0 12px #00f7ff,
-        0 0 25px rgba(0,255,255,.3);
+  box-shadow:
+    0 0 12px #00f7ff,
+    0 0 25px rgba(0,255,255,.3);
 }
 
 .send{
-    margin-left:auto;
+  margin-left:auto;
 
-    width:45px;
-    height:40px;
+  width:45px;
+  height:40px;
 
-    border:0;
-    border-radius:12px;
+  border:0;
+  border-radius:12px;
 
-    background:#00f7ff;
+  background:#00f7ff;
+  color:#001014;
 
-    color:#001014;
+  font-size:18px;
+  font-weight:bold;
 
-    font-size:18px;
-    font-weight:bold;
+  cursor:pointer;
 
-    cursor:pointer;
+  box-shadow:
+    0 0 15px rgba(0,255,255,.6);
 
-    box-shadow:
-        0 0 15px rgba(0,255,255,.6);
-
-    transition:.2s;
+  transition:.2s;
 }
 
 .send:hover{
-    transform:scale(1.03);
+  transform:scale(1.03);
 
-    box-shadow:
-        0 0 10px #00f7ff,
-        0 0 30px #00f7ff;
+  box-shadow:
+    0 0 10px #00f7ff,
+    0 0 30px #00f7ff;
 }
 
 .send:disabled{
-    opacity:.5;
-    cursor:not-allowed;
+  opacity:.5;
+  cursor:not-allowed;
 }
-
-/* =========================
-   IMAGE GENERATOR MODAL
-========================= */
-
-.image-mode{
-    display:none;
-
-    position:fixed;
-
-    inset:0;
-
-    z-index:20;
-
-    align-items:center;
-    justify-content:center;
-
-    background:rgba(0,0,0,.72);
-
-    backdrop-filter:blur(12px);
-}
-
-.image-panel{
-    width:min(90%,500px);
-
-    padding:22px;
-
-    border-radius:20px;
-
-    background:#0c0c1c;
-
-    border:1px solid #ff00e6;
-
-    box-shadow:
-        0 0 25px rgba(255,0,230,.4);
-}
-
-.image-panel h2{
-    color:#ff00e6;
-
-    margin-bottom:15px;
-
-    text-shadow:
-        0 0 10px #ff00e6;
-}
-
-.image-panel textarea{
-    width:100%;
-
-    min-height:110px;
-
-    margin-bottom:12px;
-
-    padding:12px;
-
-    border-radius:12px;
-
-    border:1px solid rgba(255,0,230,.3);
-
-    background:#080812;
-}
-
-.generate{
-    width:100%;
-
-    padding:12px;
-
-    border:0;
-
-    border-radius:12px;
-
-    background:#ff00e6;
-
-    color:white;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 0 20px rgba(255,0,230,.5);
-}
-
-.close{
-    float:right;
-
-    border:0;
-
-    background:none;
-
-    color:white;
-
-    font-size:22px;
-
-    cursor:pointer;
-}
-
-.generated-result{
-    margin-top:15px;
-
-    padding:14px;
-
-    border-radius:12px;
-
-    background:rgba(255,0,230,.05);
-
-    border:1px solid rgba(255,0,230,.2);
-
-    color:#aaa;
-
-    line-height:1.5;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:600px){
-
-    .header{
-        height:58px;
-    }
-
-    .logo{
-        font-size:18px;
-    }
-
-    .chat{
-        padding:
-            18px
-            10px
-            150px;
-    }
-
-    .message{
-        gap:8px;
-    }
-
-    .avatar{
-        width:30px;
-        height:30px;
-        min-width:30px;
-
-        font-size:9px;
-    }
-
-    .content{
-        font-size:14px;
-    }
-
-    .input-area{
-        padding:10px;
-    }
-
-    .input-box{
-        border-radius:17px;
-    }
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-    <!-- HEADER -->
-
-    <header class="header">
-
-        <div class="logo">
-            ⚡ NEON AI
-        </div>
-
-        <div class="status">
-            ● ONLINE
-        </div>
-
-    </header>
-
-
-    <!-- CHAT -->
-
-    <main
-        class="chat"
-        id="chat"
-    >
-
-        <div class="message ai">
-
-            <div class="avatar">
-                AI
-            </div>
-
-            <div class="content">
-
-                Hello 👋<br>
-
-                I'm your Neon AI assistant.
-                Ask me anything.
-
-            </div>
-
-        </div>
-
-    </main>
-
-
-    <!-- INPUT -->
-
-    <div class="input-area">
-
-        <div class="input-box">
-
-
-            <!-- IMAGE PREVIEW -->
-
-            <div
-                class="preview-area"
-                id="previewArea"
-            >
-
-                <img
-                    id="previewImage"
-                    alt="Uploaded image"
-                >
-
-                <button
-                    class="remove-image"
-                    onclick="removeImage()"
-                >
-                    ×
-                </button>
-
-            </div>
-
-
-            <!-- TEXT -->
-
-            <textarea
-                id="prompt"
-                placeholder="Message Neon AI..."
-                onkeydown="handleKey(event)"
-            ></textarea>
-
-
-            <!-- BUTTONS -->
-
-            <div class="controls">
-
-
-                <!-- UPLOAD -->
-
-                <button
-                    class="tool"
-                    onclick="document.getElementById('imageInput').click()"
-                    title="Upload image"
-                >
-                    📎
-                </button>
-
-
-                <input
-                    type="file"
-                    id="imageInput"
-                    accept="image/*"
-                    hidden
-                    onchange="previewFile(event)"
-                >
-
-
-                <!-- IMAGE CREATE -->
-
-                <button
-                    class="tool"
-                    onclick="openImageMode()"
-                    title="Create image"
-                >
-                    🎨
-                </button>
-
-
-                <!-- SEND -->
-
-                <button
-                    class="send"
-                    id="sendButton"
-                    onclick="sendMessage()"
-                >
-                    ➤
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- IMAGE MODAL -->
-
-<div
-    class="image-mode"
-    id="imageMode"
->
-
-    <div class="image-panel">
-
-        <button
-            class="close"
-            onclick="closeImageMode()"
-        >
-            ×
-        </button>
-
-        <h2>
-            🎨 Create Image
-        </h2>
-
-        <textarea
-            id="imagePrompt"
-            placeholder="Describe the image you want..."
-        ></textarea>
-
-        <button
-            class="generate"
-            onclick="generateImage()"
-        >
-            Generate Image
-        </button>
-
-        <div
-            id="generatedImage"
-        ></div>
-
-    </div>
-
-</div>
-
-
-<script>
-
-/* ==========================================
-   API CONFIG
-========================================== */
-
-const API_URL =
-    "https://anshapi.vercel.app/api/deepseek";
-
-const API_KEY =
-    "ansh";
-
-const MODEL =
-    "deepseek-v4-flash";
-
-
-/* ==========================================
-   STATE
-========================================== */
-
-let conversation = [];
-
-let selectedImage = null;
-
-let isSending = false;
-
-
-/* ==========================================
-   AUTO RESIZE TEXTAREA
-========================================== */
-
-const promptInput =
-    document.getElementById("prompt");
-
-promptInput.addEventListener(
-    "input",
-    function(){
-
-        this.style.height = "auto";
-
-        this.style.height =
-            Math.min(
-                this.scrollHeight,
-                150
-            ) + "px";
-    }
-);
-
-
-/* ==========================================
-   ENTER KEY
-========================================== */
-
-function handleKey(event){
-
-    if(
-        event.key === "Enter" &&
-        !event.shiftKey
-    ){
-
-        event.preventDefault();
-
-        sendMessage();
-    }
-}
-
-
-/* ==========================================
-   IMAGE PREVIEW
-========================================== */
-
-function previewFile(event){
-
-    const file =
-        event.target.files[0];
-
-    if(!file)
-        return;
-
-    selectedImage = file;
-
-    const reader =
-        new FileReader();
-
-    reader.onload =
-        function(e){
-
-            document.getElementById(
-                "previewImage"
-            ).src = e.target.result;
-
-            document.getElementById(
-                "previewArea"
-            ).style.display = "block";
-        };
-
-    reader.readAsDataURL(file);
-}
-
-
-/* ==========================================
-   REMOVE IMAGE
-========================================== */
-
-function removeImage(){
-
-    selectedImage = null;
-
-    document.getElementById(
-        "imageInput"
-    ).value = "";
-
-    document.getElementById(
-        "previewArea"
-    ).style.display = "none";
-}
-
-
-/* ==========================================
-   FILE → DATA URL
-========================================== */
-
-function fileToDataURL(file){
-
-    return new Promise(
-        function(resolve,reject){
-
-            const reader =
-                new FileReader();
-
-            reader.onload =
-                function(){
-
-                    resolve(
-                        reader.result
-                    );
-                };
-
-            reader.onerror =
-                reject;
-
-            reader.readAsDataURL(file);
-
-        }
-    );
-}
-
-
-/* ==========================================
-   ADD MESSAGE
-========================================== */
-
-function addMessage(
-    text,
-    type,
-    image = null
-){
-
-    const chat =
-        document.getElementById("chat");
-
-    const message =
-        document.createElement("div");
-
-    message.className =
-        "message " + type;
-
-    const avatar =
-        type === "ai"
-            ? "AI"
-            : "YOU";
-
-    let html = "";
-
-    if(image){
-
-        html += `
-            <img
-                class="preview"
-                src="${image}"
-                alt="Uploaded image"
-            >
-        `;
-    }
-
-    if(text){
-
-        html += formatText(text);
-    }
-
-    message.innerHTML = `
-        <div class="avatar">
-            ${avatar}
-        </div>
-
-        <div class="content">
-            ${html}
-        </div>
-    `;
-
-    chat.appendChild(message);
-
-    scrollChat();
-
-    return message;
-}
-
-
-/* ==========================================
-   SCROLL
-========================================== */
-
-function scrollChat(){
-
-    const chat =
-        document.getElementById("chat");
-
-    chat.scrollTop =
-        chat.scrollHeight;
-}
-
-
-/* ==========================================
-   FORMAT TEXT
-========================================== */
-
-function formatText(text){
-
-    if(!text)
-        return "";
-
-    let safe =
-        escapeHTML(String(text));
-
-
-    /*
-       CODE BLOCK
-    */
-
-    safe =
-        safe.replace(
-            /```([\s\S]*?)```/g,
-            "<pre><code>$1</code></pre>"
-        );
-
-
-    /*
-       BOLD
-    */
-
-    safe =
-        safe.replace(
-            /\*\*(.*?)\*\*/g,
-            "<strong>$1</strong>"
-        );
-
-
-    /*
-       INLINE CODE
-    */
-
-    safe =
-        safe.replace(
-            /`([^`]+)`/g,
-            "<code>$1</code>"
-        );
-
-
-    /*
-       NEW LINE
-    */
-
-    safe =
-        safe.replace(
-            /\n/g,
-            "<br>"
-        );
-
-
-    return safe;
-}
-
-
-/* ==========================================
-   ESCAPE HTML
-========================================== */
-
-function escapeHTML(text){
-
-    return text
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;");
-}
-
-
-/* ==========================================
-   TYPING EFFECT
-========================================== */
-
-async function typeText(
-    element,
-    text
-){
-
-    element.innerHTML = "";
-
-    let output = "";
-
-    for(
-        let i = 0;
-        i < text.length;
-        i++
-    ){
-
-        output += text[i];
-
-        element.innerHTML =
-            formatText(output);
-
-        scrollChat();
-
-        /*
-           Typing speed
-        */
-
-        await new Promise(
-            function(resolve){
-
-                setTimeout(
-                    resolve,
-                    8
-                );
-
-            }
-        );
-    }
-}
-
-
-/* ==========================================
-   BUILD CONVERSATION
-========================================== */
-
-function buildPrompt(
-    latestPrompt
-){
-
-    let history = "";
-
-    /*
-       Limit context size
-    */
-
-    const recent =
-        conversation.slice(-12);
-
-    recent.forEach(
-        function(message){
-
-            history +=
-                message.role +
-                ": " +
-                message.content +
-                "\n";
-        }
-    );
-
-
-    return `
-You are a helpful AI assistant.
-
-Previous conversation:
-
-${history}
-
-Latest user message:
-
-${latestPrompt}
-
-Answer the user naturally and clearly.
-Do not return unnecessary metadata.
-`;
-}
-
-
-/* ==========================================
-   EXTRACT ONLY RESPONSE
-========================================== */
-
-function extractResponse(data){
-
-    /*
-       Direct string
-    */
-
-    if(typeof data === "string"){
-
-        return data;
-    }
-
-
-    /*
-       Common API formats
-    */
-
-    if(
-        data.response !== undefined &&
-        typeof data.response !== "object"
-    ){
-
-        return String(data.response);
-    }
-
-
-    if(
-        data.answer !== undefined &&
-        typeof data.answer !== "object"
-    ){
-
-        return String(data.answer);
-    }
-
-
-    if(
-        data.result !== undefined &&
-        typeof data.result !== "object"
-    ){
-
-        return String(data.result);
-    }
-
-
-    if(
-        data.content !== undefined &&
-        typeof data.content !== "object"
-    ){
-
-        return String(data.content);
-    }
-
-
-    if(
-        data.text !== undefined &&
-        typeof data.text !== "object"
-    ){
-
-        return String(data.text);
-    }
-
-
-    if(
-        data.message !== undefined &&
-        typeof data.message !== "object"
-    ){
-
-        return String(data.message);
-    }
-
-
-    /*
-       OpenAI-style response
-    */
-
-    if(
-        data.choices &&
-        data.choices[0] &&
-        data.choices[0].message &&
-        data.choices[0].message.content
-    ){
-
-        return String(
-            data.choices[0].message.content
-        );
-    }
-
-
-    /*
-       Nested data.response
-    */
-
-    if(
-        data.data &&
-        data.data.response !== undefined
-    ){
-
-        return String(
-            data.data.response
-        );
-    }
-
-
-    /*
-       Nested data.content
-    */
-
-    if(
-        data.data &&
-        data.data.content !== undefined
-    ){
-
-        return String(
-            data.data.content
-        );
-    }
-
-
-    /*
-       Never print raw JSON.
-    */
-
-    return "No response received from API.";
-}
-
-
-/* ==========================================
-   SEND MESSAGE
-========================================== */
-
-async function sendMessage(){
-
-    if(isSending)
-        return;
-
-
-    const input =
-        document.getElementById(
-            "prompt"
-        );
-
-    const sendButton =
-        document.getElementById(
-            "sendButton"
-        );
-
-
-    const prompt =
-        input.value.trim();
-
-
-    if(
-        !prompt &&
-        !selectedImage
-    ){
-
-        return;
-    }
-
-
-    isSending 
