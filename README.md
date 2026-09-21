@@ -11,4 +11,4 @@
 
 it's personal site 
 
- <a href="https://itsyourarts.github.io">Don't visit ☠️</a>
+ <a href="https://itsyourarts.github.io/index2.html">Don't visit ☠️</a>
