@@ -20,7 +20,7 @@
                   radial-gradient(circle at 80% 80%, #4a123e, transparent 36%), #050711;
     }
     main {
-      width: min(760px, 100%);
+      width: min(900px, 100%);
       padding: clamp(28px, 6vw, 60px);
       text-align: center;
       border: 1px solid rgba(0, 240, 255, .45);
@@ -30,9 +30,63 @@
     }
     h1 { margin: 0 0 12px; font-size: clamp(2rem, 7vw, 4.5rem); color: #00f0ff; text-shadow: 0 0 18px #00f0ff88; }
     p { color: #a9c9d0; line-height: 1.6; }
-    .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-top: 30px; }
-    a { padding: 15px 18px; border: 1px solid #00f0ff88; border-radius: 12px; color: #eafcff; text-decoration: none; background: #00f0ff12; transition: .2s ease; }
-    a:hover { transform: translateY(-3px); border-color: #00f0ff; box-shadow: 0 0 20px #00f0ff55; }
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 18px;
+      margin-top: 30px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      min-height: 170px;
+      padding: 20px 16px;
+      border: 1px solid #00f0ff88;
+      border-radius: 16px;
+      background: rgba(0, 240, 255, 0.08);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      text-align: left;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #00f0ff;
+      box-shadow: 0 0 22px rgba(0, 240, 255, 0.2);
+    }
+    .icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f0feff;
+    }
+    .meta {
+      font-size: 0.8rem;
+      color: #9ac7d1;
+      line-height: 1.5;
+    }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+    }
+    .view-btn {
+      appearance: none;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: linear-gradient(135deg, #00f0ff, #7d7bff);
+      color: #031018;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0, 240, 255, 0.2);
+    }
     small { display: block; margin-top: 30px; color: #6f8d96; }
   </style>
 </head>
@@ -40,13 +94,56 @@
   <main>
     <h1>ItsYourArts</h1>
     <p>Welcome to my personal project hub.</p>
+
     <div class="links">
-      <a href="./Editor/">⚡ PDF Editor</a>
-      <a href="./Ai/">🤖 Neon AI</a>
-      <a href="./Typing/">⌨️ Typing</a>
-      <a href="./Codes/">💻 Coding Practice</a>
+      <div class="card" onclick="openProject('./Editor/')" aria-label="Open PDF Editor full view">
+        <div class="icon">⚡</div>
+        <div class="title">PDF Editor</div>
+        <div class="meta">AI powered PDF toolkit with image & document utilities.</div>
+        <div class="button-row">
+          <span>Project</span>
+          <button class="view-btn" type="button" onclick="event.stopPropagation(); openProject('./Editor/')">Full View</button>
+        </div>
+      </div>
+
+      <div class="card" onclick="openProject('./Ai/')" aria-label="Open Neon AI full view">
+        <div class="icon">🤖</div>
+        <div class="title">Neon AI</div>
+        <div class="meta">Smart assistant with chat and image-generation features.</div>
+        <div class="button-row">
+          <span>Project</span>
+          <button class="view-btn" type="button" onclick="event.stopPropagation(); openProject('./Ai/')">Full View</button>
+        </div>
+      </div>
+
+      <div class="card" onclick="openProject('./Typing/')" aria-label="Open Typing full view">
+        <div class="icon">⌨️</div>
+        <div class="title">Typing</div>
+        <div class="meta">Typing speed and keyboard practice interface.</div>
+        <div class="button-row">
+          <span>Project</span>
+          <button class="view-btn" type="button" onclick="event.stopPropagation(); openProject('./Typing/')">Full View</button>
+        </div>
+      </div>
+
+      <div class="card" onclick="openProject('./Codes/')" aria-label="Open Coding Practice full view">
+        <div class="icon">💻</div>
+        <div class="title">Coding Practice</div>
+        <div class="meta">C# interview workbook and quick coding revision tool.</div>
+        <div class="button-row">
+          <span>Project</span>
+          <button class="view-btn" type="button" onclick="event.stopPropagation(); openProject('./Codes/')">Full View</button>
+        </div>
+      </div>
     </div>
+
     <small>Personal projects by ItsYourArts</small>
   </main>
+
+  <script>
+    function openProject(path) {
+      window.location.href = path;
+    }
+  </script>
 </body>
 </html>
