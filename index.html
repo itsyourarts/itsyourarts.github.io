@@ -50,25 +50,15 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
       text-align: left;
     }
-    .card:hover {
+    .card:hover, .card:focus-visible {
       transform: translateY(-4px);
       border-color: #00f0ff;
       box-shadow: 0 0 22px rgba(0, 240, 255, 0.2);
+      outline: none;
     }
-    .icon {
-      font-size: 2rem;
-      line-height: 1;
-    }
-    .title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #f0feff;
-    }
-    .meta {
-      font-size: 0.8rem;
-      color: #9ac7d1;
-      line-height: 1.5;
-    }
+    .icon { font-size: 2rem; line-height: 1; }
+    .title { font-size: 1.15rem; font-weight: 700; color: #f0feff; }
+    .meta { font-size: 0.8rem; color: #9ac7d1; line-height: 1.5; }
     small { display: block; margin-top: 30px; color: #6f8d96; }
   </style>
 </head>
@@ -78,38 +68,32 @@
     <p>Welcome to my personal project hub.</p>
 
     <div class="links">
-      <div class="card" onclick="openProject('./Editor/')" aria-label="Open PDF Editor full view">
+      <a class="card" href="./Editor/" aria-label="Open PDF Editor">
         <div class="icon">⚡</div>
         <div class="title">PDF Editor</div>
         <div class="meta">AI powered PDF toolkit with image & document utilities.</div>
-      </div>
+      </a>
 
-      <div class="card" onclick="openProject('./Ai/')" aria-label="Open Neon AI full view">
+      <a class="card" href="./Ai/" aria-label="Open Neon AI">
         <div class="icon">🤖</div>
         <div class="title">Neon AI</div>
         <div class="meta">Smart assistant with chat and image-generation features.</div>
-      </div>
+      </a>
 
-      <div class="card" onclick="openProject('./Typing/')" aria-label="Open Typing full view">
+      <a class="card" href="./Typing/" aria-label="Open Typing">
         <div class="icon">⌨️</div>
         <div class="title">Typing</div>
         <div class="meta">Typing speed and keyboard practice interface.</div>
-      </div>
+      </a>
 
-      <div class="card" onclick="openProject('./Codes/')" aria-label="Open Coding Practice full view">
+      <a class="card" href="./Codes/" aria-label="Open Coding Practice">
         <div class="icon">💻</div>
         <div class="title">Coding Practice</div>
         <div class="meta">C# interview workbook and quick coding revision tool.</div>
-      </div>
+      </a>
     </div>
 
     <small>Personal projects by ItsYourArts</small>
   </main>
-
-  <script>
-    function openProject(path) {
-      window.location.href = path;
-    }
-  </script>
 </body>
 </html>
