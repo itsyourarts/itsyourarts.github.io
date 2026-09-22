@@ -93,12 +93,7 @@ window.GX_Hero = (function () {
     timer = null;
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    // Restore the original page without the later Full View control.
-    const fullViewButton = document.getElementById('fullViewBtn');
-    if (fullViewButton) fullViewButton.remove();
-    start();
-  });
+  document.addEventListener('DOMContentLoaded', start);
 
   return {
     LINES: LINES,
