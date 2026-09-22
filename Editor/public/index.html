@@ -15,6 +15,18 @@
   <script>
     if (window.pdfjsLib) window.pdfjsLib.GlobalWorkerOptions.workerSrc = './libs/pdf.worker.min.js';
   </script>
+  <style>
+    #fullscreenBtn {
+      border-color: #ff1744;
+      color: #ff1744;
+      box-shadow: 0 0 8px #ff1744, inset 0 0 8px rgba(255, 23, 68, .18);
+    }
+    #fullscreenBtn:hover {
+      color: #fff;
+      background: rgba(255, 23, 68, .16);
+      box-shadow: 0 0 12px #ff1744, 0 0 28px rgba(255, 23, 68, .55), inset 0 0 10px rgba(255, 23, 68, .25);
+    }
+  </style>
 </head>
 <body>
   <div class="cyber-lines"></div>
@@ -36,7 +48,6 @@
     </ul>
     <div class="nav-actions">
       <button class="btn-neon" id="fullscreenBtn" type="button" onclick="toggleFullscreen()">⛶ Full View</button>
-      <button class="btn-neon" onclick="toggleThemePulse()">☼ Neon Mode</button>
       <button class="btn-neon btn-neon-glow" onclick="openTool('merge')">Get Started</button>
     </div>
   </header>
@@ -97,15 +108,11 @@
       updateFullscreenButton();
     }
     async function toggleFullscreen() {
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      } else {
-        await enterFullscreen();
-      }
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await enterFullscreen();
       updateFullscreenButton();
     }
     document.addEventListener('fullscreenchange', updateFullscreenButton);
-    // Browsers block fullscreen during page load, so enter on the first user click anywhere.
     document.addEventListener('click', function autoEnterFullscreen(event) {
       if (event.target.closest('#fullscreenBtn')) return;
       enterFullscreen();
