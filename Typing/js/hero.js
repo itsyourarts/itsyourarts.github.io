@@ -1,101 +1,111 @@
 /* ============================================================
    GODXSHADOW — hero auto-typing tagline
    js/hero.js
+
+   Types each line, holds it, erases it, then moves to the next.
+   After the last line it loops back to the first, forever.
+
+   The loop is a small state machine driven by setTimeout, and
+   GX_Hero.step() advances it one event at a time so the whole
+   cycle can be tested deterministically.
    ============================================================ */
 
 window.GX_Hero = (function () {
+
   const LINES = [
     'Real-time WPM, raw speed, accuracy and consistency — plotted live as you type.',
     'No account, no upload.',
     'Everything runs in your browser.'
   ];
-  const SPEED = { type: 34, erase: 18, hold: 1500, gap: 380 };
-  let out = null, li = 0, ci = 0, phase = 'type', timer = null, running = false;
 
-  function render() { if (out) out.textContent = LINES[li].slice(0, ci); }
+  const SPEED = { type: 34, erase: 18, hold: 1500, gap: 380 };
+
+  let out = null;
+  let li = 0;          // which line
+  let ci = 0;          // characters currently shown
+  let phase = 'type';  // type | hold | erase | gap
+  let timer = null;
+  let running = false;
+
+  function render() {
+    if (out) out.textContent = LINES[li].slice(0, ci);
+  }
+
+  /** One transition of the state machine. Returns the new phase. */
   function step() {
     const line = LINES[li];
+
     if (phase === 'type') {
       if (ci < line.length) { ci++; render(); schedule(SPEED.type); return phase; }
-      phase = 'hold'; schedule(SPEED.hold); return phase;
+      phase = 'hold';
+      schedule(SPEED.hold);
+      return phase;
     }
-    if (phase === 'hold') { phase = 'erase'; schedule(SPEED.erase); return phase; }
+
+    if (phase === 'hold') {
+      phase = 'erase';
+      schedule(SPEED.erase);
+      return phase;
+    }
+
     if (phase === 'erase') {
       if (ci > 0) { ci--; render(); schedule(SPEED.erase); return phase; }
-      phase = 'gap'; schedule(SPEED.gap); return phase;
+      phase = 'gap';
+      schedule(SPEED.gap);
+      return phase;
     }
-    li = (li + 1) % LINES.length; ci = 0; phase = 'type'; render(); schedule(SPEED.type); return phase;
+
+    // gap -> next line, wrapping back to the first after the last
+    li = (li + 1) % LINES.length;
+    ci = 0;
+    phase = 'type';
+    render();
+    schedule(SPEED.type);
+    return phase;
   }
-  function schedule(ms) { if (!running) return; clearTimeout(timer); timer = setTimeout(step, ms); }
+
+  function schedule(ms) {
+    if (!running) return;
+    clearTimeout(timer);
+    timer = setTimeout(step, ms);
+  }
+
   function start() {
     out = document.getElementById('heroText');
     if (!out) return;
-    const mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-    if (mq && mq.matches) { out.textContent = LINES[0]; return; }
-    li = 0; ci = 0; phase = 'type'; running = true; render(); schedule(SPEED.type);
-  }
-  function stop() { running = false; clearTimeout(timer); timer = null; }
 
-  function isSiteFullscreen() {
-    return !!(document.fullscreenElement || document.webkitFullscreenElement);
-  }
-  function updateFullscreenButton() {
-    const button = document.getElementById('typingFullscreenBtn');
-    if (!button) return;
-    button.textContent = isSiteFullscreen() ? 'Exit Full View' : 'Full View';
-    button.setAttribute('aria-label', isSiteFullscreen() ? 'Exit full view' : 'Enter full view');
-  }
-  function toggleSiteFullscreen() {
-    if (isSiteFullscreen()) {
-      const exit = document.exitFullscreen || document.webkitExitFullscreen;
-      if (exit) exit.call(document);
+    // respect the OS "reduce motion" setting: show one line, no animation
+    const mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    if (mq && mq.matches) {
+      out.textContent = LINES[0];
       return;
     }
-    const page = document.documentElement;
-    const request = page.requestFullscreen || page.webkitRequestFullscreen;
-    if (request) {
-      const result = request.call(page);
-      if (result && result.catch) result.catch(function () {});
-    }
-  }
-  function setupFullscreen() {
-    if (document.getElementById('typingFullscreenBtn')) return;
-    const button = document.createElement('button');
-    button.id = 'typingFullscreenBtn';
-    button.type = 'button';
-    button.textContent = 'Full View';
-    button.setAttribute('aria-label', 'Enter full view');
-    button.style.cssText = [
-      'position:fixed', 'top:84px', 'right:18px', 'z-index:9999',
-      'padding:10px 18px', 'border-radius:999px',
-      'border:1px solid rgba(255,90,130,.9)',
-      'background:linear-gradient(135deg,rgba(255,28,82,.96),rgba(255,92,120,.92))',
-      'color:#fff', 'font-weight:800', 'font-size:11px',
-      'letter-spacing:.14em', 'text-transform:uppercase', 'cursor:pointer',
-      'box-shadow:0 0 14px rgba(255,70,110,.9),0 0 28px rgba(255,70,110,.45)',
-      'transition:transform .18s ease,box-shadow .18s ease', 'outline:none'
-    ].join(';');
-    button.addEventListener('mouseenter', function () {
-      button.style.transform = 'translateY(-1px)';
-      button.style.boxShadow = '0 0 20px rgba(255,90,130,1),0 0 34px rgba(255,90,130,.6)';
-    });
-    button.addEventListener('mouseleave', function () {
-      button.style.transform = 'translateY(0)';
-      button.style.boxShadow = '0 0 14px rgba(255,70,110,.9),0 0 28px rgba(255,70,110,.45)';
-    });
-    button.addEventListener('click', function (event) {
-      event.stopPropagation();
-      toggleSiteFullscreen();
-    });
-    document.body.appendChild(button);
-    document.addEventListener('fullscreenchange', updateFullscreenButton);
-    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
-    updateFullscreenButton();
+
+    li = 0; ci = 0; phase = 'type';
+    running = true;
+    render();
+    schedule(SPEED.type);
   }
 
-  document.addEventListener('DOMContentLoaded', function () { start(); setupFullscreen(); });
+  function stop() {
+    running = false;
+    clearTimeout(timer);
+    timer = null;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Restore the original page without the later Full View control.
+    const fullViewButton = document.getElementById('fullViewBtn');
+    if (fullViewButton) fullViewButton.remove();
+    start();
+  });
+
   return {
-    LINES: LINES, step: step, start: start, stop: stop,
+    LINES: LINES,
+    step: step,
+    start: start,
+    stop: stop,
+    /** where the machine is right now (used by the tests) */
     state: function () { return { line: li, chars: ci, phase: phase, text: LINES[li].slice(0, ci) }; }
   };
 })();
