@@ -93,73 +93,73 @@ window.GX_Hero = (function () {
     timer = null;
   }
 
-  /* ---------- fullscreen controls ---------- */
-  function setupFullscreen() {
-    // The control is only needed on the typing test page.
-    if (!document.getElementById('testView') || document.getElementById('fullscreenBtn')) return;
+  function getTypingArea() {
+    return document.getElementById('typingShell') || document.getElementById('testView');
+  }
 
-    const style = document.createElement('style');
-    style.textContent = [
-      '#fullscreenBtn{position:fixed;right:18px;bottom:18px;z-index:80}',
-      '@media(max-width:760px){#fullscreenBtn{right:12px;bottom:12px;padding:10px 14px;font-size:11px}}',
-      ':fullscreen body{background:#05030c}',
-      ':-webkit-full-screen body{background:#05030c}'
-    ].join('');
-    document.head.appendChild(style);
+  function isTypingFullscreen() {
+    const target = getTypingArea();
+    return !!target && (document.fullscreenElement === target || document.webkitFullscreenElement === target);
+  }
+
+  function updateTypingFullscreenButton() {
+    const button = document.getElementById('typingFullscreenBtn');
+    if (!button) return;
+    const active = isTypingFullscreen();
+    button.textContent = active ? '⛶ exit full view' : '⛶ full view';
+    button.setAttribute('aria-label', active ? 'Exit full view' : 'Enter full view');
+  }
+
+  function toggleTypingFullscreen() {
+    const target = getTypingArea();
+    if (!target) return;
+
+    if (isTypingFullscreen()) {
+      const exitMethod = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exitMethod) exitMethod.call(document);
+      return;
+    }
+
+    const requestMethod = target.requestFullscreen || target.webkitRequestFullscreen;
+    if (requestMethod) {
+      requestMethod.call(target);
+    }
+  }
+
+  function setupTypingFullscreen() {
+    if (document.getElementById('typingFullscreenBtn')) return;
 
     const button = document.createElement('button');
-    button.id = 'fullscreenBtn';
+    button.id = 'typingFullscreenBtn';
     button.type = 'button';
     button.className = 'btn violet';
     button.setAttribute('aria-label', 'Enter full view');
+    button.textContent = '⛶ full view';
     document.body.appendChild(button);
-
-    function isFullscreen() {
-      return !!(document.fullscreenElement || document.webkitFullscreenElement);
-    }
-
-    function updateLabel() {
-      const active = isFullscreen();
-      button.textContent = active ? '⛶ exit full view' : '⛶ full view';
-      button.setAttribute('aria-label', active ? 'Exit full view' : 'Enter full view');
-    }
-
-    function enter() {
-      const page = document.documentElement;
-      const request = page.requestFullscreen || page.webkitRequestFullscreen;
-      if (!request) return;
-      const result = request.call(page);
-      if (result && result.catch) result.catch(function () {});
-    }
-
-    function exit() {
-      const exitMethod = document.exitFullscreen || document.webkitExitFullscreen;
-      if (exitMethod) {
-        const result = exitMethod.call(document);
-        if (result && result.catch) result.catch(function () {});
-      }
-    }
 
     button.addEventListener('click', function (event) {
       event.stopPropagation();
-      if (isFullscreen()) exit(); else enter();
+      toggleTypingFullscreen();
     });
 
-    document.addEventListener('fullscreenchange', updateLabel);
-    document.addEventListener('webkitfullscreenchange', updateLabel);
+    document.addEventListener('fullscreenchange', updateTypingFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateTypingFullscreenButton);
 
-    // Fullscreen can only be requested from a user gesture. The first click
-    // anywhere on the page therefore starts full view automatically.
     document.addEventListener('click', function (event) {
-      if (!isFullscreen() && event.target !== button && !event.target.closest('#fullscreenBtn')) enter();
+      const buttonClicked = event.target && event.target.closest && event.target.closest('#typingFullscreenBtn');
+      if (buttonClicked) return;
+      if (isTypingFullscreen()) return;
+      if (event.target && event.target.closest && event.target.closest('#typingShell')) {
+        toggleTypingFullscreen();
+      }
     });
 
-    updateLabel();
+    updateTypingFullscreenButton();
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     start();
-    setupFullscreen();
+    setupTypingFullscreen();
   });
 
   return {
