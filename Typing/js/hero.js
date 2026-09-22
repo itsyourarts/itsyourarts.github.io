@@ -93,7 +93,74 @@ window.GX_Hero = (function () {
     timer = null;
   }
 
-  document.addEventListener('DOMContentLoaded', start);
+  /* ---------- fullscreen controls ---------- */
+  function setupFullscreen() {
+    // The control is only needed on the typing test page.
+    if (!document.getElementById('testView') || document.getElementById('fullscreenBtn')) return;
+
+    const style = document.createElement('style');
+    style.textContent = [
+      '#fullscreenBtn{position:fixed;right:18px;bottom:18px;z-index:80}',
+      '@media(max-width:760px){#fullscreenBtn{right:12px;bottom:12px;padding:10px 14px;font-size:11px}}',
+      ':fullscreen body{background:#05030c}',
+      ':-webkit-full-screen body{background:#05030c}'
+    ].join('');
+    document.head.appendChild(style);
+
+    const button = document.createElement('button');
+    button.id = 'fullscreenBtn';
+    button.type = 'button';
+    button.className = 'btn violet';
+    button.setAttribute('aria-label', 'Enter full view');
+    document.body.appendChild(button);
+
+    function isFullscreen() {
+      return !!(document.fullscreenElement || document.webkitFullscreenElement);
+    }
+
+    function updateLabel() {
+      const active = isFullscreen();
+      button.textContent = active ? '⛶ exit full view' : '⛶ full view';
+      button.setAttribute('aria-label', active ? 'Exit full view' : 'Enter full view');
+    }
+
+    function enter() {
+      const page = document.documentElement;
+      const request = page.requestFullscreen || page.webkitRequestFullscreen;
+      if (!request) return;
+      const result = request.call(page);
+      if (result && result.catch) result.catch(function () {});
+    }
+
+    function exit() {
+      const exitMethod = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exitMethod) {
+        const result = exitMethod.call(document);
+        if (result && result.catch) result.catch(function () {});
+      }
+    }
+
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      if (isFullscreen()) exit(); else enter();
+    });
+
+    document.addEventListener('fullscreenchange', updateLabel);
+    document.addEventListener('webkitfullscreenchange', updateLabel);
+
+    // Fullscreen can only be requested from a user gesture. The first click
+    // anywhere on the page therefore starts full view automatically.
+    document.addEventListener('click', function (event) {
+      if (!isFullscreen() && event.target !== button && !event.target.closest('#fullscreenBtn')) enter();
+    });
+
+    updateLabel();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    start();
+    setupFullscreen();
+  });
 
   return {
     LINES: LINES,
