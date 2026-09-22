@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GodxShadow PDF | Cyberpunk Neon PDF Tools Suite</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   
   <!-- PDF.js, PDF-lib, JSZip (100% Client-Side Pure JS / GitHub Pages Ready) -->
-  <script src="/libs/pdf-lib.min.js"></script>
-  <script src="/libs/jszip.min.js"></script>
-  <script src="/libs/pdf.min.js"></script>
+  <script src="./libs/pdf-lib.min.js"></script>
+  <script src="./libs/jszip.min.js"></script>
+  <script src="./libs/pdf.min.js"></script>
   <script>
     if (window.pdfjsLib) {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/libs/pdf.worker.min.js';
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = './libs/pdf.worker.min.js';
     }
   </script>
 </head>
@@ -39,7 +39,7 @@
 
     <ul class="nav-links">
       <li class="nav-item"><a href="#tools" class="nav-link active">All Tools</a></li>
-      <li class="nav-item"><a href="javascript:void(0)" onclick="setCategory('image', document.querySelector('[data-cat=image]'))" class="nav-link" style="color:var(--neon-lime);">🖼️ Image Suite</a></li>
+      <li class="nav-item"><a href="javascript:void(0)" onclick="setCategory('image', document.querySelector('[data-cat=image]'))" class="nav-link" style="color:var(--neon-lime);">🖼️ Image Studio</a></li>
       <li class="nav-item"><a href="javascript:void(0)" onclick="openTool('object_eraser')" class="nav-link" style="color:var(--neon-magenta);">🪄 Object Eraser</a></li>
       <li class="nav-item"><a href="javascript:void(0)" onclick="openTool('enhance_image')" class="nav-link" style="color:var(--neon-cyan);">✨ AI Enhancer 4K</a></li>
       <li class="nav-item"><a href="javascript:void(0)" onclick="openTool('bg_remover')" class="nav-link" style="color:var(--neon-magenta);">✂️ BG Remover</a></li>
@@ -49,7 +49,7 @@
 
     <div class="nav-actions">
       <button class="btn-neon" onclick="toggleThemePulse()">
-        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z"/></svg>
         Neon Mode
       </button>
       <button class="btn-neon btn-neon-glow" onclick="openTool('merge')">Get Started</button>
@@ -72,7 +72,7 @@
 
       <!-- Search Tools -->
       <div class="search-container">
-        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="toolSearch" class="search-bar" placeholder="Search any PDF tool (e.g. merge, compress, protect, watermark)..." onkeyup="filterTools()">
       </div>
 
@@ -213,6 +213,6 @@
     </div>
   </footer>
 
-  <script src="/js/app.js?v=1790069763076"></script>
+  <script src="./js/app.js?v=1790069763076"></script>
 </body>
 </html>
