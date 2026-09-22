@@ -1,198 +1,107 @@
 /* ============================================================
    GODXSHADOW — hero auto-typing tagline
    js/hero.js
-
-   Types each line, holds it, erases it, then moves to the next.
-   After the last line it loops back to the first, forever.
-
-   The loop is a small state machine driven by setTimeout, and
-   GX_Hero.step() advances it one event at a time so the whole
-   cycle can be tested deterministically.
    ============================================================ */
 
 window.GX_Hero = (function () {
-
   const LINES = [
     'Real-time WPM, raw speed, accuracy and consistency — plotted live as you type.',
     'No account, no upload.',
     'Everything runs in your browser.'
   ];
-
   const SPEED = { type: 34, erase: 18, hold: 1500, gap: 380 };
+  let out = null, li = 0, ci = 0, phase = 'type', timer = null, running = false;
 
-  let out = null;
-  let li = 0;          // which line
-  let ci = 0;          // characters currently shown
-  let phase = 'type';  // type | hold | erase | gap
-  let timer = null;
-  let running = false;
-
-  function render() {
-    if (out) out.textContent = LINES[li].slice(0, ci);
-  }
-
-  /** One transition of the state machine. Returns the new phase. */
+  function render() { if (out) out.textContent = LINES[li].slice(0, ci); }
   function step() {
     const line = LINES[li];
-
     if (phase === 'type') {
       if (ci < line.length) { ci++; render(); schedule(SPEED.type); return phase; }
-      phase = 'hold';
-      schedule(SPEED.hold);
-      return phase;
+      phase = 'hold'; schedule(SPEED.hold); return phase;
     }
-
-    if (phase === 'hold') {
-      phase = 'erase';
-      schedule(SPEED.erase);
-      return phase;
-    }
-
+    if (phase === 'hold') { phase = 'erase'; schedule(SPEED.erase); return phase; }
     if (phase === 'erase') {
       if (ci > 0) { ci--; render(); schedule(SPEED.erase); return phase; }
-      phase = 'gap';
-      schedule(SPEED.gap);
-      return phase;
+      phase = 'gap'; schedule(SPEED.gap); return phase;
     }
-
-    // gap -> next line, wrapping back to the first after the last
-    li = (li + 1) % LINES.length;
-    ci = 0;
-    phase = 'type';
-    render();
-    schedule(SPEED.type);
-    return phase;
+    li = (li + 1) % LINES.length; ci = 0; phase = 'type'; render(); schedule(SPEED.type); return phase;
   }
-
-  function schedule(ms) {
-    if (!running) return;
-    clearTimeout(timer);
-    timer = setTimeout(step, ms);
-  }
-
+  function schedule(ms) { if (!running) return; clearTimeout(timer); timer = setTimeout(step, ms); }
   function start() {
     out = document.getElementById('heroText');
     if (!out) return;
-
-    // respect the OS "reduce motion" setting: show one line, no animation
     const mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-    if (mq && mq.matches) {
-      out.textContent = LINES[0];
-      return;
-    }
-
-    li = 0; ci = 0; phase = 'type';
-    running = true;
-    render();
-    schedule(SPEED.type);
+    if (mq && mq.matches) { out.textContent = LINES[0]; return; }
+    li = 0; ci = 0; phase = 'type'; running = true; render(); schedule(SPEED.type);
   }
+  function stop() { running = false; clearTimeout(timer); timer = null; }
 
-  function stop() {
-    running = false;
-    clearTimeout(timer);
-    timer = null;
+  // Full site view: fullscreen the whole document, not the typing area.
+  function isSiteFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
   }
-
-  function getTypingArea() {
-    return document.getElementById('typingShell') || document.getElementById('testView');
-  }
-
-  function isTypingFullscreen() {
-    const target = getTypingArea();
-    if (!target) return false;
-    return document.fullscreenElement === target || document.webkitFullscreenElement === target;
-  }
-
-  function updateTypingFullscreenButton() {
+  function updateFullscreenButton() {
     const button = document.getElementById('typingFullscreenBtn');
     if (!button) return;
-    button.textContent = isTypingFullscreen() ? 'Exit Full View' : 'Full View';
-    button.setAttribute('aria-label', isTypingFullscreen() ? 'Exit full view' : 'Enter full view');
+    button.textContent = isSiteFullscreen() ? 'Exit Full View' : 'Full View';
+    button.setAttribute('aria-label', isSiteFullscreen() ? 'Exit full view' : 'Enter full view');
   }
-
-  function toggleTypingFullscreen() {
-    const target = getTypingArea();
-    if (!target) return;
-
-    if (isTypingFullscreen()) {
-      const exitMethod = document.exitFullscreen || document.webkitExitFullscreen;
-      if (exitMethod) exitMethod.call(document);
+  function toggleSiteFullscreen() {
+    if (isSiteFullscreen()) {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document);
       return;
     }
-
-    const requestMethod = target.requestFullscreen || target.webkitRequestFullscreen;
-    if (requestMethod) requestMethod.call(target);
+    const page = document.documentElement;
+    const request = page.requestFullscreen || page.webkitRequestFullscreen;
+    if (request) {
+      const result = request.call(page);
+      if (result && result.catch) result.catch(function () {});
+    }
   }
-
-  function setupTypingFullscreen() {
+  function setupFullscreen() {
     if (document.getElementById('typingFullscreenBtn')) return;
-
     const button = document.createElement('button');
     button.id = 'typingFullscreenBtn';
     button.type = 'button';
     button.textContent = 'Full View';
     button.setAttribute('aria-label', 'Enter full view');
-    button.style.position = 'fixed';
-    button.style.top = '78px';
-    button.style.right = '18px';
-    button.style.zIndex = '9999';
-    button.style.padding = '10px 18px';
-    button.style.borderRadius = '999px';
-    button.style.border = '1px solid rgba(255, 90, 130, 0.9)';
-    button.style.background = 'linear-gradient(135deg, rgba(255, 28, 82, 0.96), rgba(255, 92, 120, 0.92))';
-    button.style.color = '#fff';
-    button.style.fontWeight = '800';
-    button.style.fontSize = '11px';
-    button.style.letterSpacing = '0.14em';
-    button.style.textTransform = 'uppercase';
-    button.style.cursor = 'pointer';
-    button.style.boxShadow = '0 0 14px rgba(255, 70, 110, 0.9), 0 0 28px rgba(255, 70, 110, 0.45)';
-    button.style.transition = 'transform 0.18s ease, box-shadow 0.18s ease';
-    button.style.outline = 'none';
-
+    button.style.cssText = [
+      'position:fixed', 'top:78px', 'right:18px', 'z-index:9999',
+      'padding:10px 18px', 'border-radius:999px',
+      'border:1px solid rgba(255,90,130,.9)',
+      'background:linear-gradient(135deg,rgba(255,28,82,.96),rgba(255,92,120,.92))',
+      'color:#fff', 'font-weight:800', 'font-size:11px',
+      'letter-spacing:.14em', 'text-transform:uppercase', 'cursor:pointer',
+      'box-shadow:0 0 14px rgba(255,70,110,.9),0 0 28px rgba(255,70,110,.45)',
+      'transition:transform .18s ease,box-shadow .18s ease', 'outline:none'
+    ].join(';');
     button.addEventListener('mouseenter', function () {
       button.style.transform = 'translateY(-1px)';
-      button.style.boxShadow = '0 0 18px rgba(255, 90, 130, 1), 0 0 34px rgba(255, 90, 130, 0.6)';
+      button.style.boxShadow = '0 0 20px rgba(255,90,130,1),0 0 34px rgba(255,90,130,.6)';
     });
-
     button.addEventListener('mouseleave', function () {
       button.style.transform = 'translateY(0)';
-      button.style.boxShadow = '0 0 14px rgba(255, 70, 110, 0.9), 0 0 28px rgba(255, 70, 110, 0.45)';
+      button.style.boxShadow = '0 0 14px rgba(255,70,110,.9),0 0 28px rgba(255,70,110,.45)';
     });
-
     button.addEventListener('click', function (event) {
       event.stopPropagation();
-      toggleTypingFullscreen();
+      toggleSiteFullscreen();
     });
-
-    const typingArea = getTypingArea();
-    if (typingArea) {
-      typingArea.addEventListener('click', function (event) {
-        if (event.target && event.target.closest && event.target.closest('button')) return;
-        if (!isTypingFullscreen()) {
-          toggleTypingFullscreen();
-        }
-      });
-    }
-
     document.body.appendChild(button);
-    document.addEventListener('fullscreenchange', updateTypingFullscreenButton);
-    document.addEventListener('webkitfullscreenchange', updateTypingFullscreenButton);
-
-    updateTypingFullscreenButton();
+    document.addEventListener('fullscreenchange', updateFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+    // Any page click automatically enters full site view, except the toggle itself.
+    document.addEventListener('click', function (event) {
+      if (event.target && event.target.closest && event.target.closest('#typingFullscreenBtn')) return;
+      if (!isSiteFullscreen()) toggleSiteFullscreen();
+    });
+    updateFullscreenButton();
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    start();
-    setupTypingFullscreen();
-  });
-
+  document.addEventListener('DOMContentLoaded', function () { start(); setupFullscreen(); });
   return {
-    LINES: LINES,
-    step: step,
-    start: start,
-    stop: stop,
-    /** where the machine is right now (used by the tests) */
+    LINES: LINES, step: step, start: start, stop: stop,
     state: function () { return { line: li, chars: ci, phase: phase, text: LINES[li].slice(0, ci) }; }
   };
 })();
