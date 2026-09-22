@@ -36,7 +36,6 @@ window.GX_Hero = (function () {
   }
   function stop() { running = false; clearTimeout(timer); timer = null; }
 
-  // Full site view: fullscreen the whole document, not the typing area.
   function isSiteFullscreen() {
     return !!(document.fullscreenElement || document.webkitFullscreenElement);
   }
@@ -67,7 +66,7 @@ window.GX_Hero = (function () {
     button.textContent = 'Full View';
     button.setAttribute('aria-label', 'Enter full view');
     button.style.cssText = [
-      'position:fixed', 'top:78px', 'right:18px', 'z-index:9999',
+      'position:fixed', 'top:84px', 'right:18px', 'z-index:9999',
       'padding:10px 18px', 'border-radius:999px',
       'border:1px solid rgba(255,90,130,.9)',
       'background:linear-gradient(135deg,rgba(255,28,82,.96),rgba(255,92,120,.92))',
@@ -91,11 +90,6 @@ window.GX_Hero = (function () {
     document.body.appendChild(button);
     document.addEventListener('fullscreenchange', updateFullscreenButton);
     document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
-    // Any page click automatically enters full site view, except the toggle itself.
-    document.addEventListener('click', function (event) {
-      if (event.target && event.target.closest && event.target.closest('#typingFullscreenBtn')) return;
-      if (!isSiteFullscreen()) toggleSiteFullscreen();
-    });
     updateFullscreenButton();
   }
 
