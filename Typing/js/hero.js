@@ -106,9 +106,8 @@ window.GX_Hero = (function () {
   function updateTypingFullscreenButton() {
     const button = document.getElementById('typingFullscreenBtn');
     if (!button) return;
-    const active = isTypingFullscreen();
-    button.textContent = active ? 'Exit Full View' : 'Full View';
-    button.setAttribute('aria-label', active ? 'Exit full view' : 'Enter full view');
+    button.textContent = isTypingFullscreen() ? 'Exit Full View' : 'Full View';
+    button.setAttribute('aria-label', isTypingFullscreen() ? 'Exit full view' : 'Enter full view');
   }
 
   function toggleTypingFullscreen() {
@@ -134,13 +133,13 @@ window.GX_Hero = (function () {
     button.textContent = 'Full View';
     button.setAttribute('aria-label', 'Enter full view');
     button.style.position = 'fixed';
-    button.style.top = '18px';
+    button.style.top = '78px';
     button.style.right = '18px';
     button.style.zIndex = '9999';
     button.style.padding = '10px 18px';
     button.style.borderRadius = '999px';
-    button.style.border = '1px solid rgba(255, 80, 120, 0.9)';
-    button.style.background = 'linear-gradient(135deg, rgba(255, 38, 84, 0.92), rgba(255, 104, 128, 0.9))';
+    button.style.border = '1px solid rgba(255, 90, 130, 0.9)';
+    button.style.background = 'linear-gradient(135deg, rgba(255, 28, 82, 0.96), rgba(255, 92, 120, 0.92))';
     button.style.color = '#fff';
     button.style.fontWeight = '800';
     button.style.fontSize = '11px';
@@ -153,7 +152,7 @@ window.GX_Hero = (function () {
 
     button.addEventListener('mouseenter', function () {
       button.style.transform = 'translateY(-1px)';
-      button.style.boxShadow = '0 0 20px rgba(255, 90, 130, 1), 0 0 34px rgba(255, 90, 130, 0.6)';
+      button.style.boxShadow = '0 0 18px rgba(255, 90, 130, 1), 0 0 34px rgba(255, 90, 130, 0.6)';
     });
 
     button.addEventListener('mouseleave', function () {
@@ -166,28 +165,19 @@ window.GX_Hero = (function () {
       toggleTypingFullscreen();
     });
 
-    document.body.appendChild(button);
-
-    document.addEventListener('fullscreenchange', updateTypingFullscreenButton);
-    document.addEventListener('webkitfullscreenchange', updateTypingFullscreenButton);
-
-    document.addEventListener('click', function (event) {
-      const target = event.target;
-      const clickedButton = target && target.closest && target.closest('#typingFullscreenBtn');
-      const clickedTyping = target && target.closest && target.closest('#typingShell');
-      if (clickedButton || clickedTyping) return;
-      if (!isTypingFullscreen()) return;
-      // keep typed area fullscreen while user interacts; do not exit automatically
-    });
-
     const typingArea = getTypingArea();
     if (typingArea) {
       typingArea.addEventListener('click', function (event) {
-        if (event.target.closest && event.target.closest('button')) return;
-        if (isTypingFullscreen()) return;
-        toggleTypingFullscreen();
+        if (event.target && event.target.closest && event.target.closest('button')) return;
+        if (!isTypingFullscreen()) {
+          toggleTypingFullscreen();
+        }
       });
     }
+
+    document.body.appendChild(button);
+    document.addEventListener('fullscreenchange', updateTypingFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateTypingFullscreenButton);
 
     updateTypingFullscreenButton();
   }
