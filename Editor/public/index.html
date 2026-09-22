@@ -17,16 +17,20 @@
   </script>
   <style>
     #fullscreenBtn {
-      border-color: #ff2e63;
-      color: #ff2e63;
-      background: rgba(255, 46, 99, 0.08);
-      box-shadow: 0 0 8px rgba(255, 46, 99, 0.9), inset 0 0 8px rgba(255, 46, 99, 0.18);
-      text-shadow: 0 0 10px rgba(255, 46, 99, 0.8);
+      border: 1.5px solid rgba(255, 98, 155, 0.95);
+      color: #fff;
+      background: linear-gradient(135deg, rgba(255, 52, 128, 0.92), rgba(255, 122, 170, 0.75));
+      box-shadow: 0 0 10px rgba(255, 76, 143, 0.9), 0 0 22px rgba(255, 76, 143, 0.55), inset 0 0 10px rgba(255, 255, 255, 0.12);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      letter-spacing: 0.12em;
+      font-weight: 800;
+      text-transform: uppercase;
     }
     #fullscreenBtn:hover {
       color: #fff;
-      background: rgba(255, 46, 99, 0.16);
-      box-shadow: 0 0 12px rgba(255, 46, 99, 1), 0 0 28px rgba(255, 46, 99, 0.55), inset 0 0 10px rgba(255, 46, 99, 0.25);
+      background: linear-gradient(135deg, rgba(255, 38, 110, 1), rgba(255, 138, 182, 0.9));
+      box-shadow: 0 0 16px rgba(255, 76, 143, 1), 0 0 30px rgba(255, 76, 143, 0.7), inset 0 0 12px rgba(255, 255, 255, 0.16);
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -49,14 +53,14 @@
       <li class="nav-item"><a href="javascript:void(0)" onclick="openTool('merge')" class="nav-link">Merge PDF</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="btn-neon" id="fullscreenBtn" type="button" onclick="toggleFullscreen()">⛶ Full View</button>
+      <button class="btn-neon" id="fullscreenBtn" type="button" onclick="toggleFullscreen()">FULL VIEW</button>
       <button class="btn-neon btn-neon-glow" onclick="openTool('merge')">Get Started</button>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="hero-tag"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--neon-lime);box-shadow:0 0 8px var(--neon-lime)"></span> 100% CLIENT-SIDE & FAST ENCRYPTION</div>
+      <div class="hero-tag"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--neon-lime);box-shadow:0 0 8px var(--neon-lime)"></span> 100% CLIENT-SIDE & FAST EN</div>
       <h1 class="hero-title">Every PDF tool you need, powered with <span class="glow-cyan">Cyberpunk</span> <span class="glow-magenta">Neon Power</span></h1>
       <p class="hero-sub">GodxShadow PDF is your ultimate suite to merge, split, compress, watermark, rotate, protect, and convert PDF documents in high-octane speed right inside your browser.</p>
       <div class="search-container"><span class="search-icon">⌕</span><input type="text" id="toolSearch" class="search-bar" placeholder="Search any PDF tool (e.g. merge, compress, protect, watermark)"></div>
@@ -75,7 +79,7 @@
   <div class="modal-overlay" id="toolModal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title-group"><div class="modal-icon" id="modalIcon"></div><div><div class="modal-title" id="modalTitle">Merge PDF</div><div class="modal-subtitle" id="modalSubtitle">Combine multiple PDF files into one</div></div></div>
+        <div class="modal-title-group"><div class="modal-icon" id="modalIcon"></div><div><div class="modal-title" id="modalTitle">Merge PDF</div><div class="modal-subtitle" id="modalSubtitle">Combine multiple PDFs into a single document.</div></div></div>
         <button class="modal-close" onclick="closeTool()">×</button>
       </div>
       <div class="modal-body">
@@ -88,20 +92,20 @@
         </div>
         <div class="file-list" id="fileList"></div>
         <div class="tool-controls" id="toolControls" style="display:none"></div>
-        <div class="progress-container" id="progressContainer"><div class="progress-label"><span id="progressText">Processing document...</span><span id="progressPercent">0%</span></div><div class="progress-track"><div class="progress-bar" id="progressBar"></div></div></div>
+        <div class="progress-container" id="progressContainer"><div class="progress-label"><span id="progressText">Processing document...</span><span id="progressPercent">0%</span></div><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
         <div class="status-banner" id="statusBanner"></div>
         <div id="previewContainer"></div>
       </div>
-      <div class="modal-footer"><button class="btn-neon" onclick="closeTool()">Cancel</button><button class="btn-neon btn-neon-magenta" id="resetBtn" onclick="resetToolFiles()">Clear All</button><button class="btn-neon btn-neon-glow" id="executeBtn" onclick="executeCurrentTool()">Execute</button></div>
+      <div class="modal-footer"><button class="btn-neon" onclick="closeTool()">Cancel</button><button class="btn-neon btn-neon-magenta" id="resetBtn" onclick="resetToolFiles()">Clear All</button><button class="btn-neon btn-neon-glow" id="actionBtn">Process</button></div>
     </div>
   </div>
 
-  <footer class="site-footer"><div class="footer-content"><div class="footer-col"><div class="brand-title">GODXSHADOW <span style="color:var(--neon-cyan)">PDF</span></div><p style="color:var(--text-muted);margin-top:1rem;max-width:360px">Your all-in-one cyberpunk PDF workspace built for speed, privacy, and zero upload friction.</p></div><div class="footer-col"><h4>Tools</h4><ul><li><a href="#">Merge PDF</a></li><li><a href="#">Compress PDF</a></li><li><a href="#">Protect PDF</a></li></ul></div><div class="footer-col"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Privacy</a></li><li><a href="#">Support</a></li></ul></div><div class="footer-col"><h4>Follow</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">X / Twitter</a></li><li><a href="#">GitHub</a></li></ul></div></div><div class="footer-bottom"><span>© 2026 GodxShadow PDF</span><span>Built for fast local editing • no file leaves your device</span></div></footer>
+  <footer class="site-footer"><div class="footer-content"><div class="footer-col"><div class="brand-title">GODXSHADOW <span style="color:var(--neon-cyan)">PDF</span></div><p style="color:var(--text-muted)">Built for lightning-fast PDF workflows in your browser.</p></div><div class="footer-col"><h4>Features</h4><ul><li>Merge & Split</li><li>Compress & Protect</li><li>Watermark & Rotate</li></ul></div><div class="footer-col"><h4>Tools</h4><ul><li>Image Studio</li><li>Passport Maker</li><li>AI Enhancer</li></ul></div></div></footer>
 
   <script>
     function updateFullscreenButton() {
       const button = document.getElementById('fullscreenBtn');
-      if (button) button.textContent = document.fullscreenElement ? '× Exit Full View' : '⛶ Full View';
+      if (button) button.textContent = document.fullscreenElement ? 'EXIT FULL VIEW' : 'FULL VIEW';
     }
     async function enterFullscreen() {
       if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
