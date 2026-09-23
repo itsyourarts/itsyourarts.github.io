@@ -1,0 +1,19 @@
+{
+  "name": "godxshadow-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Playwright end-to-end suites for GodxShadow (static site + code-runner backend)",
+  "scripts": {
+    "install-browser": "playwright install chromium",
+    "e2e": "node e2e.js",
+    "codetest": "node codetest.js",
+    "respcheck": "node respcheck.js",
+    "subpath": "node subpath.js",
+    "statichost": "node statichost.js",
+    "githubpages": "node githubpages.js",
+    "all": "node e2e.js && node codetest.js && node respcheck.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.47.0"
+  }
+}
