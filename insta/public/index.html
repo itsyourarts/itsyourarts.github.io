@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GodxShadow — Instagram Downloader | Download Reels, Videos, Photos in HD</title>
+<meta name="description" content="GodxShadow is a neon-fast Instagram downloader. Save Reels, Videos, Photos, IGTV & Carousels in original quality. No login, no watermark, free forever." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2300f5ff'/%3E%3Cstop offset='1' stop-color='%23ff2bd1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23060612'/%3E%3Cpath d='M20 44V20l24 24V20' stroke='url(%23g)' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=7" />
+</head>
+<body>
+
+<!-- ===== BACKGROUND FX ===== -->
+<canvas id="particles"></canvas>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="grid-overlay"></div>
+<div id="cursor-glow"></div>
+
+<!-- ===== PREVIEW-MODE BANNER (only shows when API server unreachable) ===== -->
+<div id="apiBanner" hidden>
+  <span>⚠ <b>PREVIEW MODE</b> — server connected nahi hai. Real Instagram downloads ke liye
+  <b>Live Preview (GodxShadow Neon Site)</b> me kholo. Tab tak demo mode active hai.</span>
+  <button id="apiBannerClose" aria-label="Close">✕</button>
+</div>
+
+<!-- ===== PRELOADER ===== -->
+<div id="preloader">
+  <div class="loader-logo">GOD<span>X</span>SHADOW</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div class="loader-text">INITIALIZING NEON CORE…</div>
+</div>
+
+<!-- ===== NAVBAR ===== -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-icon">
+        <svg viewBox="0 0 64 64" width="34" height="34"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00f5ff"/><stop offset="1" stop-color="#ff2bd1"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="#0a0a18"/><path d="M20 44V20l24 24V20" stroke="url(#lg)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand-text">GOD<b>X</b>SHADOW</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#downloader">Downloader</a>
+      <a href="#how">How To</a>
+      <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
+      <a href="#downloader" class="nav-cta">Download Now</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===== HERO + DOWNLOADER ===== -->
+  <section class="hero" id="downloader">
+    <div class="hero-inner">
+      <div class="badge reveal"><span class="pulse-dot"></span> NEON ENGINE v2.0 &nbsp;•&nbsp; NO LOGIN &nbsp;•&nbsp; NO WATERMARK &nbsp;•&nbsp; 100% FREE</div>
+      <h1 class="hero-title reveal">INSTAGRAM<br /><span class="neon-gradient">DOWNLOADER</span></h1>
+      <p class="hero-sub reveal">Download Instagram <b>Videos</b>, <b>Photos</b>, <b>Reels</b>, <b>IGTV</b> &amp; <b>Carousels</b> in original HD quality — on mobile, tablet or desktop.</p>
+
+      <!-- Downloader card -->
+      <div class="dl-card reveal">
+        <div class="dl-glow"></div>
+        <div class="dl-tabs">
+          <button class="dl-tab active" data-type="auto"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Auto</button>
+          <button class="dl-tab" data-type="video"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="13" height="12" rx="2"/><path d="M15 10l6-3v10l-6-3"/></svg> Video</button>
+          <button class="dl-tab" data-type="reel"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg> Reels</button>
+          <button class="dl-tab" data-type="photo"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg> Photo</button>
+          <button class="dl-tab" data-type="igtv"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"/></svg> IGTV</button>
+        </div>
+
+        <div class="dl-input-row">
+          <div class="dl-input-wrap">
+            <svg class="link-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/></svg>
+            <input id="urlInput" type="url" inputmode="url" autocomplete="off" spellcheck="false"
+              placeholder="Paste Instagram link here…  e.g. instagram.com/reel/…" />
+            <div class="dl-input-btns">
+              <button id="pasteBtn" class="mini-btn" title="Paste from clipboard">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/></svg>
+                Paste</button>
+              <button id="clearBtn" class="mini-btn danger" title="Clear">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                Clear</button>
+            </div>
+          </div>
+          <button id="downloadBtn" class="dl-btn">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16"/></svg>
+            <span id="downloadBtnText">DOWNLOAD</span>
+          </button>
+        </div>
+
+        <div class="dl-foot">
+          <div class="dl-chips">
+            <span class="chip"><i class="dot cyan"></i> Videos</span>
+            <span class="chip"><i class="dot pink"></i> Reels</span>
+            <span class="chip"><i class="dot purple"></i> Photos</span>
+            <span class="chip"><i class="dot green"></i> IGTV</span>
+            <span class="chip"><i class="dot yellow"></i> Carousel</span>
+          </div>
+          <button id="demoBtn" class="demo-link">⚡ Try a demo link</button>
+        </div>
+
+        <!-- progress -->
+        <div class="dl-progress" id="dlProgress">
+          <div class="steps">
+            <div class="step" data-step="1"><span class="step-num">1</span><span>Validating link</span></div>
+            <div class="step-line"></div>
+            <div class="step" data-step="2"><span class="step-num">2</span><span>Fetching media</span></div>
+            <div class="step-line"></div>
+            <div class="step" data-step="3"><span class="step-num">3</span><span>Generating HD links</span></div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <!-- result -->
+        <div class="dl-result" id="dlResult"></div>
+        <!-- error -->
+        <div class="dl-error" id="dlError"></div>
+      </div>
+
+      <!-- stats -->
+      <div class="stats reveal">
+        <div class="stat"><div class="stat-num" data-count="2500000">0</div><div class="stat-label">Downloads served</div></div>
+        <div class="stat"><div class="stat-num" data-count="180">0</div><div class="stat-label">Countries</div></div>
+        <div class="stat"><div class="stat-num" data-count="99" data-suffix="%">0</div><div class="stat-label">Success rate</div></div>
+        <div class="stat"><div class="stat-num" data-count="4" data-suffix="s">0</div><div class="stat-label">Avg. fetch time</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MARQUEE ===== -->
+  <div class="marquee"><div class="marquee-track" id="marqueeTrack">
+    <span>⚡ NO LOGIN REQUIRED</span><span>✦</span><span>HD ORIGINAL QUALITY</span><span>✦</span><span>REELS • VIDEOS • PHOTOS • IGTV</span><span>✦</span><span>NO WATERMARK</span><span>✦</span><span>WORKS ON ALL DEVICES</span><span>✦</span><span>UNLIMITED DOWNLOADS</span><span>✦</span>
+  </div></div>
+
+  <!-- ===== HOW TO ===== -->
+  <section class="section" id="how">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-tag">// PROTOCOL 01</div>
+        <h2 class="sec-title">How to download <span class="neon-gradient">from Instagram?</span></h2>
+        <p class="sec-sub">Sirf 3 easy steps — video, reels ya photo save karo apne device par.</p>
+      </div>
+      <div class="how-grid">
+        <div class="how-card reveal">
+          <div class="how-num">01</div>
+          <div class="how-icon cyan"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></div>
+          <h3>Copy the URL</h3>
+          <p>Instagram app ya website kholo, photo / video / reels / carousel / IGTV ka link copy karo.</p>
+        </div>
+        <div class="how-card reveal">
+          <div class="how-num">02</div>
+          <div class="how-icon pink"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><path d="M9 12h6"/></svg></div>
+          <h3>Paste the link</h3>
+          <p>GodxShadow par wapas aao, input field me link paste karo aur <b>Download</b> button dabao.</p>
+        </div>
+        <div class="how-card reveal">
+          <div class="how-num">03</div>
+          <div class="how-icon green"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 20h16"/></svg></div>
+          <h3>Download</h3>
+          <p>Turant multiple quality options milenge. Jo chahiye select karo — original quality me save karo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ADDRESS BAR TRICK ===== -->
+  <section class="section alt" id="shortcut">
+    <div class="container split">
+      <div class="reveal">
+        <div class="sec-tag">// PRO TIP</div>
+        <h2 class="sec-title">Download from your <span class="neon-gradient">address bar</span></h2>
+        <p class="sec-sub">Website visit skip karo. Browser ke address bar me kisi bhi Instagram URL ke aage short domain add karo:</p>
+        <ul class="tip-list">
+          <li><span class="tick">▸</span> Kisi bhi Instagram URL ke pehle <code>gxshadow.app/</code> lagao</li>
+          <li><span class="tick">▸</span> Example: <code>gxshadow.app/https://www.instagram.com/…/reel/DO5tIDME6t-/</code></li>
+          <li><span class="tick">▸</span> Enter dabao — direct download page khul jayega, original quality me</li>
+          <li><span class="tick">▸</span> Phone, tablet, computer — sab par kaam karta hai. No app, no account.</li>
+        </ul>
+      </div>
+      <div class="browser-mock reveal">
+        <div class="browser-bar"><span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span></div>
+        <div class="browser-url"><span class="lock">🔒</span> <span class="hl">gxshadow.app/</span>https://www.instagram.com/godxshadow/reel/DO5tIDME6t-/</div>
+        <div class="browser-body">
+          <div class="fake-thumb"></div>
+          <div class="fake-lines"><span style="width:70%"></span><span style="width:45%"></span><span style="width:60%"></span></div>
+          <div class="fake-btn">⬇ DOWNLOAD HD</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY CHOOSE ===== -->
+  <section class="section" id="why">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-tag">// PROTOCOL 02</div>
+        <h2 class="sec-title">Choose <span class="neon-gradient">GodxShadow</span> for Instagram downloads</h2>
+        <p class="sec-sub">Sirf 2 clicks me high-quality download — bina kisi unreliable app ke.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card reveal"><div class="feat-icon cyan">⚡</div><h3>Fast Download</h3><p>Hamare servers fastest download speed ke liye optimized hain. Seconds me file ready.</p></div>
+        <div class="feat-card reveal"><div class="feat-icon pink">📱</div><h3>All Devices</h3><p>Mobile, tablet ya desktop — GodxShadow har device aur har browser par perfect chalta hai.</p></div>
+        <div class="feat-card reveal"><div class="feat-icon purple">💎</div><h3>High Quality</h3><p>Original quality, zero loss. Photos JPG me, videos HD MP4 me — bina watermark.</p></div>
+        <div class="feat-card reveal"><div class="feat-icon green">🛡</div><h3>Secure &amp; Private</h3><p>No login, no tracking. Links real-time process hote hain aur turant wipe ho jate hain.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DETAILED FEATURES ===== -->
+  <section class="section alt" id="features">
+    <div class="container">
+      <div class="sec-head reveal">
+        <div class="sec-tag">// ARSENAL</div>
+        <h2 class="sec-title">GodxShadow <span class="neon-gradient">features</span></h2>
+        <p class="sec-sub">Instagram ka har content type download karo — ek hi neon dashboard se.</p>
+      </div>
+
+      <div class="detail-row reveal">
+        <div class="detail-text"><div class="detail-tag cyan">VIDEO DOWNLOADER</div><h3>Instagram Videos → MP4</h3><p>Single videos aur carousel ke multiple videos — dono supported. Apni personal page ke IG videos bhi save karo, ekdum original quality me.</p><a href="#downloader" class="text-link try-link" data-sample="https://www.instagram.com/p/demo-video/">Try video download →</a></div>
+        <div class="detail-visual v1"><div class="play-btn">▶</div><div class="eq"><span></span><span></span><span></span><span></span><span></span></div></div>
+      </div>
+
+      <div class="detail-row flip reveal">
+        <div class="detail-text"><div class="detail-tag pink">PHOTOS DOWNLOADER</div><h3>Photos &amp; Carousel Save</h3><p>Single post image ho ya carousel ki 10 photos — GodxShadow sab ek saath original JPG resolution me de deta hai.</p><a href="#downloader" class="text-link try-link" data-sample="https://www.instagram.com/p/demo-photo/">Try photo download →</a></div>
+        <div class="detail-visual v2"><div class="photo-stack"><span></span><span></span><span></span></div></div>
+      </div>
+
+      <div class="detail-row reveal">
+        <div class="detail-text"><div class="detail-tag purple">REELS DOWNLOADER</div><h3>Reels Without Watermark</h3><p>Apne favourite Reels videos save karo — bina watermark, HD quality me. TikTok-style short videos, ab offline forever.</p><a href="#downloader" class="text-link try-link" data-sample="https://www.instagram.com/reel/demo-reel/">Try reels download →</a></div>
+        <div class="detail-visual v3"><div class="reel-phone"><div class="reel-play">▶</div><div class="reel-bar"><i></i></div></div></div>
+      </div>
+
+      <div class="detail-row flip reveal">
+        <div class="detail-text"><div class="detail-tag green">IGTV DOWNLOADER</div><h3>Long IGTV Videos</h3><p>Lambi videos abhi nahi dekh sakte? Download karke rakho — baad me offline dekho, chahe original delete bhi ho jaye.</p><a href="#downloader" class="text-link try-link" data-sample="https://www.instagram.com/tv/demo-igtv/">Try IGTV download →</a></div>
+        <div class="detail-visual v4"><div class="tv">IGTV<span class="tv-live">● REC</span></div></div>
+      </div>
+
+      <div class="detail-row reveal">
+        <div class="detail-text"><div class="detail-tag yellow">CAROUSEL / ALBUM</div><h3>Album &amp; Gallery Posts</h3><p>Mixed content — photos + videos ek hi post me? GodxShadow poore album ko ek click me extract kar deta hai.</p><a href="#downloader" class="text-link try-link" data-sample="https://www.instagram.com/p/demo-carousel/">Try carousel download →</a></div>
+        <div class="detail-visual v5"><div class="album"><span>A</span><span>B</span><span>C</span><span>+</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="section" id="faq">
+    <div class="container narrow">
+      <div class="sec-head reveal">
+        <div class="sec-tag">// INTEL</div>
+        <h2 class="sec-title">Frequently asked <span class="neon-gradient">questions</span></h2>
+        <p class="sec-sub">GodxShadow downloader ke baare me common sawal — jawab ke saath.</p>
+      </div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-item reveal"><button class="faq-q">What exactly is GodxShadow?<span class="faq-plus">+</span></button><div class="faq-a"><p>GodxShadow ek browser-based neon tool hai jo public Instagram content — videos, photos, Reels, Stories, IGTV aur carousels — tumhare device par save karta hai. Koi software install nahi karna, seedha website se kaam.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Is downloading from Instagram legal?<span class="faq-plus">+</span></button><div class="faq-a"><p>Personal use ke liye public posts save karna generally allowed hai, lekin copyright hamesha creator ka rehta hai. Owner ki permission ke bina files share ya reuse mat karo.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">What formats and quality do you offer?<span class="faq-plus">+</span></button><div class="faq-a"><p>Photos JPG me (1080 × 1350px tak — platform ki limit). Videos MP4 me, generally HD 720p agar source us quality me upload hua tha. Koi watermark add nahi hota.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Do I need to log in or create an account?<span class="faq-plus">+</span></button><div class="faq-a"><p>Bilkul nahi. Bas Instagram link paste karo — no registration, no Instagram credentials, no cross-web tracking cookies.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Are there any limits on daily downloads?<span class="faq-plus">+</span></button><div class="faq-a"><p>Koi limit nahi. Ek item download karo ya sau — hamare servers par koi cap nahi hai.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">How do I download a post?<span class="faq-plus">+</span></button><div class="faq-a"><p>1) Instagram post ya Reel ka link copy karo.<br/>2) GodxShadow par paste karke Download dabao.<br/>3) Quality select karo — file turant mil jayegi.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Reel ka video (MP4) kaise milega? Unlock kya hai?<span class="faq-plus">+</span></button><div class="faq-a"><p>Instagram video files bots ko nahi deta — isliye reel par pehle cover photo milta hai. Poori MP4 ke liye <b>🔓 Unlock (3 taps)</b> use karo: 1) Data link kholo (tumhara browser + login use hoga), 2) page ka text copy karo, 3) GodxShadow me paste karo → video download button mil jayega. Tumhara data sirf browser me parse hota hai, server ko kuch nahi bheja jata. Alternative: FastDL bridge 1-click me kaam karta hai.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Can I grab content from private accounts?<span class="faq-plus">+</span></button><div class="faq-a"><p>Nahi. Hum privacy respect karte hain — sirf public posts accessible hain. Agar post logged-out browser tab me nahi dikh raha, to GodxShadow bhi fetch nahi kar payega.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Which devices and browsers are supported?<span class="faq-plus">+</span></button><div class="faq-a"><p>Windows, macOS, Linux, Android, iOS, ChromeOS — koi bhi modern browser. Chrome, Safari, Firefox, Edge, Opera aur Brave me tested — desktop aur mobile dono.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Where do the files go on my phone or computer?<span class="faq-plus">+</span></button><div class="faq-a"><p>Desktop par default "Downloads" folder me. Mobile par browser ki downloads list ya "Files" app me. Most gallery apps unhe automatically index kar lete hain.</p></div></div>
+        <div class="faq-item reveal"><button class="faq-q">Is my link history stored on your servers?<span class="faq-plus">+</span></button><div class="faq-a"><p>Nahi. Links real-time process hote hain; download link generate hote hi original URL aur converted file dono cache se wipe ho jate hain.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta reveal">
+    <div class="cta-inner">
+      <h2>READY TO GO <span class="neon-gradient">NEON?</span></h2>
+      <p>Paste your first link and feel the speed. Free forever. No sign-up. No watermark.</p>
+      <a href="#downloader" class="dl-btn big">⚡ START DOWNLOADING</a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container foot-grid">
+      <div class="foot-brand">
+        <div class="brand-text">GOD<b>X</b>SHADOW</div>
+        <p>Neon-fast Instagram downloader. Save Reels, videos, photos, IGTV &amp; carousels in original quality.</p>
+        <div class="foot-badges"><span>NO LOGIN</span><span>NO WATERMARK</span><span>FREE</span></div>
+      </div>
+      <div class="foot-col"><h4>Tools</h4><a href="#downloader">Video Downloader</a><a href="#downloader">Reels Downloader</a><a href="#downloader">Photo Downloader</a><a href="#downloader">IGTV Downloader</a><a href="#downloader">Carousel Downloader</a></div>
+      <div class="foot-col"><h4>Guide</h4><a href="#how">How to download</a><a href="#shortcut">Address-bar trick</a><a href="#features">Features</a><a href="#faq">FAQ</a></div>
+      <div class="foot-col"><h4>Legal</h4><a href="#faq">Privacy</a><a href="#faq">Terms</a><a href="#faq">Copyright</a><a href="#faq">Contact</a></div>
+    </div>
+    <div class="foot-bottom">© 2026 <b>GOD<span>X</span>SHADOW</span></b> — Crafted in the neon void. Not affiliated with Instagram / Meta. Only download content you have rights to save.</div>
+  </footer>
+</main>
+
+<!-- ===== HISTORY FAB ===== -->
+<button id="historyFab" title="Download history">🕘</button>
+<div id="historyPanel">
+  <div class="hist-head"><b>Recent links</b><button id="histClose">✕</button></div>
+  <div id="histList"></div>
+  <button id="histClear">Clear all</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="script.js?v=7"></script>
+</body>
+</html>
