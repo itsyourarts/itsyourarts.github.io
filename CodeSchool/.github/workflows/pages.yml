@@ -1,0 +1,45 @@
+name: Deploy static site to GitHub Pages
+
+# Publishes the tutorial site (HTML + assets) to GitHub Pages.
+# Note: Pages is static-only, so the POST /run code runner is unavailable there.
+# Point window.GXS_API (assets/config.js) at a hosted backend if you want live code execution.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble static site
+        run: |
+          mkdir -p _site
+          cp -r assets _site/assets
+          cp index.html tutorials.html editor.html examples.html references.html quiz.html _site/ 2>/dev/null || true
+          cp README.md _site/ 2>/dev/null || true
+          # GitHub Pages runs Jekyll by default; keep our files verbatim
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
