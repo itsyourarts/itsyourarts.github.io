@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Quiz — GodxShadow</title>
+<link rel="stylesheet" href="assets/style.css?v=566">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body data-page="quiz">
+
+<header class="topbar">
+  <button class="burger" id="burger">☰</button>
+  <a class="brand" href="index.html">
+    <span class="mark">&lt;/&gt;</span>
+    <span class="logo"><b><span class="n1">G</span><span class="n2">o</span><span class="n3">d</span>x<span class="n1">S</span><span class="n2">h</span><span class="n3">a</span><span class="n1">d</span><span class="n2">o</span><span class="n3">w</span></b>
+      <small>NEON DEV ACADEMY</small></span>
+  </a>
+  <nav class="nav" id="nav"></nav>
+  <div class="spacer"></div>
+  <div class="search" id="search">
+    <span style="color:var(--muted);font-size:.85rem">⌕</span>
+    <input type="search" placeholder="Search tutorials…  ( / )" aria-label="Search tutorials">
+    <span class="kbd">/</span>
+    <div class="results"></div>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content">
+
+    <h1 style="margin-top:0">Neon <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">Quiz</span></h1>
+    <p class="lead">10 sawaal — HTML, CSS aur JavaScript se. Apna score dekho aur galtiyan samjho.</p>
+    <div id="quizHost" style="margin-top:20px"></div>
+
+    <script>
+    const Q = [
+      { q:"HTML ka full form kya hai?", o:["HyperText Markup Language","HighText Machine Language","Hyperlink Text Markup","Home Tool Markup Language"], a:0,
+        e:"HTML = HyperText Markup Language — page ka structure define karta hai." },
+      { q:"Kaun sa tag sabse bada heading hai?", o:["&lt;heading&gt;","&lt;h6&gt;","&lt;h1&gt;","&lt;head&gt;"], a:2,
+        e:"h1 sabse bada/important heading hai; &lt;head&gt; metadata ke liye hota hai." },
+      { q:"Link banane ke liye kaun sa attribute use hota hai?", o:["src","href","link","url"], a:1,
+        e:"&lt;a href=&quot;url&quot;&gt; — href destination batata hai." },
+      { q:"Image ke liye alternative text kis attribute se dete hain?", o:["title","alt","text","desc"], a:1,
+        e:"alt text screen readers aur load-fail situations ke liye zaroori hai." },
+      { q:"CSS mein class select karne ke liye kya lagate hain?", o:["#",".","@","&"], a:1,
+        e:".classname — class selector; # id ke liye hota hai." },
+      { q:"Box model ka sahi order (andar se bahar) kya hai?", o:["margin, border, padding, content","content, padding, border, margin","content, margin, border, padding","padding, content, margin, border"], a:1,
+        e:"content → padding → border → margin." },
+      { q:"Flexbox mein main axis par items align karne ke liye?", o:["align-items","justify-content","align-self","flex-wrap"], a:1,
+        e:"justify-content main axis, align-items cross axis handle karta hai." },
+      { q:"JavaScript mein variable declare karne ka modern tareeka?", o:["var","dim","let / const","int"], a:2,
+        e:"const default choice, let jab value badalni ho. var purana hai." },
+      { q:"document.querySelector('.card') kya return karta hai?", o:["Sab .card elements","Pehla matching element","Ek error","Ek string"], a:1,
+        e:"querySelector pehla match deta hai; sab ke liye querySelectorAll use karo." },
+      { q:"console.log() ka kaam kya hai?", o:["Page par text print karna","Developer console mein value dikhana","File save karna","Element delete karna"], a:1,
+        e:"Ye browser ke console mein output bhejta hai — debugging ka basic tool." }
+    ];
+
+    const host = document.getElementById("quizHost");
+    let answers = new Array(Q.length).fill(null);
+
+    function render(){
+      host.innerHTML = Q.map((item, i) =>
+        '<div class="qcard"><h4>' + (i+1) + '. ' + item.q + '</h4>' +
+        item.o.map((op, j) => {
+          let cls = "opt";
+          if (answers[i] !== null) {
+            if (j === item.a) cls += " right";
+            else if (j === answers[i]) cls += " wrong";
+          }
+          return '<button class="' + cls + '" data-q="' + i + '" data-o="' + j + '">' +
+                 String.fromCharCode(65+j) + '. ' + op + '</button>';
+        }).join("") +
+        (answers[i] !== null ? '<p style="color:var(--muted);font-size:.86rem;margin-top:10px"><b style="color:var(--cyan)">Samjhao:</b> ' + item.e + '</p>' : "") +
+        '</div>').join("") +
+        '<div class="card" style="text-align:center;margin-top:18px">' +
+          '<div class="score" id="score">' + score() + ' / ' + Q.length + '</div>' +
+          '<p style="color:var(--muted)">Score live update hota hai</p>' +
+          '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px">' +
+            '<button class="btn neon" id="resetQ">Reset quiz</button>' +
+            '<a class="btn ghost" href="editor.html">Editor mein practice karo ⚡</a>' +
+          '</div>' +
+        '</div>';
+
+      host.querySelectorAll("[data-q]").forEach(b => {
+        b.onclick = () => {
+          const qi = +b.dataset.q;
+          if (answers[qi] !== null) return;
+          answers[qi] = +b.dataset.o;
+          render();
+        };
+      });
+      const r = document.getElementById("resetQ");
+      if (r) r.onclick = () => { answers = new Array(Q.length).fill(null); render(); };
+    }
+    function score(){
+      return Q.reduce((s, it, i) => s + (answers[i] === it.a ? 1 : 0), 0);
+    }
+    render();
+    </script>
+  </main>
+</div>
+
+<footer>
+  <p><span class="lg">GodxShadow</span> — neon web-dev academy · Educational project inspired by W3Schools' learning format.</p>
+  <p style="font-size:.78rem">© <span id="year"></span> GodxShadow · Built with plain HTML, CSS &amp; JavaScript — no frameworks.</p>
+</footer>
+
+<script src="assets/tutorials.js?v=566"></script>
+<script src="assets/courses/html.js?v=566"></script>
+<script src="assets/courses/css.js?v=566"></script>
+<script src="assets/courses/js.js?v=566"></script>
+<script src="assets/courses/sql.js?v=566"></script>
+<script src="assets/courses/python.js?v=566"></script>
+<script src="assets/courses/c.js?v=566"></script>
+<script src="assets/courses/cpp.js?v=566"></script>
+<script src="assets/courses/csharp.js?v=566"></script>
+<script src="assets/courses/java.js?v=566"></script>
+<script src="assets/courses/php.js?v=566"></script>
+<script src="assets/courses/mysql.js?v=566"></script>
+<script src="assets/courses/typescript.js?v=566"></script>
+<script src="assets/courses/react.js?v=566"></script>
+<script src="assets/courses/nodejs.js?v=566"></script>
+<script src="assets/courses/bootstrap.js?v=566"></script>
+<script src="assets/courses/jquery.js?v=566"></script>
+<script src="assets/courses/git.js?v=566"></script>
+<script src="assets/courses/go.js?v=566"></script>
+<script src="assets/courses/kotlin.js?v=566"></script>
+<script src="assets/courses/rust.js?v=566"></script>
+<script src="assets/courses/swift.js?v=566"></script>
+<script src="assets/courses/angular.js?v=566"></script>
+<script src="assets/courses/vue.js?v=566"></script>
+<script src="assets/courses/tailwind.js?v=566"></script>
+<script src="assets/courses/django.js?v=566"></script>
+<script src="assets/courses/docker.js?v=566"></script>
+<script src="assets/courses/linux.js?v=566"></script>
+<script src="assets/courses/numpy.js?v=566"></script>
+<script src="assets/courses/pandas.js?v=566"></script>
+<script src="assets/courses/flask.js?v=566"></script>
+<script src="assets/courses/aspnet.js?v=566"></script>
+<script src="assets/courses/json.js?v=566"></script>
+<script src="assets/courses/xml.js?v=566"></script>
+<script src="assets/courses/flutter.js?v=566"></script>
+<script src="assets/courses/dsa.js?v=566"></script>
+<script src="assets/config.js?v=566"></script>
+<script src="assets/app.js?v=566"></script>
+</body>
+</html>

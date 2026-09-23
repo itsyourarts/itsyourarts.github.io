@@ -1,0 +1,12 @@
+# One-click deploy blueprint for Render (https://render.com).
+# Push this repo to GitHub, then: Render → New → Blueprint → pick the repo.
+services:
+  - type: web
+    name: godxshadow
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 8000

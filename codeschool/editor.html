@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Editor — GodxShadow</title>
+<link rel="stylesheet" href="assets/style.css?v=566">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body data-page="editor">
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="mark">&lt;/&gt;</span>
+    <span class="logo"><b><span class="n1">G</span><span class="n2">o</span><span class="n3">d</span>x<span class="n1">S</span><span class="n2">h</span><span class="n3">a</span><span class="n1">d</span><span class="n2">o</span><span class="n3">w</span></b>
+      <small>LIVE CODE EDITOR</small></span>
+  </a>
+  <nav class="nav" id="nav"></nav>
+  <div class="spacer"></div>
+  <span class="badge c" style="display:none" id="hint">Ctrl+Enter = Run</span>
+</header>
+
+<div class="editor">
+
+  <!-- editor toolbar -->
+  <div class="ebar">
+    <div class="tabs">
+      <button class="tab on" data-tab="html">HTML</button>
+      <button class="tab" data-tab="css">CSS</button>
+      <button class="tab" data-tab="js">JS</button>
+    </div>
+    <span class="lbl" style="margin-left:6px">Editor</span>
+    <span class="grow"></span>
+    <span class="status" id="status">Auto-run on</span>
+    <button class="btn sm neon" id="runBtn">▶ Run</button>
+    <button class="btn sm" id="autoBtn">Auto-run: ON</button>
+    <button class="btn sm ghost" id="formatBtn">Format</button>
+    <button class="btn sm ghost" id="copyBtn">Copy file</button>
+    <button class="btn sm ghost" id="newTabBtn">New tab</button>
+    <button class="btn sm ghost" id="downloadBtn">⇩ Download</button>
+    <button class="btn sm danger ghost" id="resetBtn">Reset</button>
+  </div>
+
+  <div class="panes">
+    <!-- code -->
+    <section class="pane-code">
+      <div class="edwrap on" id="wrap-html">
+        <div class="ln" id="ln-html">1</div>
+        <textarea id="ed-html" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off" aria-label="HTML editor"></textarea>
+      </div>
+      <div class="edwrap" id="wrap-css">
+        <div class="ln" id="ln-css">1</div>
+        <textarea id="ed-css" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off" aria-label="CSS editor"></textarea>
+      </div>
+      <div class="edwrap" id="wrap-js">
+        <div class="ln" id="ln-js">1</div>
+        <textarea id="ed-js" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off" aria-label="JavaScript editor"></textarea>
+      </div>
+    </section>
+
+    <div class="resizer" id="resizer" title="Drag to resize"></div>
+
+    <!-- output -->
+    <section class="pane-out">
+      <div class="iframebar">
+        <div class="dotset">
+          <i style="background:#ff5c7a"></i><i style="background:#ffc857"></i><i style="background:#38f2a5"></i>
+        </div>
+        <span style="font-family:var(--mono);font-size:.74rem;color:var(--muted)">preview — godxshadow://live</span>
+        <span class="grow" style="flex:1"></span>
+        <span style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">iframe sandbox</span>
+      </div>
+      <iframe id="preview" title="Live preview" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
+      <div class="console">
+        <div class="ch">
+          <span>Console</span>
+          <span class="grow" style="flex:1"></span>
+          <button class="btn sm ghost" id="clearCon">Clear</button>
+        </div>
+        <div class="cb" id="consoleBody"></div>
+      </div>
+    </section>
+  </div>
+
+</div>
+
+<script src="assets/tutorials.js?v=566"></script>
+<script src="assets/courses/html.js?v=566"></script>
+<script src="assets/courses/css.js?v=566"></script>
+<script src="assets/courses/js.js?v=566"></script>
+<script src="assets/courses/sql.js?v=566"></script>
+<script src="assets/courses/python.js?v=566"></script>
+<script src="assets/courses/c.js?v=566"></script>
+<script src="assets/courses/cpp.js?v=566"></script>
+<script src="assets/courses/csharp.js?v=566"></script>
+<script src="assets/courses/java.js?v=566"></script>
+<script src="assets/courses/php.js?v=566"></script>
+<script src="assets/courses/mysql.js?v=566"></script>
+<script src="assets/courses/typescript.js?v=566"></script>
+<script src="assets/courses/react.js?v=566"></script>
+<script src="assets/courses/nodejs.js?v=566"></script>
+<script src="assets/courses/bootstrap.js?v=566"></script>
+<script src="assets/courses/jquery.js?v=566"></script>
+<script src="assets/courses/git.js?v=566"></script>
+<script src="assets/courses/go.js?v=566"></script>
+<script src="assets/courses/kotlin.js?v=566"></script>
+<script src="assets/courses/rust.js?v=566"></script>
+<script src="assets/courses/swift.js?v=566"></script>
+<script src="assets/courses/angular.js?v=566"></script>
+<script src="assets/courses/vue.js?v=566"></script>
+<script src="assets/courses/tailwind.js?v=566"></script>
+<script src="assets/courses/django.js?v=566"></script>
+<script src="assets/courses/docker.js?v=566"></script>
+<script src="assets/courses/linux.js?v=566"></script>
+<script src="assets/courses/numpy.js?v=566"></script>
+<script src="assets/courses/pandas.js?v=566"></script>
+<script src="assets/courses/flask.js?v=566"></script>
+<script src="assets/courses/aspnet.js?v=566"></script>
+<script src="assets/courses/json.js?v=566"></script>
+<script src="assets/courses/xml.js?v=566"></script>
+<script src="assets/courses/flutter.js?v=566"></script>
+<script src="assets/courses/dsa.js?v=566"></script>
+<script src="assets/config.js?v=566"></script>
+<script src="assets/app.js?v=566"></script>
+<script src="assets/editor.js?v=566"></script>
+<script>
+  // editor page: keep nav lean
+  (function(){
+    const hint = document.getElementById("hint");
+    if (hint && window.innerWidth > 1100) hint.style.display = "inline-block";
+  })();
+</script>
+</body>
+</html>

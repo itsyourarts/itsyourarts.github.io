@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Examples — GodxShadow</title>
+<link rel="stylesheet" href="assets/style.css?v=566">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body data-page="examples">
+
+<header class="topbar">
+  <button class="burger" id="burger">☰</button>
+  <a class="brand" href="index.html">
+    <span class="mark">&lt;/&gt;</span>
+    <span class="logo"><b><span class="n1">G</span><span class="n2">o</span><span class="n3">d</span>x<span class="n1">S</span><span class="n2">h</span><span class="n3">a</span><span class="n1">d</span><span class="n2">o</span><span class="n3">w</span></b>
+      <small>NEON DEV ACADEMY</small></span>
+  </a>
+  <nav class="nav" id="nav"></nav>
+  <div class="spacer"></div>
+  <div class="search" id="search">
+    <span style="color:var(--muted);font-size:.85rem">⌕</span>
+    <input type="search" placeholder="Search tutorials…  ( / )" aria-label="Search tutorials">
+    <span class="kbd">/</span>
+    <div class="results"></div>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content">
+
+    <h1 style="margin-top:0">Neon <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">Examples</span> Gallery</h1>
+    <p class="lead">Ready-made code snippets. Kisi bhi card par <b>Open in Editor</b> dabao — code live editor mein khul jaayega.</p>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:18px 0" id="exFilters"></div>
+    <div class="grid g2" id="exGrid"></div>
+
+    <script>
+    const EX = [
+      { t:"Neon glow button", c:"css", lang:"CSS",
+        html:'<button class="glow">Hover me</button>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.glow{padding:16px 34px;font-size:1.1rem;border:2px solid #22e8ff;background:transparent;color:#22e8ff;border-radius:14px;cursor:pointer;transition:.3s}\n.glow:hover{background:#22e8ff;color:#04121a;box-shadow:0 0 25px #22e8ff,0 0 60px rgba(34,232,255,.5);transform:scale(1.05)}',
+        js:'' },
+      { t:"Animated gradient text", c:"css", lang:"CSS",
+        html:'<h1 class="grad">GodxShadow</h1>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\nh1{font-size:4rem;background:linear-gradient(90deg,#22e8ff,#b15cff,#ff3ea5,#22e8ff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:move 5s linear infinite}\n@keyframes move{to{background-position:300% 0}}',
+        js:'' },
+      { t:"Typing effect", c:"js", lang:"JavaScript",
+        html:'<p id="typed"></p>',
+        css:'body{background:#05060d;font-family:monospace;padding:40px;color:#38f2a5;font-size:1.3rem}\n#typed::after{content:"▊";animation:blink 1s steps(1) infinite;color:#22e8ff}\n@keyframes blink{50%{opacity:0}}',
+        js:'const text = "Hello, main GodxShadow hoon… neon style mein coding sikhta hoon!";\nconst el = document.getElementById("typed");\nlet i = 0;\nconst t = setInterval(() => {\n  el.textContent = text.slice(0, ++i);\n  if (i >= text.length) clearInterval(t);\n}, 55);' },
+      { t:"Flexbox card row", c:"css", lang:"CSS",
+        html:'<div class="row"><div class="c">1</div><div class="c">2</div><div class="c">3</div></div>',
+        css:'body{background:#0b0f1e;font-family:sans-serif;margin:0;padding:20px}\n.row{display:flex;gap:14px;flex-wrap:wrap}\n.c{flex:1 1 140px;padding:30px;text-align:center;border-radius:14px;background:#11142a;border:1px solid #b15cff;color:#ff3ea5;font-size:1.4rem;box-shadow:0 0 20px rgba(177,92,255,.3)}',
+        js:'' },
+      { t:"Counter with JS", c:"js", lang:"JavaScript",
+        html:'<div class="box"><button id="m">−</button><span id="n">0</span><button id="p">+</button></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.box{display:flex;align-items:center;gap:18px;padding:22px 28px;border:1px solid #22e8ff;border-radius:16px;box-shadow:0 0 26px rgba(34,232,255,.35)}\nbutton{width:44px;height:44px;border-radius:50%;border:0;font-size:1.3rem;background:#22e8ff;color:#04121a;cursor:pointer;font-weight:bold}\n#n{font-size:2rem;color:#ff3ea5;min-width:60px;text-align:center}',
+        js:'let n = 0;\nconst out = document.getElementById("n");\ndocument.getElementById("p").onclick = () => { n++; paint(); };\ndocument.getElementById("m").onclick = () => { n--; paint(); };\nfunction paint(){ out.textContent = n; console.log("count =", n); }' },
+      { t:"CSS-only loader", c:"css", lang:"CSS",
+        html:'<div class="loader"></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh}\n.loader{width:70px;height:70px;border-radius:50%;border:5px solid rgba(34,232,255,.15);border-top-color:#22e8ff;border-right-color:#ff3ea5;animation:spin .9s linear infinite;box-shadow:0 0 24px rgba(34,232,255,.4)}\n@keyframes spin{to{transform:rotate(360deg)}}',
+        js:'' },
+      { t:"Live clock", c:"js", lang:"JavaScript",
+        html:'<div class="clock" id="clock">--:--:--</div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:monospace}\n.clock{font-size:3.2rem;color:#22e8ff;text-shadow:0 0 18px #22e8ff;padding:26px 38px;border:1px solid rgba(34,232,255,.4);border-radius:18px}',
+        js:'const el = document.getElementById("clock");\nsetInterval(() => {\n  el.textContent = new Date().toLocaleTimeString("en-IN", { hour12:false });\n}, 1000);\nconsole.log("clock started");' },
+      { t:"Todo list app", c:"js", lang:"JavaScript",
+        html:'<h2>My Tasks</h2>\n<input id="i" placeholder="Task likho…"><button id="b">Add</button>\n<ul id="u"></ul>',
+        css:'body{background:#0b0f1e;color:#e7ecff;font-family:sans-serif;padding:26px}\ninput{padding:9px;border-radius:8px;border:1px solid #22e8ff;background:#05060d;color:#fff}\nbutton{padding:9px 16px;border:0;border-radius:8px;background:#ff3ea5;color:#fff;cursor:pointer;font-weight:bold}\nli{margin:8px 0;cursor:pointer}\nli.done{text-decoration:line-through;color:#5b6791}',
+        js:'const i=document.getElementById("i"),u=document.getElementById("u");\ndocument.getElementById("b").onclick=add;\ni.addEventListener("keydown",e=>{if(e.key==="Enter")add();});\nfunction add(){const v=i.value.trim();if(!v)return;const li=document.createElement("li");li.textContent=v;li.onclick=()=>li.classList.toggle("done");u.appendChild(li);i.value="";console.log("added:",v);}' },
+      { t:"Table with styling", c:"html", lang:"HTML+CSS",
+        html:'<table>\n<tr><th>Language</th><th>Use</th></tr>\n<tr><td>HTML</td><td>Structure</td></tr>\n<tr><td>CSS</td><td>Style</td></tr>\n<tr><td>JS</td><td>Behaviour</td></tr>\n</table>',
+        css:'body{background:#05060d;padding:24px;font-family:sans-serif}\ntable{border-collapse:collapse;width:100%;max-width:420px}\nth,td{border:1px solid rgba(34,232,255,.4);padding:11px 14px;text-align:left}\nth{background:#11142a;color:#22e8ff;letter-spacing:.06em}\ntr:hover td{background:rgba(255,62,165,.1);color:#fff}\ntd{color:#8f9ac4}',
+        js:'' },
+      { t:"Form + validation", c:"html", lang:"HTML+JS",
+        html:'<form id="f">\n<label>Name <input required minlength="3" name="n"></label>\n<label>Email <input required type="email" name="e"></label>\n<button>Submit</button>\n</form>\n<p id="msg"></p>',
+        css:'body{background:#0b0f1e;font-family:sans-serif;padding:26px;color:#e7ecff}\nform{display:grid;gap:12px;max-width:320px}\ninput{padding:9px;border-radius:8px;border:1px solid #b15cff;background:#05060d;color:#fff}\nbutton{padding:10px;border:0;border-radius:8px;background:linear-gradient(90deg,#22e8ff,#ff3ea5);font-weight:bold;cursor:pointer}\n#msg{color:#38f2a5}',
+        js:'document.getElementById("f").addEventListener("submit", e => {\n  e.preventDefault();\n  const d = new FormData(e.target);\n  document.getElementById("msg").textContent = "Welcome " + d.get("n") + "!";\n  console.log(Object.fromEntries(d));\n});' },
+      { t:"Grid gallery", c:"css", lang:"CSS",
+        html:'<div class="g"><div>1</div><div class="big">2</div><div>3</div><div>4</div><div>5</div></div>',
+        css:'body{background:#05060d;padding:16px;font-family:sans-serif}\n.g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}\n.g div{background:#11142a;border:1px solid #22e8ff;border-radius:12px;padding:26px;text-align:center;color:#22e8ff;box-shadow:0 0 18px rgba(34,232,255,.22)}\n.big{grid-column:span 2;border-color:#ff3ea5;color:#ff3ea5}',
+        js:'' },
+      { t:"Random quote generator", c:"js", lang:"JavaScript",
+        html:'<p id="q">Button dabao…</p><button id="b">Naya quote</button>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif;text-align:center;padding:20px}\n#q{max-width:520px;font-size:1.25rem;color:#22e8ff;text-shadow:0 0 12px rgba(34,232,255,.6)}\nbutton{margin-top:18px;padding:11px 20px;border:0;border-radius:10px;background:#ff3ea5;color:#fff;font-weight:bold;cursor:pointer}',
+        js:'const quotes = [\n  "Pehla rule: code likho, phir socho.",\n  "Bug se daro mat — debug karo.",\n  "CSS easy hai… center karne se pehle.",\n  "Har expert kabhi beginner tha.",\n  "Commit chhota, khushi badi."\n];\ndocument.getElementById("b").onclick = () => {\n  const q = quotes[Math.floor(Math.random()*quotes.length)];\n  document.getElementById("q").textContent = q;\n  console.log(q);\n};' },
+      { t:"Neon sign flicker", c:"css", lang:"CSS",
+        html:'<h1 class="sign">OPEN 24/7</h1>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.sign{font-size:3rem;letter-spacing:8px;color:#ffe6f5;text-shadow:0 0 8px #ff3ea5,0 0 26px #ff3ea5,0 0 70px #b15cff;animation:flick 2.8s infinite}\n@keyframes flick{0%,90%,94%{opacity:1}92%,97%{opacity:.25}}',
+        js:'' },
+      { t:"Pure CSS spinner", c:"css", lang:"CSS",
+        html:'<div class="ring"></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh}\n.ring{width:64px;height:64px;border:6px solid #141a33;border-top-color:#22e8ff;border-right-color:#38f2a5;border-radius:50%;animation:spin 0.9s linear infinite}\n@keyframes spin{to{transform:rotate(360deg)}}',
+        js:'' },
+      { t:"Glassmorphism card", c:"css", lang:"CSS",
+        html:'<div class="card"><h3>Neon Glass</h3><p>backdrop-filter se frosted glass effect</p></div>',
+        css:'body{background:radial-gradient(circle at 75% 20%,#ff3ea555,transparent 50%),radial-gradient(circle at 20% 75%,#22e8ff55,transparent 50%),#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.card{width:280px;padding:26px;border-radius:20px;background:rgba(255,255,255,.07);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.22);color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.45)}\n.card h3{margin:0 0 6px;color:#22e8ff}\n.card p{margin:0;color:#c8d0f0}',
+        js:'' },
+      { t:"3D flip card", c:"css", lang:"CSS",
+        html:'<div class="flip"><div class="inner"><div class="face front">FRONT</div><div class="face back">BACK ⚡</div></div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.flip{width:200px;height:260px;perspective:1000px;cursor:pointer}\n.inner{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}\n.flip:hover .inner{transform:rotateY(180deg)}\n.face{position:absolute;inset:0;display:grid;place-items:center;border-radius:18px;backface-visibility:hidden;font-weight:800;font-size:1.3rem}\n.front{border:2px solid #22e8ff;color:#22e8ff;background:#0b0f1e}\n.back{transform:rotateY(180deg);background:linear-gradient(135deg,#22e8ff,#b15cff);color:#04121a}',
+        js:'' },
+      { t:"Animated gradient border", c:"css", lang:"CSS",
+        html:'<button class="gb">Gradient border</button>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.gb{position:relative;padding:16px 34px;font-size:1.05rem;color:#e7ecff;background:#0d1020;border:0;border-radius:14px;cursor:pointer}\n.gb::before{content:"";position:absolute;inset:-3px;border-radius:16px;background:linear-gradient(90deg,#22e8ff,#ff3ea5,#b15cff,#22e8ff);background-size:300%;z-index:-1;animation:move 3.5s linear infinite}\n@keyframes move{to{background-position:300% 0}}',
+        js:'' },
+      { t:"Tooltip on hover", c:"css", lang:"CSS",
+        html:'<button class="tip" data-tip="Sirf CSS se!">Hover karo</button>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.tip{position:relative;padding:14px 28px;border:2px solid #38f2a5;background:transparent;color:#38f2a5;border-radius:12px;font-size:1rem;cursor:pointer}\n.tip::after{content:attr(data-tip);position:absolute;left:50%;bottom:135%;transform:translateX(-50%) scale(.85);opacity:0;background:#0e2b21;border:1px solid #38f2a5;color:#eafff5;padding:8px 14px;border-radius:8px;white-space:nowrap;transition:.25s}\n.tip:hover::after{opacity:1;transform:translateX(-50%) scale(1);box-shadow:0 0 18px rgba(56,242,165,.4)}',
+        js:'' },
+      { t:"Skeleton loader", c:"css", lang:"CSS",
+        html:'<div class="row"><div class="sk av"></div><div class="sk" style="flex:1"></div></div><div class="sk big"></div><div class="sk big" style="width:70%"></div>',
+        css:'body{background:#0b0f1e;padding:26px}\n.row{display:flex;gap:12px;align-items:center;margin-bottom:14px}\n.sk{height:14px;border-radius:6px;background:linear-gradient(90deg,#141a33 25%,#232c52 45%,#141a33 65%);background-size:300%;animation:shim 1.4s infinite}\n.av{width:46px;height:46px;border-radius:50%;flex:none}\n.big{height:18px;margin:10px 0}\n@keyframes shim{from{background-position:150% 0}to{background-position:-150% 0}}',
+        js:'' },
+      { t:"Infinite marquee", c:"css", lang:"CSS",
+        html:'<div class="mq"><div class="tr"><span>⚡ NEON</span><span>✦ GODXSHADOW</span><span>✧ CSS ONLY</span><span>⚡ NEON</span><span>✦ GODXSHADOW</span><span>✧ CSS ONLY</span></div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.mq{width:400px;overflow:hidden;border:1px solid #262b4d;border-radius:12px;background:#0b0f1e}\n.tr{display:flex;gap:36px;padding:16px;width:max-content;white-space:nowrap;color:#22e8ff;font-weight:700;animation:sc 9s linear infinite}\n.mq:hover .tr{animation-play-state:paused}\n@keyframes sc{to{transform:translateX(-50%)}}',
+        js:'' },
+      { t:"Badge + pulse dot", c:"css", lang:"CSS",
+        html:'<button class="b">Inbox<span class="bg">7</span></button><span class="st"><i></i>Live</span>',
+        css:'body{background:#05060d;display:flex;gap:34px;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif}\n.b{position:relative;padding:12px 26px;border:1px solid #22e8ff;background:#0b0f1e;color:#22e8ff;border-radius:10px}\n.bg{position:absolute;top:-9px;right:-9px;width:20px;height:20px;line-height:20px;border-radius:10px;background:#ff3ea5;color:#fff;font-size:.75rem;font-weight:700}\n.st{display:flex;align-items:center;gap:8px;color:#38f2a5}\n.st i{width:10px;height:10px;border-radius:50%;background:#38f2a5;position:relative}\n.st i::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #38f2a5;animation:pu 1.5s infinite}\n@keyframes pu{from{transform:scale(.6);opacity:1}to{transform:scale(1.9);opacity:0}}',
+        js:'' },
+      { t:"Image hover caption", c:"css", lang:"CSS",
+        html:'<div class="im"><img src="https://picsum.photos/seed/neonx/320/200" alt=""><div class="cp">Neon City — hover me</div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.im{position:relative;width:320px;overflow:hidden;border-radius:16px;border:1px solid #262b4d}\n.im img{width:100%;display:block;transition:.45s}\n.cp{position:absolute;inset:auto 0 0 0;padding:12px;background:linear-gradient(transparent,#000e);color:#22e8ff;transform:translateY(100%);transition:.35s}\n.im:hover img{transform:scale(1.12)}\n.im:hover .cp{transform:translateY(0)}',
+        js:'' },
+      { t:"Neumorphism buttons", c:"css", lang:"CSS",
+        html:'<button class="neu">NEON</button><button class="neu press">PRESS</button>',
+        css:'body{background:#0a0d1c;display:flex;gap:26px;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif}\n.neu{padding:18px 40px;border:0;border-radius:16px;background:#0a0d1c;color:#22e8ff;font-size:1rem;cursor:pointer;box-shadow:6px 6px 14px #04050c,-6px -6px 14px #131840;transition:.2s}\n.neu:hover{color:#ff3ea5}\n.press:active{box-shadow:inset 6px 6px 14px #04050c,inset -6px -6px 14px #131840}',
+        js:'' },
+      { t:"Gradient progress bar", c:"css", lang:"CSS",
+        html:'<div class="p"><div></div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh}\n.p{width:320px;height:16px;border-radius:99px;background:#141a33;overflow:hidden;box-shadow:inset 0 0 6px #000}\n.p div{height:100%;width:70%;border-radius:99px;background:linear-gradient(90deg,#22e8ff,#b15cff,#ff3ea5);background-size:200%;animation:mv 2s linear infinite;box-shadow:0 0 14px rgba(255,62,165,.5)}\n@keyframes mv{to{background-position:200% 0}}',
+        js:'' },
+      { t:"Pure CSS accordion", c:"css", lang:"CSS",
+        html:'<details class="a" open><summary>Kya ye CSS se bana hai?</summary><p>Haan — details/summary + ::after arrow rotate!</p></details><details class="a"><summary>JS chahiye kya?</summary><p>Bilkul nahi — native HTML behavior hai.</p></details>',
+        css:'body{background:#05060d;max-width:460px;margin:26px auto;font-family:sans-serif;padding:14px}\n.a{background:#0b0f1e;border:1px solid #262b4d;border-radius:12px;margin-bottom:10px;overflow:hidden}\n.a summary{list-style:none;cursor:pointer;padding:14px 16px;color:#e7ecff;font-weight:600;display:flex;justify-content:space-between}\n.a summary::-webkit-details-marker{display:none}\n.a summary::after{content:"▾";color:#22e8ff;transition:transform .3s}\n.a[open]{border-color:#22e8ff;box-shadow:0 0 18px rgba(34,232,255,.15)}\n.a[open] summary{color:#22e8ff}\n.a[open] summary::after{transform:rotate(180deg)}\n.a p{margin:0;padding:0 16px 14px;color:#8f9ac4}',
+        js:'' },
+      { t:"Animated hamburger", c:"css", lang:"CSS",
+        html:'<input type="checkbox" id="x" hidden><label for="x" class="h"><span></span><span></span><span></span></label>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh}\n.h{display:inline-flex;flex-direction:column;gap:6px;cursor:pointer;padding:12px;border-radius:12px;border:1px solid #262b4d;background:#0b0f1e}\n.h span{display:block;width:26px;height:3px;border-radius:99px;background:#ff3ea5;transition:.35s cubic-bezier(.5,-0.3,.3,1.5)}\n#x:checked~.h span:nth-child(1){transform:translateY(9px) rotate(45deg)}\n#x:checked~.h span:nth-child(2){opacity:0;transform:scaleX(0)}\n#x:checked~.h span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}',
+        js:'' },
+      { t:"Focus glow input", c:"css", lang:"CSS",
+        html:'<input class="g" type="email" placeholder="Email likho..." required>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.g{width:280px;padding:15px 18px;border-radius:12px;border:1px solid #262b4d;background:#0b0f1e;color:#e7ecff;font-size:1rem;outline:none;transition:.3s}\n.g::placeholder{color:#5b6791}\n.g:focus{border-color:#22e8ff;box-shadow:0 0 0 4px rgba(34,232,255,.13),0 0 22px rgba(34,232,255,.35)}\n.g:focus:invalid{border-color:#ff3ea5}',
+        js:'' },
+      { t:"Pricing card (glow)", c:"css", lang:"CSS",
+        html:'<div class="pc"><span class="t">POPULAR</span><h3>Pro Plan</h3><div class="pr">₹499<span>/mo</span></div><ul><li>All 35 courses</li><li>Certificates</li><li>Discord access</li></ul><button>Go Pro</button></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.pc{position:relative;width:250px;background:#0b0f1e;border:1px solid #ff3ea5;border-radius:18px;padding:28px 26px;box-shadow:0 0 30px rgba(255,62,165,.22);transition:.3s}\n.pc:hover{transform:translateY(-8px);box-shadow:0 0 50px rgba(255,62,165,.35)}\n.t{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#ff3ea5,#b15cff);color:#fff;font-size:.65rem;font-weight:700;padding:4px 12px;border-radius:99px}\n.pc h3{margin:0 0 8px;color:#e7ecff}\n.pr{font-size:1.8rem;font-weight:800;color:#ff3ea5;margin-bottom:14px}\n.pr span{font-size:.8rem;color:#5b6791}\n.pc ul{list-style:none;margin:0 0 18px;padding:0;color:#8f9ac4}\n.pc li{padding:4px 0}\n.pc li::before{content:"✓ ";color:#38f2a5}\n.pc button{width:100%;padding:11px;border:0;border-radius:10px;background:linear-gradient(90deg,#ff3ea5,#b15cff);color:#fff;font-weight:700;cursor:pointer}',
+        js:'' },
+      { t:"Custom neon scrollbar", c:"css", lang:"CSS",
+        html:'<div class="sb"><p style="height:500px">Scrollbar neon hai — scroll karke dekho! ↓ ↓ ↓</p></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.sb{width:300px;height:200px;overflow-y:auto;padding:16px;background:#0b0f1e;border:1px solid #262b4d;border-radius:14px;color:#8f9ac4}\n.sb::-webkit-scrollbar{width:9px}\n.sb::-webkit-scrollbar-track{background:#0b0f1e}\n.sb::-webkit-scrollbar-thumb{background:linear-gradient(#22e8ff,#ff3ea5);border-radius:99px;border:2px solid #0b0f1e}',
+        js:'' },
+      { t:"Neon login form", c:"css", lang:"CSS",
+        html:'<form class="lf"><h2>Login</h2><input type="email" placeholder="Email" required><input type="password" placeholder="Password" required><button>Enter ⚡</button><p class="hint">No account? Sign up</p></form>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.lf{width:280px;background:#0b0f1e;border:1px solid #262b4d;border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 40px rgba(34,232,255,.1)}\n.lf h2{margin:0 0 6px;text-align:center;background:linear-gradient(90deg,#22e8ff,#ff3ea5);-webkit-background-clip:text;background-clip:text;color:transparent}\n.lf input{padding:13px 16px;border-radius:10px;border:1px solid #262b4d;background:#05060d;color:#e7ecff;outline:none;transition:.3s}\n.lf input:focus{border-color:#22e8ff;box-shadow:0 0 0 3px rgba(34,232,255,.15)}\n.lf button{padding:13px;border:0;border-radius:10px;background:linear-gradient(90deg,#22e8ff,#b15cff);color:#04121a;font-weight:700;cursor:pointer}\n.hint{text-align:center;color:#5b6791;font-size:.85rem;margin:0;cursor:pointer}.hint:hover{color:#22e8ff}',
+        js:'' },
+      { t:"Zebra data table", c:"css", lang:"CSS",
+        html:'<table><thead><tr><th>Course</th><th>Lessons</th><th>Free</th></tr></thead><tbody><tr><td>HTML</td><td>22</td><td>✓</td></tr><tr><td>CSS</td><td>42</td><td>✓</td></tr><tr><td>Rust</td><td>8</td><td>✓</td></tr><tr><td>Docker</td><td>8</td><td>✓</td></tr></tbody></table>',
+        css:'body{background:#05060d;padding:26px;font-family:sans-serif}\ntable{width:100%;max-width:480px;border-collapse:collapse;background:#0b0f1e;border-radius:12px;overflow:hidden;color:#e7ecff;border:1px solid #262b4d}\nth{background:#141a33;color:#22e8ff;text-align:left;padding:12px 16px;font-size:.85rem;letter-spacing:.5px}\ntd{padding:10px 16px;border-top:1px solid #141a33}\ntbody tr:nth-child(even){background:#0d1226}\ntbody tr:hover{background:#141a33;transition:.15s}',
+        js:'' },
+      { t:"Chat bubbles", c:"css", lang:"CSS",
+        html:'<div class="c"><div class="l">CSS seekh raha hai?</div><div class="r">Haan bhai, bubbles bhi CSS se! 🔥</div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.c{width:320px;display:flex;flex-direction:column;gap:10px}\n.l,.r{position:relative;max-width:78%;padding:11px 15px;border-radius:18px;line-height:1.5}\n.l{align-self:flex-start;background:#141a33;color:#e7ecff;border-bottom-left-radius:4px}\n.r{align-self:flex-end;background:linear-gradient(135deg,#22e8ff,#25c4e8);color:#04121a;border-bottom-right-radius:4px}',
+        js:'' },
+      { t:"Underline link hover", c:"css", lang:"CSS",
+        html:'<nav><a class="u">Home</a><a class="u">Courses</a><a class="u">Docs</a><a class="u">About</a></nav>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\nnav{display:flex;gap:28px}\n.u{color:#e7ecff;text-decoration:none;cursor:pointer;font-size:1.05rem;position:relative;padding-bottom:5px}\n.u::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:linear-gradient(90deg,#22e8ff,#ff3ea5);transition:width .3s}\n.u:hover{color:#22e8ff}\n.u:hover::after{width:100%}',
+        js:'' },
+      { t:"Neumorphic soft card", c:"css", lang:"CSS",
+        html:'<div class="nc"><h3>Soft UI</h3><p>Dual box-shadow = embossed look</p></div>',
+        css:'body{background:#0a0d1c;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.nc{width:230px;padding:26px;border-radius:20px;background:#0a0d1c;box-shadow:8px 8px 18px #04050c,-8px -8px 18px #131840;color:#e7ecff}\n.nc h3{margin:0 0 6px;color:#22e8ff}\n.nc p{margin:0;color:#8f9ac4}',
+        js:'' },
+      { t:"3D flip card", c:"css", lang:"CSS",
+        html:'<div class="scene"><div class="card3d"><div class="face front">Hover me ✨</div><div class="face back">C# seekh raha ho na? 💜</div></div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.scene{perspective:900px}\n.card3d{width:240px;height:150px;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1)}\n.card3d:hover{transform:rotateY(180deg)}\n.face{position:absolute;inset:0;display:grid;place-items:center;border-radius:16px;backface-visibility:hidden;font-size:1.1rem}\n.front{background:linear-gradient(135deg,#141a33,#0b0f1e);color:#22e8ff;border:2px solid #22e8ff}\n.back{background:linear-gradient(135deg,#ff3ea5,#b15cff);color:#fff;transform:rotateY(180deg)}',
+        js:'' },
+      { t:"Scroll snap strip", c:"css", lang:"CSS",
+        html:'<div class="rail"><section>Snap 1</section><section>Snap 2</section><section>Snap 3</section><section>Snap 4</section></div>',
+        css:'body{margin:0;background:#05060d;font-family:sans-serif;padding:20px}\n.rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px}\nsection{flex:0 0 85vw;max-width:340px;height:180px;display:grid;place-items:center;border-radius:16px;color:#fff;scroll-snap-align:start;background:#141a33;border:1px solid #262b4d;font-size:1.3rem}\n.rail::-webkit-scrollbar{height:6px}\n.rail::-webkit-scrollbar-thumb{background:#22e8ff;border-radius:3px}',
+        js:'' },
+      { t:"Neon gradient text", c:"css", lang:"CSS",
+        html:'<h1 class="grad">GODX<span>SHADOW</span></h1>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.grad{font-size:clamp(2.5rem,8vw,5rem);font-weight:800;letter-spacing:4px;margin:0;background:linear-gradient(90deg,#22e8ff,#b15cff,#ff3ea5,#22e8ff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 6s linear infinite;filter:drop-shadow(0 0 20px #22e8ff55)}\n.grad span{display:block;text-align:center}\n@keyframes flow{to{background-position:300% 0}}',
+        js:'' },
+      { t:"CSS counter stepper", c:"css", lang:"CSS",
+        html:'<ol class="steps"><li>HTML basics seekho</li><li>CSS se style karo</li><li>JS se life daalo</li><li>C# mein deep dive</li></ol>',
+        css:'body{background:#05060d;padding:26px;font-family:sans-serif}\n.steps{counter-reset:step;list-style:none;padding:0;max-width:380px}\n.steps li{counter-increment:step;position:relative;padding:14px 14px 14px 58px;background:#0b0f1e;border:1px solid #141a33;border-radius:12px;color:#e7ecff;margin-bottom:10px}\n.steps li::before{content:counter(step,decimal-leading-zero);position:absolute;left:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#141a33;color:#b15cff;font-weight:700;border:1px solid #b15cff55}\n.steps li:hover{border-color:#22e8ff;transform:translateX(4px);transition:.2s}',
+        js:'' },
+      { t:"Glassmorphism panel", c:"css", lang:"CSS",
+        html:'<div class="glass"><h3>Glass Panel</h3><p>backdrop-filter blur + transparency</p></div>',
+        css:'body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:sans-serif;background:radial-gradient(circle at 30% 20%, #b15cff55, transparent 40%),radial-gradient(circle at 70% 80%, #22e8ff44, transparent 40%), #05060d}\n.glass{width:280px;padding:26px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#fff;box-shadow:0 20px 40px #0008}\n.glass h3{margin:0 0 8px;color:#22e8ff}\n.glass p{margin:0;color:#c9d2f5}',
+        js:'' },
+      { t:"Clip-path hero shapes", c:"css", lang:"CSS",
+        html:'<div class="row"><div class="sh slant neon">SLANT</div><div class="sh circle pink">CIRCLE</div><div class="sh arrow mint">ARROW</div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.row{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}\n.sh{width:220px;height:110px;display:grid;place-items:center;color:#03121a;font-weight:800;letter-spacing:2px}\n.slant{clip-path:polygon(0 0,100% 0,88% 100%,0 100%);background:linear-gradient(90deg,#22e8ff,#25c4e8)}\n.circle{clip-path:circle(46% at 50% 50%);background:#ff3ea5;color:#fff}\n.arrow{clip-path:polygon(0 15%,75% 15%,75% 0,100% 50%,75% 100%,75% 85%,0 85%);background:#38f2a5}',
+        js:'' },
+      { t:"Infinite logo marquee", c:"css", lang:"CSS",
+        html:'<div class="mq"><div class="track"><span>HTML</span><span>CSS</span><span>JS</span><span>C#</span><span>PYTHON</span><span>SQL</span><span>HTML</span><span>CSS</span><span>JS</span><span>C#</span><span>PYTHON</span><span>SQL</span></div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.mq{width:420px;max-width:90vw;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}\n.track{display:flex;gap:36px;width:max-content;animation:roll 12s linear infinite}\n.track span{color:#22e8ff;font-weight:800;letter-spacing:2px;white-space:nowrap;font-size:1.2rem}\n.mq:hover .track{animation-play-state:paused}\n@keyframes roll{to{transform:translateX(-50%)}}',
+        js:'' },
+      { t:"Masked edge fade", c:"css", lang:"CSS",
+        html:'<p class="fade">Mujhe CSS mask-image se gently fade kiya gaya hai — pure CSS, zero JS. Keep reading…</p>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif;padding:20px}\n.fade{max-width:520px;color:#e7ecff;font-size:1.25rem;line-height:1.7;padding:22px;background:#0b0f1e;border:1px solid #141a33;border-radius:16px;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}',
+        js:'' },
+      { t:"Native modal (dialog)", c:"css", lang:"CSS",
+        html:'<button id="opn">Open Modal</button><dialog id="d"><h3>Neon Modal ✨</h3><p>Pure HTML dialog — no library!</p><form method="dialog"><button>Close</button></form></dialog>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n#opn{background:linear-gradient(90deg,#22e8ff,#b15cff);border:0;padding:12px 24px;border-radius:10px;font-weight:700;cursor:pointer}\ndialog{background:#11142a;color:#e7ecff;border:1px solid #22e8ff;border-radius:16px;padding:22px}\ndialog::backdrop{background:#05060dcc;backdrop-filter:blur(4px)}\nform button{background:transparent;border:1px solid #ff3ea5;color:#ff3ea5;padding:8px 14px;border-radius:8px;cursor:pointer;margin-top:8px}',
+        js:'document.getElementById("opn").onclick=()=>document.getElementById("d").showModal();' },
+      { t:"Subgrid aligned cards", c:"css", lang:"CSS",
+        html:'<div class="cards"><article><h3>Short</h3><p>tiny</p><button>Buy</button></article><article><h3>A Very Long Product Title</h3><p>much longer text here that wraps onto multiple lines and would break alignment</p><button>Buy</button></article><article><h3>Mid</h3><p>ok</p><button>Buy</button></article></div>',
+        css:'body{background:#05060d;padding:22px;font-family:sans-serif}\n.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}\narticle{grid-row:span 3;display:grid;grid-template-rows:subgrid;background:#11142a;border:1px solid #262b4d;border-radius:12px;padding:14px;row-gap:8px}\nh3{margin:0;color:#ffc857;font-size:.95rem}\np{margin:0;color:#8f9ac4;font-size:.8rem}\nbutton{background:#ff3ea5;border:0;border-radius:8px;padding:9px;color:#fff;font-weight:700;cursor:pointer;align-self:end}',
+        js:'' },
+      { t:"@property animated glow", c:"css", lang:"CSS",
+        html:'<div class="box"></div>',
+        css:'@property --hue { syntax: "<integer>"; inherits: true; initial-value: 190; }\n.box{width:150px;height:150px;margin:40px auto;border-radius:24px;background:hsl(var(--hue) 90% 55%);box-shadow:0 0 50px hsl(var(--hue) 90% 55% / .9);transition:--hue 1s;cursor:pointer}\n.box:hover{--hue:320}',
+        js:'' },
+      { t:"Container query card", c:"css", lang:"CSS",
+        html:'<div class="wrap"><div class="card"><h3>Resize me</h3><p>This card restyles based on its CONTAINER width, not the viewport.</p></div></div>',
+        css:'body{background:#05060d;padding:20px;font-family:sans-serif}\n.wrap{container-type:inline-size;border:1px dashed #333;padding:12px;transition:width .3s;width:380px}\n.card{padding:16px;border-radius:12px;background:#10142e}\n@container (max-width:300px){.card{background:#2a1030}}\n@container (min-width:301px) and (max-width:420px){.card{background:#10233a}}\n@container (min-width:421px){.card{background:#12301f;display:flex;gap:14px}}',
+        js:'const w=document.querySelector(".wrap");let s=380;setInterval(()=>{s=Math.max(220,Math.min(520,s+(Math.random()>0.5?30:-30)));w.style.width=s+"px";},1200);' },
+      { t:"Scroll progress bar (0 JS)", c:"css", lang:"CSS",
+        html:'<div class="bar"></div><h2>Scroll this page</h2><p>The top bar fills as you scroll — pure CSS scroll-driven animation, no JavaScript.</p>',
+        css:'body{background:#05060d;color:#cfd6f2;font-family:sans-serif;padding:20px}\n@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}\n.bar{position:fixed;top:0;left:0;height:5px;width:100%;background:linear-gradient(90deg,#22e8ff,#ff3ea5);transform-origin:left;animation:grow linear;animation-timeline:scroll()}',
+        js:'document.body.style.minHeight="300vh";' },
+      { t:"@layer cascade order", c:"css", lang:"CSS",
+        html:'<button class="btn">Layer button</button><p>Same specificity — the LATER layer wins.</p>',
+        css:'body{background:#05060d;color:#cfd6f2;font-family:sans-serif;padding:20px}\n@layer base, theme, overrides;\n@layer base {.btn{padding:10px 18px;border-radius:10px;background:#222;color:#fff}}\n@layer theme {.btn{background:#10233a}}\n@layer overrides {.btn{background:linear-gradient(90deg,#22e8ff,#b15cff);color:#05060d;font-weight:700}}',
+        js:'' },
+      { t:"Fluid type (clamp)", c:"css", lang:"CSS",
+        html:'<h1>Resize me</h1><h2>Fluid heading</h2><p>This paragraph scales with the viewport too — clamp(min, ideal, max) with zero breakpoints.</p>',
+        css:'body{background:#05060d;color:#e7ecff;font-family:sans-serif;padding:30px}\nh1{font-size:clamp(2rem,1rem + 6vw,5rem);margin:0 0 10px;background:linear-gradient(90deg,#22e8ff,#b15cff);-webkit-background-clip:text;background-clip:text;color:transparent}\nh2{font-size:clamp(1.2rem,.9rem + 2vw,2.2rem);color:#ffc857;margin:18px 0 8px}\np{font-size:clamp(.95rem,.85rem + .5vw,1.3rem);color:#8f9ac4;line-height:1.6;max-width:60ch}',
+        js:'' },
+      { t:"3D flip card", c:"css", lang:"CSS",
+        html:'<div class="scene"><div class="card"><div class="face front"><h3>Hover me</h3><p>3D flip</p></div><div class="face back"><h3>Neon side</h3><p>rotateY(180deg)</p></div></div></div>',
+        css:'body{background:#05060d;display:grid;place-items:center;min-height:100vh;font-family:sans-serif}\n.scene{perspective:900px}\n.card{width:240px;height:300px;position:relative;transform-style:preserve-3d;transition:transform .8s}\n.card:hover{transform:rotateY(180deg)}\n.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:grid;place-content:center;text-align:center;padding:20px}\n.front{background:linear-gradient(160deg,#11142a,#1a1030);border:1px solid #22e8ff;box-shadow:0 0 30px #22e8ff33}\n.back{background:linear-gradient(160deg,#2a0e2a,#11142a);border:1px solid #ff3ea5;box-shadow:0 0 30px #ff3ea533;transform:rotateY(180deg)}\nh3{margin:0;color:#22e8ff}\n.back h3{color:#ff3ea5}\np{color:#8f9ac4;font-size:.85rem}',
+        js:'' },
+      { t:"Glass panels (backdrop-filter)", c:"css", lang:"CSS",
+        html:'<div class="wrap"><div class="glass g1">Glass One</div><div class="glass g2">Glass Two</div></div>',
+        css:'body{margin:0;font-family:sans-serif}\n.wrap{min-height:100vh;display:grid;place-items:center;background:conic-gradient(from 180deg at 50% 50%,#ff3ea5,#b15cff,#22e8ff,#38f2a5,#ff3ea5)}\n.wrap::after{content:"";position:absolute;inset:0;background:rgba(5,6,13,.25)}\n.glass{position:relative;z-index:1;width:230px;padding:34px;border-radius:22px;text-align:center;font-weight:700;color:#fff;background:rgba(255,255,255,.08);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border:1px solid rgba(255,255,255,.22);box-shadow:0 18px 50px rgba(0,0,0,.35);margin:0 14px}\n.wrap{display:flex;justify-content:center;align-items:center;flex-wrap:wrap}',
+        js:'' },
+      { t:"Auto-fit grid (zero breakpoints)", c:"css", lang:"CSS",
+        html:'<div class="grid">' + Array.from({length:8},(_,i)=>'<div class="tile">T'+(i+1)+'</div>').join('') + '</div>',
+        css:'body{background:#05060d;padding:26px;font-family:sans-serif}\n.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}\n.tile{background:linear-gradient(150deg,#11142a,#151a3a);border:1px solid #262b4d;border-radius:14px;padding:26px 16px;text-align:center;color:#22e8ff;font-weight:700}\n.grid:hover .tile{border-color:#22e8ff}',
+        js:'' }
+    ];
+
+    const grid = document.getElementById("exGrid");
+    const filters = document.getElementById("exFilters");
+    const cats = [["all","All"],["html","HTML"],["css","CSS"],["js","JavaScript"]];
+    let cur = "all";
+
+    function drawFilters(){
+      filters.innerHTML = cats.map(([k,l]) =>
+        '<button class="btn sm ' + (cur===k?"neon":"ghost") + '" data-f="'+k+'">'+l+'</button>').join("");
+      filters.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { cur = b.dataset.f; drawFilters(); draw(); });
+    }
+    function draw(){
+      const list = EX.filter(e => cur==="all" || e.c===cur);
+      grid.innerHTML = list.map((e,idx) => {
+        const real = EX.indexOf(e);
+        const prev = e.html;
+        return '<div class="card">' +
+          '<div class="ic">'+e.lang+'</div>' +
+          '<h3>'+e.t+'</h3>' +
+          '<div class="resultbox"><div class="rh">Preview</div><div class="rb" style="min-height:110px;overflow:hidden">'+prev+'</div></div>' +
+          '<div style="display:flex;gap:8px;margin-top:10px">' +
+            '<button class="btn sm neon" data-open="'+real+'">Open in Editor ⚡</button>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+      grid.querySelectorAll("[data-open]").forEach(b => b.onclick = () => {
+        const e = EX[+b.dataset.open];
+        localStorage.setItem("gxs.draft", JSON.stringify({ html:e.html, css:e.css, js:e.js }));
+        location.href = "editor.html";
+      });
+    }
+    drawFilters(); draw();
+    </script>
+  </main>
+</div>
+
+<footer>
+  <p><span class="lg">GodxShadow</span> — neon web-dev academy · Educational project inspired by W3Schools' learning format.</p>
+  <p style="font-size:.78rem">© <span id="year"></span> GodxShadow · Built with plain HTML, CSS &amp; JavaScript — no frameworks.</p>
+</footer>
+
+<script src="assets/tutorials.js?v=566"></script>
+<script src="assets/courses/html.js?v=566"></script>
+<script src="assets/courses/css.js?v=566"></script>
+<script src="assets/courses/js.js?v=566"></script>
+<script src="assets/courses/sql.js?v=566"></script>
+<script src="assets/courses/python.js?v=566"></script>
+<script src="assets/courses/c.js?v=566"></script>
+<script src="assets/courses/cpp.js?v=566"></script>
+<script src="assets/courses/csharp.js?v=566"></script>
+<script src="assets/courses/java.js?v=566"></script>
+<script src="assets/courses/php.js?v=566"></script>
+<script src="assets/courses/mysql.js?v=566"></script>
+<script src="assets/courses/typescript.js?v=566"></script>
+<script src="assets/courses/react.js?v=566"></script>
+<script src="assets/courses/nodejs.js?v=566"></script>
+<script src="assets/courses/bootstrap.js?v=566"></script>
+<script src="assets/courses/jquery.js?v=566"></script>
+<script src="assets/courses/git.js?v=566"></script>
+<script src="assets/courses/go.js?v=566"></script>
+<script src="assets/courses/kotlin.js?v=566"></script>
+<script src="assets/courses/rust.js?v=566"></script>
+<script src="assets/courses/swift.js?v=566"></script>
+<script src="assets/courses/angular.js?v=566"></script>
+<script src="assets/courses/vue.js?v=566"></script>
+<script src="assets/courses/tailwind.js?v=566"></script>
+<script src="assets/courses/django.js?v=566"></script>
+<script src="assets/courses/docker.js?v=566"></script>
+<script src="assets/courses/linux.js?v=566"></script>
+<script src="assets/courses/numpy.js?v=566"></script>
+<script src="assets/courses/pandas.js?v=566"></script>
+<script src="assets/courses/flask.js?v=566"></script>
+<script src="assets/courses/aspnet.js?v=566"></script>
+<script src="assets/courses/json.js?v=566"></script>
+<script src="assets/courses/xml.js?v=566"></script>
+<script src="assets/courses/flutter.js?v=566"></script>
+<script src="assets/courses/dsa.js?v=566"></script>
+<script src="assets/config.js?v=566"></script>
+<script src="assets/app.js?v=566"></script>
+</body>
+</html>

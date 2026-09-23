@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GodxShadow — Learn Web Development with Neon Style</title>
+<meta name="description" content="GodxShadow — free HTML, CSS, JavaScript, SQL and Python tutorials with a live in-browser code editor.">
+<link rel="stylesheet" href="assets/style.css?v=566">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body data-page="home">
+
+<header class="topbar">
+  <button class="burger" id="burger">☰</button>
+  <a class="brand" href="index.html">
+    <span class="mark">&lt;/&gt;</span>
+    <span class="logo"><b><span class="n1">G</span><span class="n2">o</span><span class="n3">d</span>x<span class="n1">S</span><span class="n2">h</span><span class="n3">a</span><span class="n1">d</span><span class="n2">o</span><span class="n3">w</span></b>
+      <small>NEON DEV ACADEMY</small></span>
+  </a>
+  <nav class="nav" id="nav"></nav>
+  <div class="spacer"></div>
+  <div class="search" id="search">
+    <span style="color:var(--muted);font-size:.85rem">⌕</span>
+    <input type="search" placeholder="Search tutorials…  ( / )" aria-label="Search tutorials">
+    <span class="kbd">/</span>
+    <div class="results" id="searchResults"></div>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="content">
+    <section class="hero">
+      <h1>Code likho. <span class="grad">Turant dekho.</span><br>Neon style mein seekho.</h1>
+      <p>GodxShadow ek free learning platform hai — <b>35 courses</b>: HTML, CSS, JavaScript, React, Angular, Vue, Python, Django, C, C++, C#, Java, Kotlin, Swift, Go, Rust, PHP, SQL, Node.js, Docker, Git &amp; aur bhi — step-by-step tutorials,
+         har lesson ke saath <b>live in-browser editor</b>, console output aur examples. Koi install nahi, koi setup nahi.</p>
+      <div class="row">
+        <a class="btn neon" href="editor.html">⚡ Open Live Editor</a>
+        <a class="btn" href="tutorials.html?c=html&l=intro">HTML se shuru karo</a>
+        <a class="btn ghost" href="examples.html">Examples dekho</a>
+      </div>
+      <div class="badges">
+        <span class="badge c"><b id="statLessons">0</b> lessons</span>
+        <span class="badge p"><b id="statCourses">0</b> courses</span>
+        <span class="badge k">Live HTML / CSS / JS Editor</span>
+        <span class="badge">Console Output Capture</span>
+        <span class="badge c">Progress Tracking</span>
+        <span class="badge p">Copy &amp; Download Code</span>
+        <span class="badge k">100% Free</span>
+      </div>
+      <div style="margin-top:22px;max-width:420px">
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:6px">
+          <span>Aapki progress</span><span id="homeProgTxt">0 / 0</span>
+        </div>
+        <div class="prog"><i id="homeProg" style="width:0%"></i></div>
+      </div>
+    </section>
+
+    <h2 class="section-title">Courses</h2>
+    <div class="grid g3" id="courseGrid"></div>
+
+    <h2 class="section-title">Live Editor kya kar sakta hai?</h2>
+    <div class="grid g3">
+      <div class="card">
+        <div class="ic">⚡</div>
+        <h3>Instant preview</h3>
+        <p>Type karte hi result — 650ms debounce ke saath auto-run. Ctrl+Enter se manual run bhi.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="color:var(--pink)">▤</div>
+        <h3>3 tabs: HTML · CSS · JS</h3>
+        <p>Line numbers, Tab-key indent, auto bracket closing aur code format — sab built-in.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="color:var(--green)">▣</div>
+        <h3>Real console</h3>
+        <p><code class="inline">console.log / warn / error</code> capture hota hai, runtime errors bhi dikhte hain.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="color:var(--purple)">⇩</div>
+        <h3>Download &amp; new tab</h3>
+        <p>Poora project ek <code class="inline">.html</code> file mein download karo, ya full-screen preview kholo.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="color:var(--amber)">◎</div>
+        <h3>Auto-save</h3>
+        <p>Code browser ke localStorage mein save rehta hai — refresh karne par bhi kaam nahi jaata.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="color:var(--cyan)">✦</div>
+        <h3>Har lesson se linked</h3>
+        <p>Har tutorial ke code par "Try it ▸" button — code seedha editor mein khul jaata hai.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Kaise seekhein?</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3><span style="color:var(--cyan)">01</span> — Padho</h3>
+        <p>Chhota, seedha explanation Hinglish mein. Har concept ka reason bhi bataya gaya hai.</p>
+      </div>
+      <div class="card">
+        <h3><span style="color:var(--purple)">02</span> — Dekho</h3>
+        <p>Har lesson mein syntax-highlighted example code aur uska result.</p>
+      </div>
+      <div class="card">
+        <h3><span style="color:var(--pink)">03</span> — Badlo</h3>
+        <p>"Try it ▸" dabao, code editor mein khul jaayega — values badal kar dekho kya hota hai.</p>
+      </div>
+      <div class="card">
+        <h3><span style="color:var(--green)">04</span> — Test karo</h3>
+        <p>Quiz page par apna knowledge check karo aur lesson ko completed mark karo.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <p><span class="lg">GodxShadow</span> — neon web-dev academy · Educational clone project inspired by W3Schools' learning format.</p>
+  <p style="font-size:.78rem">© <span id="year"></span> GodxShadow · Built with plain HTML, CSS &amp; JavaScript — no frameworks.</p>
+</footer>
+
+
+<script src="assets/tutorials.js?v=566"></script>
+<script src="assets/courses/html.js?v=566"></script>
+<script src="assets/courses/css.js?v=566"></script>
+<script src="assets/courses/js.js?v=566"></script>
+<script src="assets/courses/sql.js?v=566"></script>
+<script src="assets/courses/python.js?v=566"></script>
+<script src="assets/courses/c.js?v=566"></script>
+<script src="assets/courses/cpp.js?v=566"></script>
+<script src="assets/courses/csharp.js?v=566"></script>
+<script src="assets/courses/java.js?v=566"></script>
+<script src="assets/courses/php.js?v=566"></script>
+<script src="assets/courses/mysql.js?v=566"></script>
+<script src="assets/courses/typescript.js?v=566"></script>
+<script src="assets/courses/react.js?v=566"></script>
+<script src="assets/courses/nodejs.js?v=566"></script>
+<script src="assets/courses/bootstrap.js?v=566"></script>
+<script src="assets/courses/jquery.js?v=566"></script>
+<script src="assets/courses/git.js?v=566"></script>
+<script src="assets/courses/go.js?v=566"></script>
+<script src="assets/courses/kotlin.js?v=566"></script>
+<script src="assets/courses/rust.js?v=566"></script>
+<script src="assets/courses/swift.js?v=566"></script>
+<script src="assets/courses/angular.js?v=566"></script>
+<script src="assets/courses/vue.js?v=566"></script>
+<script src="assets/courses/tailwind.js?v=566"></script>
+<script src="assets/courses/django.js?v=566"></script>
+<script src="assets/courses/docker.js?v=566"></script>
+<script src="assets/courses/linux.js?v=566"></script>
+<script src="assets/courses/numpy.js?v=566"></script>
+<script src="assets/courses/pandas.js?v=566"></script>
+<script src="assets/courses/flask.js?v=566"></script>
+<script src="assets/courses/aspnet.js?v=566"></script>
+<script src="assets/courses/json.js?v=566"></script>
+<script src="assets/courses/xml.js?v=566"></script>
+<script src="assets/courses/flutter.js?v=566"></script>
+<script src="assets/courses/dsa.js?v=566"></script>
+<script src="assets/config.js?v=566"></script>
+<script src="assets/app.js?v=566"></script>
+</body>
+</html>

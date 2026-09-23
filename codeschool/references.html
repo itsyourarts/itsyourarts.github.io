@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — GodxShadow</title>
+<link rel="stylesheet" href="assets/style.css?v=566">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body data-page="references">
+
+<header class="topbar">
+  <button class="burger" id="burger">☰</button>
+  <a class="brand" href="index.html">
+    <span class="mark">&lt;/&gt;</span>
+    <span class="logo"><b><span class="n1">G</span><span class="n2">o</span><span class="n3">d</span>x<span class="n1">S</span><span class="n2">h</span><span class="n3">a</span><span class="n1">d</span><span class="n2">o</span><span class="n3">w</span></b>
+      <small>NEON DEV ACADEMY</small></span>
+  </a>
+  <nav class="nav" id="nav"></nav>
+  <div class="spacer"></div>
+  <div class="search" id="search">
+    <span style="color:var(--muted);font-size:.85rem">⌕</span>
+    <input type="search" placeholder="Search tutorials…  ( / )" aria-label="Search tutorials">
+    <span class="kbd">/</span>
+    <div class="results"></div>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content">
+
+    <h1 style="margin-top:0">Quick <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">Reference</span></h1>
+    <p class="lead">HTML tags aur CSS properties ka fast lookup. Search box mein type karo — table turant filter ho jaayegi.</p>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:18px 0;align-items:center">
+      <button class="btn sm neon" data-rt="html" id="rtHtml">HTML Tags</button>
+      <button class="btn sm ghost" data-rt="css" id="rtCss">CSS Properties</button>
+      <button class="btn sm ghost" data-rt="js" id="rtJs">JS Methods</button>
+      <div class="search" style="margin-left:auto;min-width:220px;position:relative">
+        <span style="color:var(--muted);font-size:.85rem">⌕</span>
+        <input type="text" id="refSearch" placeholder="Filter reference…">
+      </div>
+    </div>
+
+    <div class="tblwrap"><table class="ref" id="refTable"><thead><tr><th>Name</th><th>What it does</th><th>Example</th></tr></thead><tbody></tbody></table></div>
+
+    <script>
+    const REF = {
+      html: [
+        ["&lt;!DOCTYPE html&gt;","Document ko HTML5 declare karta hai","&lt;!DOCTYPE html&gt;"],
+        ["&lt;a&gt;","Hyperlink banata hai","&lt;a href='url'&gt;text&lt;/a&gt;"],
+        ["&lt;abbr&gt;","Abbreviation / acronym","&lt;abbr title='HyperText Markup Language'&gt;HTML&lt;/abbr&gt;"],
+        ["&lt;article&gt;","Independent, self-contained content","&lt;article&gt;Blog post&lt;/article&gt;"],
+        ["&lt;aside&gt;","Side content (sidebar)","&lt;aside&gt;Ads&lt;/aside&gt;"],
+        ["&lt;audio&gt;","Sound / music player","&lt;audio controls src='x.mp3'&gt;"],
+        ["&lt;b&gt;","Bold text (bina extra meaning)","&lt;b&gt;bold&lt;/b&gt;"],
+        ["&lt;blockquote&gt;","Lamba quoted section","&lt;blockquote cite='url'&gt;…&lt;/blockquote&gt;"],
+        ["&lt;body&gt;","Page ka visible content","&lt;body&gt;…&lt;/body&gt;"],
+        ["&lt;br&gt;","Line break (empty element)","line1&lt;br&gt;line2"],
+        ["&lt;button&gt;","Clickable button","&lt;button&gt;Click&lt;/button&gt;"],
+        ["&lt;canvas&gt;","JS se graphics draw karne ki jagah","&lt;canvas id='c' width='300'&gt;"],
+        ["&lt;code&gt;","Code snippet dikhane ke liye","&lt;code&gt;let x = 1;&lt;/code&gt;"],
+        ["&lt;div&gt;","Generic block container","&lt;div class='card'&gt;…&lt;/div&gt;"],
+        ["&lt;em&gt;","Emphasis (italic, semantic)","&lt;em&gt;important&lt;/em&gt;"],
+        ["&lt;footer&gt;","Page/section ka footer","&lt;footer&gt;© 2026&lt;/footer&gt;"],
+        ["&lt;form&gt;","User input collect karne ka form","&lt;form action='/save'&gt;"],
+        ["&lt;h1&gt;–&lt;h6&gt;","Headings, h1 sabse bada","&lt;h2&gt;Title&lt;/h2&gt;"],
+        ["&lt;header&gt;","Intro content / navbar area","&lt;header&gt;Logo + nav&lt;/header&gt;"],
+        ["&lt;hr&gt;","Horizontal rule / divider","&lt;hr&gt;"],
+        ["&lt;iframe&gt;","Doosra page embed karna","&lt;iframe src='url'&gt;"],
+        ["&lt;img&gt;","Image (empty element)","&lt;img src='a.png' alt='desc'&gt;"],
+        ["&lt;input&gt;","Form field (text, email, file…)","&lt;input type='email' required&gt;"],
+        ["&lt;label&gt;","Input ka caption, accessibility","&lt;label for='n'&gt;Name&lt;/label&gt;"],
+        ["&lt;li&gt;","List item","&lt;li&gt;item&lt;/li&gt;"],
+        ["&lt;main&gt;","Page ka main unique content","&lt;main&gt;…&lt;/main&gt;"],
+        ["&lt;mark&gt;","Highlighted text","&lt;mark&gt;found&lt;/mark&gt;"],
+        ["&lt;nav&gt;","Navigation links ka group","&lt;nav&gt;…&lt;/nav&gt;"],
+        ["&lt;ol&gt;","Ordered (numbered) list","&lt;ol&gt;&lt;li&gt;a&lt;/li&gt;&lt;/ol&gt;"],
+        ["&lt;p&gt;","Paragraph","&lt;p&gt;text&lt;/p&gt;"],
+        ["&lt;pre&gt;","Preformatted text (spacing as-is)","&lt;pre&gt;  code  &lt;/pre&gt;"],
+        ["&lt;section&gt;","Thematic section of page","&lt;section&gt;…&lt;/section&gt;"],
+        ["&lt;select&gt;","Dropdown list","&lt;select&gt;&lt;option&gt;A&lt;/option&gt;&lt;/select&gt;"],
+        ["&lt;span&gt;","Generic inline container","&lt;span class='tag'&gt;new&lt;/span&gt;"],
+        ["&lt;strong&gt;","Strong importance (bold)","&lt;strong&gt;warning&lt;/strong&gt;"],
+        ["&lt;table&gt;","Table — tr/th/td ke saath","&lt;table&gt;&lt;tr&gt;&lt;td&gt;"],
+        ["&lt;textarea&gt;","Multi-line text input","&lt;textarea rows='4'&gt;"],
+        ["&lt;video&gt;","Video player","&lt;video controls src='v.mp4'&gt;"]
+      ],
+      css: [
+        ["background","Color, image, gradient set karta hai","background:#05060d;"],
+        ["border","Element ki boundary line","border:1px solid #22e8ff;"],
+        ["border-radius","Corners ko round karta hai","border-radius:12px;"],
+        ["box-shadow","Element ke bahar/andar glow","box-shadow:0 0 20px #22e8ff;"],
+        ["color","Text ka color","color:#ff3ea5;"],
+        ["display","Element ka layout type","display:flex; / grid; / none;"],
+        ["flex-direction","Flex items ki direction","flex-direction:column;"],
+        ["font-family","Text ka font","font-family:sans-serif;"],
+        ["font-size","Text ka size","font-size:1.2rem;"],
+        ["font-weight","Text ki motai","font-weight:700;"],
+        ["gap","Flex/Grid items ke beech space","gap:16px;"],
+        ["grid-template-columns","Grid ke columns define karta hai","grid-template-columns:repeat(3,1fr);"],
+        ["height","Element ki height","height:100vh;"],
+        ["justify-content","Main axis par alignment","justify-content:space-between;"],
+        ["align-items","Cross axis par alignment","align-items:center;"],
+        ["letter-spacing","Characters ke beech space","letter-spacing:1px;"],
+        ["line-height","Line ki height","line-height:1.6;"],
+        ["margin","Element ke bahar space","margin:0 auto;"],
+        ["max-width","Maximum width limit","max-width:1200px;"],
+        ["opacity","Transparency (0–1)","opacity:.6;"],
+        ["padding","Element ke andar space","padding:14px 18px;"],
+        ["position","Element ki positioning mode","position:sticky; top:0;"],
+        ["text-align","Text ka alignment","text-align:center;"],
+        ["text-shadow","Text par glow/shadow","text-shadow:0 0 12px #22e8ff;"],
+        ["transform","Rotate / scale / move","transform:translateY(-4px) scale(1.05);"],
+        ["transition","Smooth change between states","transition:all .3s ease;"],
+        ["animation","Keyframe animation chalata hai","animation:pulse 2s infinite;"],
+        ["z-index","Stacking order","z-index:10;"],
+        ["@media","Screen size par rules badalna","@media (max-width:600px){}"],
+        ["@keyframes","Animation ke steps define karna","@keyframes spin{to{transform:rotate(360deg)}}"]
+      ],
+      js: [
+        ["console.log()","Console mein value print karta hai","console.log('hi', x);"],
+        ["document.querySelector()","CSS selector se element dhoondta hai","document.querySelector('.card');"],
+        ["addEventListener()","Event par function chalata hai","el.addEventListener('click', fn);"],
+        ["createElement()","Naya HTML element banata hai","document.createElement('li');"],
+        ["appendChild()","Child element add karta hai","ul.appendChild(li);"],
+        ["textContent","Element ka text padhna/set karna","el.textContent = 'hello';"],
+        ["classList","Class add/remove/toggle","el.classList.toggle('done');"],
+        ["fetch()","Server se data laata hai (Promise)","await fetch('/api/users');"],
+        ["JSON.stringify()","Object → text","JSON.stringify(obj);"],
+        ["JSON.parse()","Text → object","JSON.parse(text);"],
+        ["Array.map()","Har item transform karke naya array","arr.map(n => n*2);"],
+        ["Array.filter()","Condition pass karne wale items","arr.filter(n => n>10);"],
+        ["Array.reduce()","Array ko ek value mein ghaatna","arr.reduce((a,b)=>a+b, 0);"],
+        ["Array.forEach()","Har item par side-effect","arr.forEach(x => console.log(x));"],
+        ["setTimeout()","Delay ke baad function","setTimeout(fn, 1000);"],
+        ["setInterval()","Repeat karke function","setInterval(fn, 500);"],
+        ["localStorage.setItem()","Browser mein data save karta hai","localStorage.setItem('k','v');"],
+        ["Math.random()","0 se 1 ke beech random number","Math.random();"],
+        ["new Date()","Current date/time object","new Date().toLocaleTimeString();"],
+        ["typeof","Value ka type batata hai","typeof 42; // 'number'"]
+      ]
+    };
+
+    let kind = "html";
+    const tbody = document.querySelector("#refTable tbody");
+    const inp = document.getElementById("refSearch");
+
+    function draw(){
+      const q = (inp.value||"").toLowerCase();
+      const rows = REF[kind].filter(r => (r[0]+" "+r[1]).toLowerCase().includes(q));
+      tbody.innerHTML = rows.length
+        ? rows.map(r => "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td><code class='inline'>"+r[2]+"</code></td></tr>").join("")
+        : '<tr><td colspan="3" style="color:var(--muted)">Koi result nahi mila.</td></tr>';
+    }
+    [["rtHtml","html"],["rtCss","css"],["rtJs","js"]].forEach(([id,k]) => {
+      document.getElementById(id).onclick = () => {
+        kind = k;
+        inp.value = "";                       // clear filter when switching dataset
+        ["rtHtml","rtCss","rtJs"].forEach(o => document.getElementById(o).className = "btn sm " + (o===id?"neon":"ghost"));
+        draw();
+      };
+    });
+    inp.addEventListener("input", draw);
+    draw();
+    </script>
+  </main>
+</div>
+
+<footer>
+  <p><span class="lg">GodxShadow</span> — neon web-dev academy · Educational project inspired by W3Schools' learning format.</p>
+  <p style="font-size:.78rem">© <span id="year"></span> GodxShadow · Built with plain HTML, CSS &amp; JavaScript — no frameworks.</p>
+</footer>
+
+<script src="assets/tutorials.js?v=566"></script>
+<script src="assets/courses/html.js?v=566"></script>
+<script src="assets/courses/css.js?v=566"></script>
+<script src="assets/courses/js.js?v=566"></script>
+<script src="assets/courses/sql.js?v=566"></script>
+<script src="assets/courses/python.js?v=566"></script>
+<script src="assets/courses/c.js?v=566"></script>
+<script src="assets/courses/cpp.js?v=566"></script>
+<script src="assets/courses/csharp.js?v=566"></script>
+<script src="assets/courses/java.js?v=566"></script>
+<script src="assets/courses/php.js?v=566"></script>
+<script src="assets/courses/mysql.js?v=566"></script>
+<script src="assets/courses/typescript.js?v=566"></script>
+<script src="assets/courses/react.js?v=566"></script>
+<script src="assets/courses/nodejs.js?v=566"></script>
+<script src="assets/courses/bootstrap.js?v=566"></script>
+<script src="assets/courses/jquery.js?v=566"></script>
+<script src="assets/courses/git.js?v=566"></script>
+<script src="assets/courses/go.js?v=566"></script>
+<script src="assets/courses/kotlin.js?v=566"></script>
+<script src="assets/courses/rust.js?v=566"></script>
+<script src="assets/courses/swift.js?v=566"></script>
+<script src="assets/courses/angular.js?v=566"></script>
+<script src="assets/courses/vue.js?v=566"></script>
+<script src="assets/courses/tailwind.js?v=566"></script>
+<script src="assets/courses/django.js?v=566"></script>
+<script src="assets/courses/docker.js?v=566"></script>
+<script src="assets/courses/linux.js?v=566"></script>
+<script src="assets/courses/numpy.js?v=566"></script>
+<script src="assets/courses/pandas.js?v=566"></script>
+<script src="assets/courses/flask.js?v=566"></script>
+<script src="assets/courses/aspnet.js?v=566"></script>
+<script src="assets/courses/json.js?v=566"></script>
+<script src="assets/courses/xml.js?v=566"></script>
+<script src="assets/courses/flutter.js?v=566"></script>
+<script src="assets/courses/dsa.js?v=566"></script>
+<script src="assets/config.js?v=566"></script>
+<script src="assets/app.js?v=566"></script>
+</body>
+</html>
