@@ -650,7 +650,7 @@ a{color:inherit}
   -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:fade .25s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .drawer{
-  position:fixed;top:0;right:0;bottom:0;width:min(1400px,98vw);z-index:90;display:flex;flex-direction:column;
+  position:fixed;top:0;right:0;bottom:0;width:min(1000px,98vw);z-index:90;display:flex;flex-direction:column;
   /* full glass — peeche ki page blur hoke dikhegi */
   background:
     linear-gradient(158deg,rgba(255,255,255,.08),rgba(255,255,255,.02) 46%,rgba(255,255,255,.05)),
