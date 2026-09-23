@@ -1,0 +1,62 @@
+name: Build & Deploy GODXSHADOW to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  schedule:
+    # har 15 minute me fresh live data (GitHub Pages limit = 10 build/hour, ye 4 hai)
+    - cron: "*/15 * * * *"
+  workflow_dispatch:            # Actions tab se manually bhi chala sakte ho
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # live source se fresh JSON snapshot banao -> public/data/*.json
+      # 3 baar try (source kabhi-kabhi slow/rate-limit karta hai); fail hone par bhi
+      # purani (committed) data deploy ho jaye — site kabhi khali na rahe
+      - name: Build live data snapshot
+        run: |
+          for i in 1 2 3; do
+            echo "--- attempt $i ---"
+            if node scripts/snapshot.js; then echo "snapshot OK"; break; fi
+            sleep 20
+          done
+        continue-on-error: true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # public/ = poori static site (html, css, js + data/*.json)
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
