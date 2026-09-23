@@ -1,1 +1,63 @@
 
+name: SarkariResult — data refresh
+
+# ⚠️ YE FILE REPO ROOT ke `.github/workflows/` me honi chahiye:
+#    itsyourarts.github.io/.github/workflows/sarkariresult-data.yml
+#    (sarkariresult/ folder ke andar NAHI — wahan rakha to GitHub use ignore kar deta hai)
+
+on:
+  schedule:
+    # har 30 minute (UTC). Badalna ho to: "0 * * * *" = har ghante
+    - cron: "*/30 * * * *"
+  workflow_dispatch:        # Actions tab se manually bhi chala sakte ho
+  push:
+    branches: [main]
+    paths:
+      - 'sarkariresult/scripts/**'
+      - 'sarkariresult/public/parser.js'
+
+permissions:
+  contents: write           # data wapas commit karne ke liye ZAROORI
+
+concurrency:
+  group: sarkari-data
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # live source se saara data banata hai: home.json, latest.json, index.json,
+      # lastdate.json aur post/<slug>.json (309 posts). Pehli baar ~1 min lagega,
+      # uske baad sirf naye/badle hue posts (incremental).
+      - name: Build fresh data snapshot
+        run: |
+          cd sarkariresult
+          for i in 1 2 3; do
+            echo "--- attempt $i ---"
+            if node scripts/snapshot.js; then echo "snapshot OK"; break; fi
+            sleep 20
+          done
+
+      # data commit -> Pages (branch deploy) apne aap naya data serve karega.
+      # [skip ci] se ye commit dobara workflow trigger nahi karta (loop nahi).
+      - name: Commit + push data
+        run: |
+          git config user.name  "sarkari-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A sarkariresult/public/data
+          if git diff --cached --quiet; then
+            echo "koi badlav nahi — commit skip kiya"
+          else
+            git commit -m "chore(sarkari): refresh data [skip ci]"
+            git push
+            echo "naya data commit + push ho gaya"
+          fi
