@@ -1,0 +1,17 @@
+{
+  "name": "godxshadow-sarkari-result-live",
+  "version": "3.0.0",
+  "description": "GODXSHADOW — neon glass live Sarkari Result feed + Instagram Downloader. Node server (live API) ya static host (snapshot) — dono mode me chalta hai. Zero dependencies.",
+  "private": true,
+  "main": "server.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js",
+    "snapshot": "node scripts/snapshot.js",
+    "build": "node scripts/snapshot.js || echo 'snapshot skipped'",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

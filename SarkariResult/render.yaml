@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Render Blueprint — https://render.com/docs/blueprint-spec
+#  Render Dashboard → New → Blueprint → repo select karo → Apply
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+  - type: web
+    name: godxshadow
+    runtime: node
+    plan: free
+    region: singapore          # India ke sabse paas
+    branch: main
+    healthCheckPath: /api/status
+    # build: deps (zero) + ek data snapshot (static fallback); fail ho to build na ruke
+    buildCommand: npm install --omit=dev --no-audit --no-fund; node scripts/snapshot.js || echo "snapshot skipped"
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: SNAPSHOT_POSTS
+        value: "1500"
+      - key: SNAPSHOT_CONC
+        value: "6"
+      - key: SOON_DAYS
+        value: "7"
+
+# ── Docker variant ────────────────────────────────────────────────────────────
+# Agar Dockerfile se deploy karna ho to upar ke `runtime/buildCommand/startCommand`
+# ki jagah ye 3 line use karo:
+#
+#     runtime: docker
+#     dockerfilePath: ./Dockerfile
+#     dockerContext: ./
+#
+# (Render free plan par Docker bhi chal jata hai, bas build thoda slow hota hai.)

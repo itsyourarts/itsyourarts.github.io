@@ -1,0 +1,18 @@
+# ── Netlify config ───────────────────────────────────────────────────
+# Ye file REPO ROOT me rakho (sarkariresult/ ke andar nahi).
+#
+# Do layout:
+#  A) App repo root par hai  (public/, scripts/ root par):
+#        base = ""            publish = "public"
+#  B) App subfolder me hai   (sarkariresult/public, sarkariresult/scripts):
+#        base = "sarkariresult"   publish = "public"     <-- aapka case
+#
+# command: deploy ke waqt snapshot chalta hai -> data BUILD TIME par fresh hota hai
+
+[build]
+  base    = "sarkariresult"
+  command = "node scripts/snapshot.js"
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "20"
