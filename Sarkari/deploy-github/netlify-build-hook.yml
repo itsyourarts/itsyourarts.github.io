@@ -1,0 +1,21 @@
+name: Netlify — rebuild with fresh data
+
+# Netlify FREE plan me 300 build-minutes/month milte hain.
+# Ek build ~1.5 min -> isliye 30-min cron MAT chalao (4 din me khatam).
+# Recommended: har 4 ghante (6 build/day ≈ 270 min/month).
+on:
+  schedule:
+    - cron: "0 */4 * * *"     # har 4 ghante
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Netlify build hook
+        run: |
+          if [ -z "${{ secrets.NETLIFY_BUILD_HOOK }}" ]; then
+            echo "NETLIFY_BUILD_HOOK secret set nahi hai"; exit 1
+          fi
+          curl -sS -X POST -d '{}' "${{ secrets.NETLIFY_BUILD_HOOK }}"
+          echo " -> Netlify build trigger ho gaya"

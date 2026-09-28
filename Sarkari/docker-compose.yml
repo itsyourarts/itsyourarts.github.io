@@ -1,0 +1,30 @@
+# Local Docker test:
+#   docker compose up --build
+#   -> http://localhost:3000
+#
+# Bina snapshot ke fast build:
+#   SKIP_SNAPSHOT=1 docker compose up --build
+
+services:
+  godxshadow:
+    build:
+      context: .
+      args:
+        SKIP_SNAPSHOT: "${SKIP_SNAPSHOT:-0}"
+    image: godxshadow:latest
+    container_name: godxshadow
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      SNAPSHOT_POSTS: "1500"
+      SNAPSHOT_CONC: "6"
+      SOON_DAYS: "7"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/api/status',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
