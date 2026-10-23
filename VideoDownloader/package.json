@@ -1,0 +1,23 @@
+{
+  "name": "video-fetch-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Find public MP4 and HLS/DASH videos and download source qualities as one complete MP4",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test tests/*.test.js",
+    "install:browser": "playwright install chromium"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "express": "^4.21.2",
+    "ipaddr.js": "^2.2.0",
+    "playwright": "^1.56.1",
+    "tldts": "^7.4.19"
+  }
+}

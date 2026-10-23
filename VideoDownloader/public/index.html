@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f7ff">
+  <meta name="description" content="Find public MP4, HLS and DASH videos. Choose an available source quality and see its MB size before previewing or downloading one complete MP4.">
+  <title>VideoFetch — Find &amp; Download MP4 Videos</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="7.1"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.6a5 5 0 0 0 7 .3l2.5-2.5a5 5 0 0 0-7.1-7.1l-1.4 1.4M14 10.4a5 5 0 0 0-7-.3l-2.5 2.5a5 5 0 0 0 7.1 7.1l1.4-1.4"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.4 12h17.2M12 3c-3 2.5-4.4 5.5-4.4 9s1.4 6.5 4.4 9c3-2.5 4.4-5.5 4.4-9S15 5.5 12 3Z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="5" width="15" height="14" rx="2"/><path d="m18 10 3-2v8l-3-2"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2 8 3v6c0 5.2-3.1 8.6-8 11-4.9-2.4-8-5.8-8-11V5l8-3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18.5 7L20 12M4 12l1.5 5A7 7 0 0 0 18.4 15"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m10.4 3.9-8.2 14a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3l-8.2-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2ZM19 17l.8 2.2L22 20l-2.2.8L19 23l-.8-2.2L16 20l2.2-.8L19 17Z"/></symbol>
+    <symbol id="i-browser" viewBox="0 0 24 24"><rect x="2.5" y="3.5" width="19" height="17" rx="2.5"/><path d="M2.5 9h19M6.5 6.3h.01M9.5 6.3h.01M12.5 6.3h.01"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.4-6 10-6 10 6 10 6-3.4 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-12h-7l1-8Z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+    <symbol id="i-shrink" viewBox="0 0 24 24"><path d="M3 8h5V3m13 5h-5V3M3 16h5v5m13-5h-5v5"/></symbol>
+    <symbol id="i-pip" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="16" rx="2"/><rect x="12" y="11" width="7" height="6" rx=".8"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16M9 3v6m6 0v6M9 15v6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M13 5h6v6m0-6-9 9"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="VideoFetch home">
+        <span class="brand-icon"><svg class="brand-play" viewBox="0 0 40 40" aria-hidden="true"><path d="M11.5 9.2a3 3 0 0 1 4.5-2.6l18.2 11a3 3 0 0 1 0 5.1L16 33.7a3 3 0 0 1-4.5-2.5v-22Z" fill="white"/><path d="m15.2 22 5 4.4 8-9" fill="none" stroke="#0f6fec" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="brand-word">VideoFetch</span>
+      </a>
+      <button class="menu-toggle icon-button" type="button" id="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav"><svg class="icon"><use href="#i-menu"/></svg></button>
+      <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+        <a href="#features" class="nav-link">How It Works</a>
+        <a href="#why" class="nav-link">Why VideoFetch</a>
+        <a href="#faqs" class="nav-link">FAQ</a>
+        <a href="#url-form" class="nav-cta"><svg class="icon icon-fill"><use href="#i-play"/></svg> Fetch a Video</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-glow hero-glow-one"></div><div class="hero-glow hero-glow-two"></div>
+      <div class="container hero-content">
+        <div class="hero-intro">
+          <div class="hero-badge"><span class="badge-dot"><svg class="icon icon-fill"><use href="#i-play"/></svg></span> Works on public websites <span class="badge-separator">·</span> Free <span class="badge-separator">·</span> No registration</div>
+          <h1 id="hero-title">Extract and Download<br> <span>Videos from Websites</span></h1>
+          <p class="hero-description">Paste a video URL. See source-available qualities and their MB size before you preview or save one complete MP4.</p>
+          <div class="hero-tags" aria-label="Highlights">
+            <span>MP4</span><span>HLS / M3U8</span><span>DASH / MPD</span><span>ONE COMPLETE VIDEO</span>
+          </div>
+        </div>
+
+        <div class="fetch-card" id="url-form">
+          <div class="card-heading">
+            <span class="card-heading-icon"><svg class="icon"><use href="#i-globe"/></svg></span>
+            <h2>Paste a Website URL</h2>
+            <p>Enter the URL of the page that contains the video you want to download.</p>
+          </div>
+          <form id="fetch-form" novalidate>
+            <label class="sr-only" for="website-url">Website or direct MP4 URL</label>
+            <div class="url-field" id="url-field">
+              <span class="url-field-icon" aria-hidden="true"><svg class="icon"><use href="#i-link"/></svg></span>
+              <input id="website-url" name="url" type="url" inputmode="url" placeholder="https://example.com/video-page" autocomplete="url" spellcheck="false" required>
+              <button class="fetch-button" type="submit" id="submit-button"><svg class="icon"><use href="#i-search"/></svg><span>Fetch Videos</span></button>
+            </div>
+            <p class="form-error" id="form-error" role="alert" hidden></p>
+          </form>
+          <div class="step-hints" aria-label="Three easy steps">
+            <span><b>1</b> Paste a video page URL</span><span><b>2</b> Pick quality &amp; MB size</span><span><b>3</b> Preview or save one MP4</span>
+          </div>
+          <div class="usage-note"><svg class="icon"><use href="#i-shield"/></svg><span>Only download videos you have the right to save. DRM, private logins and live streams are not supported. Only source-provided qualities are shown.</span></div>
+          <div class="sample-line"><svg class="icon"><use href="#i-spark"/></svg><span>Try it:</span> <button type="button" class="text-button" id="try-example">Sample MP4</button><span class="sample-divider">·</span><button type="button" class="text-button" id="try-stream-example">HLS quality demo <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+        </div>
+        <div class="hero-trust"><span class="trust-dot"></span> No sign-up <span class="trust-divider">/</span> No file uploads <span class="trust-divider">/</span> No installation</div>
+      </div>
+    </section>
+
+    <section class="results-section" id="results" aria-label="Detected video results" hidden>
+      <div class="container-wide">
+        <div class="results-intro">
+          <div><span class="section-kicker">YOUR RESULTS</span><h2 id="results-heading">Finding your videos<span class="loading-ellipsis">...</span></h2><p id="results-subheading">Searching for MP4 files and full HLS/DASH streams.</p></div>
+          <button type="button" class="reset-button" id="reset-button"><svg class="icon"><use href="#i-refresh"/></svg> Try another URL</button>
+        </div>
+        <div class="browser-window">
+          <div class="browser-bar">
+            <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span class="browser-address" id="browser-address"><svg class="icon"><use href="#i-globe"/></svg><span>Waiting for a URL</span></span>
+            <span class="browser-status" id="browser-status"><span class="status-dot"></span> Scanning</span>
+          </div>
+          <div class="browser-body">
+            <div class="preview-area">
+              <div class="preview-topbar"><span class="preview-title"><svg class="icon"><use href="#i-eye"/></svg> Video preview</span><div class="preview-tools"><label class="quality-control" id="quality-control" for="quality-select" hidden><span>QUALITY</span><select id="quality-select" aria-label="Choose video quality"></select></label><div class="preview-tabs"><button class="tab active" id="video-tab" type="button" aria-pressed="true">Video</button><button class="tab" id="page-tab" type="button" aria-pressed="false" hidden>Page snapshot</button></div></div></div>
+              <div class="preview-stage" id="preview-stage">
+                <div class="stage-placeholder" id="stage-placeholder"><span class="stage-visual"><svg class="icon"><use href="#i-search"/></svg></span><h3>Looking for video streams</h3><p>Checking the page and its video links. This can take a few seconds.</p><button class="stage-play-button" id="preview-start" type="button" hidden><svg class="icon icon-fill"><use href="#i-play"/></svg> Preview selected quality</button><div class="progress-track"><span></span></div></div>
+                <video id="video-player" controls playsinline preload="metadata" hidden></video>
+                <img id="page-snapshot" alt="Snapshot of the scanned webpage" hidden>
+                <div class="player-tools" id="player-tools" hidden>
+                  <button class="stage-quality" id="player-quality" type="button" aria-label="Choose quality"><svg class="icon"><use href="#i-sliders"/></svg><span>Choose quality</span><small id="player-quality-label">Source</small></button>
+                  <button class="stage-tool" id="player-fullscreen" type="button" aria-label="Full view" title="Full view"><svg class="icon"><use href="#i-expand"/></svg></button>
+                  <button class="stage-tool" id="player-more" type="button" aria-label="More video options" aria-haspopup="menu" aria-expanded="false" aria-controls="player-menu" title="More options"><svg class="icon icon-fill"><use href="#i-more"/></svg></button>
+                  <div class="player-menu" id="player-menu" role="menu" hidden>
+                    <button id="player-menu-pip" type="button" role="menuitem"><svg class="icon"><use href="#i-pip"/></svg> Picture-in-Picture</button>
+                    <button id="player-menu-fullscreen" type="button" role="menuitem"><svg class="icon"><use href="#i-expand"/></svg><span id="player-menu-fullscreen-label">Full view</span></button>
+                    <button id="player-menu-quality" type="button" role="menuitem"><svg class="icon"><use href="#i-sliders"/></svg> Choose quality</button>
+                    <span class="player-menu-divider" role="separator"></span>
+                    <button id="player-menu-download" type="button" role="menuitem"><svg class="icon"><use href="#i-download"/></svg> Download MP4</button>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-footer" id="preview-footer"><div class="preview-footer-text"><strong id="preview-footer-title">Your video will appear here</strong><span id="preview-footer-subtitle">Select a result to watch it before downloading.</span></div><div class="preview-actions"><button class="preview-quality" id="preview-quality" type="button" hidden><svg class="icon"><use href="#i-sliders"/></svg> Choose quality</button><a class="preview-download" id="preview-download" href="#" hidden><svg class="icon"><use href="#i-download"/></svg> Download MP4</a></div></div>
+            </div>
+            <aside class="results-sidebar" aria-label="Detected videos">
+              <div class="sidebar-heading"><span><svg class="icon"><use href="#i-video"/></svg> Detected Videos</span><span class="result-count" id="result-count">0</span></div>
+              <div class="sidebar-filters"><div class="filter-top"><span>TYPE</span><button class="filter-pill active" type="button" data-kind="all">All</button><button class="filter-pill" type="button" data-kind="mp4">MP4</button><button class="filter-pill" type="button" data-kind="hls">HLS</button><button class="filter-pill" type="button" data-kind="dash">DASH</button></div><div class="filter-bottom"><label for="sort-select">SORT BY</label><select id="sort-select"><option value="default">Default order</option><option value="size">Largest first</option><option value="name">File name</option></select></div></div>
+              <div class="video-list" id="video-list"><div class="sidebar-empty"><svg class="icon"><use href="#i-video"/></svg><span>Scanning for videos...</span></div></div>
+              <div class="sidebar-footnote"><svg class="icon"><use href="#i-shield"/></svg> Full MP4 per quality · No chunks in your downloads.</div>
+            </aside>
+          </div>
+        </div>
+        <div class="results-tip" id="results-tip" hidden><span><svg class="icon"><use href="#i-spark"/></svg><strong>Didn't find what you expected?</strong> Paste a public .mp4, .m3u8 or .mpd link—or try a deeper scan. Only original source qualities appear.</span><button type="button" id="deep-scan-button">Scan deeper <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+      </div>
+    </section>
+
+    <section class="stats-strip" aria-label="VideoFetch at a glance"><div class="container stats-grid">
+      <div class="stat"><strong>Public URLs</strong><span>Website links supported</span></div>
+      <div class="stat"><strong>100%</strong><span>Free to use</span></div>
+      <div class="stat"><strong>HLS + DASH</strong><span>Streams merged to MP4</span></div>
+      <div class="stat"><strong>Zero</strong><span>Video files stored on our server</span></div>
+    </div></section>
+
+    <section class="steps-section section-pad" id="features"><div class="container">
+      <div class="section-heading"><span class="section-kicker">THE SIMPLE WAY TO SAVE VIDEO</span><h2>How It Works</h2><p>Find a downloadable MP4 in three simple steps.</p></div>
+      <div class="steps-grid">
+        <article class="step-card"><span class="step-number">01</span><span class="step-icon icon-blue"><svg class="icon"><use href="#i-link"/></svg></span><h3>Paste a URL</h3><p>Copy a link to a public page containing a video, or paste a direct .mp4 URL.</p><span class="step-bottom">START HERE <svg class="icon"><use href="#i-arrow"/></svg></span></article>
+        <article class="step-card"><span class="step-number">02</span><span class="step-icon icon-purple"><svg class="icon"><use href="#i-search"/></svg></span><h3>Choose a quality</h3><p>We inspect MP4 files and HLS/DASH playlists, then show only the qualities actually provided by the source.</p><span class="step-bottom">SOURCE QUALITIES <svg class="icon"><use href="#i-arrow"/></svg></span></article>
+        <article class="step-card"><span class="step-number">03</span><span class="step-icon icon-cyan"><svg class="icon"><use href="#i-download"/></svg></span><h3>Download one MP4</h3><p>For chunked streams, video and audio segments are joined into one complete MP4 file.</p><span class="step-bottom">ONE FILE, NOT CHUNKS <svg class="icon"><use href="#i-arrow"/></svg></span></article>
+      </div>
+    </div></section>
+
+    <section class="features-section section-pad" id="why"><div class="container">
+      <div class="section-heading"><span class="section-kicker">BUILT FOR THE WAY YOU BROWSE</span><h2>Why VideoFetch?</h2><p>Everything you need to find and save openly accessible MP4 videos.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card"><span class="feature-icon blue"><svg class="icon"><use href="#i-browser"/></svg></span><h3>Page &amp; player scanning</h3><p>Find MP4 links in HTML5 players, metadata, embedded page data, and page links.</p></article>
+        <article class="feature-card"><span class="feature-icon purple"><svg class="icon"><use href="#i-zap"/></svg></span><h3>HLS &amp; DASH detection</h3><p>Browser scanning catches public .m3u8 and .mpd playlists, not just direct MP4 requests.</p></article>
+        <article class="feature-card"><span class="feature-icon cyan"><svg class="icon"><use href="#i-eye"/></svg></span><h3>Real quality options</h3><p>Select 480p, 720p, 1080p, 2K or 4K when that resolution exists at the source.</p></article>
+        <article class="feature-card"><span class="feature-icon amber"><svg class="icon"><use href="#i-download"/></svg></span><h3>One-file MP4 downloads</h3><p>Segments are merged as they stream to your device. No video files are kept on disk.</p></article>
+        <article class="feature-card"><span class="feature-icon green"><svg class="icon"><use href="#i-lock"/></svg></span><h3>No account needed</h3><p>Nothing to install, no email to enter, and no video files to upload.</p></article>
+        <article class="feature-card"><span class="feature-icon rose"><svg class="icon"><use href="#i-shield"/></svg></span><h3>Responsible by design</h3><p>Private network addresses are blocked. Protected and restricted videos aren't bypassed.</p></article>
+      </div>
+    </div></section>
+
+    <section class="faq-section section-pad" id="faqs"><div class="container faq-container">
+      <div class="section-heading"><span class="section-kicker">GOOD TO KNOW</span><h2>Frequently Asked Questions</h2><p>A few things to know before you get started.</p></div>
+      <div class="faq-list">
+        <details><summary>Does VideoFetch work on every website?<svg class="icon"><use href="#i-chev"/></svg></summary><p>It finds public MP4, HLS/M3U8 and DASH/MPD sources. DRM, live streams, private logins and sites that block automated access are not supported.</p></details>
+        <details><summary>Can I paste a direct .mp4, .m3u8 or .mpd link?<svg class="icon"><use href="#i-chev"/></svg></summary><p>Yes. Paste the direct public link. HLS/DASH segments are merged to one MP4 at your selected source quality.</p></details>
+        <details><summary>Do you store my videos?<svg class="icon"><use href="#i-chev"/></svg></summary><p>No video files are stored on disk. When you preview or download, video bytes are streamed from the public source to your device. Short-lived in-memory links expire automatically.</p></details>
+        <details><summary>Why wasn't a video detected?<svg class="icon"><use href="#i-chev"/></svg></summary><p>The page may load its playlist only after a special interaction, require login, block automated browsers, be a live stream, or use DRM. Try a direct public MP4, M3U8 or MPD link if you have one.</p></details>
+        <details><summary>Will I see 480p, 720p, 1080p, 2K and 4K?<svg class="icon"><use href="#i-chev"/></svg></summary><p>Only if the source provides them. Before you preview or download, the quality picker shows the file size in MB. Direct MP4 sizes are measured from the host; HLS/DASH sizes are marked as estimates based on playlist bitrates and duration. We never upscale a lower-resolution video and call it 4K.</p></details>
+        <details><summary>Is it okay to download any video I find?<svg class="icon"><use href="#i-chev"/></svg></summary><p>Only download videos you own or have permission to save. Please respect the source website's terms and creators' rights.</p></details>
+      </div>
+    </div></section>
+
+    <section class="bottom-cta"><div class="container bottom-cta-inner"><span class="bottom-cta-icon"><svg class="icon icon-fill"><use href="#i-play"/></svg></span><h2>Ready to find your video?</h2><p>Paste a public video page URL and get started in seconds.</p><a class="bottom-cta-button" href="#url-form">Fetch a Video — Free <svg class="icon"><use href="#i-arrow"/></svg></a></div></section>
+  </main>
+  <footer class="site-footer"><div class="container footer-main"><div class="footer-brand"><a href="#top" class="brand"><span class="brand-icon"><svg class="brand-play" viewBox="0 0 40 40" aria-hidden="true"><path d="M11.5 9.2a3 3 0 0 1 4.5-2.6l18.2 11a3 3 0 0 1 0 5.1L16 33.7a3 3 0 0 1-4.5-2.5v-22Z" fill="white"/><path d="m15.2 22 5 4.4 8-9" fill="none" stroke="#0f6fec" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand-word">VideoFetch</span></a><p>Find publicly accessible MP4 videos with less hassle. Simple, free, and made for the web.</p></div><div class="footer-links"><strong>Explore</strong><a href="#features">How It Works</a><a href="#why">Features</a><a href="#faqs">FAQs</a></div><div class="footer-links"><strong>Get started</strong><a href="#url-form">Fetch a video</a><a href="#top">Back to top</a></div></div><div class="container footer-bottom"><span>VideoFetch Studio · Built for responsible use.</span><span>Independent demo · Not affiliated with videofetch.app</span></div><div class="container footer-credit">© 2026 <strong>GOD<span class="footer-credit-x">X</span>SHADOW</strong> — by Krishna UPX61</div></footer>
+  <div class="quality-dialog-backdrop" id="quality-dialog" hidden>
+    <section class="quality-dialog" role="dialog" aria-modal="true" aria-labelledby="quality-dialog-title" aria-describedby="quality-dialog-description">
+      <div class="quality-dialog-top"><span class="quality-dialog-kicker">SOURCE QUALITY</span><button class="quality-dialog-close" id="quality-dialog-close" type="button" aria-label="Close quality picker"><svg class="icon"><use href="#i-close"/></svg></button></div>
+      <h2 id="quality-dialog-title">Choose your quality</h2>
+      <p id="quality-dialog-description">Pick a source-provided quality before you continue.</p>
+      <div class="quality-options" id="quality-options" role="radiogroup" aria-label="Available video qualities"></div>
+      <p class="quality-dialog-note" id="quality-dialog-note">Exact size for MP4 files; adaptive-stream sizes may be approximate.</p>
+      <div class="quality-dialog-actions"><button class="quality-cancel" id="quality-dialog-cancel" type="button">Cancel</button><button class="quality-confirm" id="quality-dialog-confirm" type="button"><svg class="icon"><use href="#i-play"/></svg> Preview video</button></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
