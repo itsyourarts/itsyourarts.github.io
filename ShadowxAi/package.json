@@ -1,0 +1,13 @@
+{
+  "name": "shadowxai-seedance",
+  "version": "2.5.0",
+  "description": "ShadowxAi Assistant + Shadow Web Agent + ByteDance Seedance 2.5 Video Studio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
