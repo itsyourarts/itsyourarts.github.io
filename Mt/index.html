@@ -1,0 +1,60 @@
+
+<div class="wrap">
+  <h1>View Booster</h1>
+  <p class="sub">URL daalo, count set karo, Start dabao. Video ke views badh jayenge.</p>
+
+  <div class="card">
+    <div class="field">
+      <label>Video page URL</label>
+      <input id="url" type="text" spellcheck="false" value="https://yourstream.pages.dev/v/4748cd651a873c87f6399cef">
+    </div>
+    <div class="row">
+      <div class="field"><label>Kitne views</label><input type="number" min="0" value="100"></div>
+      <div class="field"><label>Parallel</label><input id="conc" type="number" min="1" max="60" value="6"></div>
+      <div class="field"><label>Gap (ms)</label><input id="delay" type="number" min="200" step="100" value="1500"></div>
+    </div>
+    <div class="field">
+      <label>Mode</label>
+      <select id="mode">
+        <option value="iframe">iframe — asli page load (safe, guaranteed)</option>
+        <option value="ping">ping — tez, sirf HTML fetch (test karke dekho)</option>
+      </select>
+    </div>
+    <label class="chk"><input id="show" type="checkbox" checked=""> Live preview dikhao</label>
+    <div class="btns" style="margin-top:16px">
+      <button id="start" class="primary">Start</button>
+      <button id="stop" disabled="">Stop</button>
+      <button id="check">Views check karo</button>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="stats">
+      <div class="stat"><b id="done">0</b><span>Done</span></div>
+      <div class="stat"><b id="rate">0</b><span>Per min</span></div>
+      <div class="stat"><b id="eta">—</b><span>ETA</span></div>
+      <div class="stat"><b id="elapsed">0:00</b><span>Time</span></div>
+    </div>
+    <div class="log" id="log"></div>
+    <div class="frames" id="frames"></div>
+  </div>
+
+  <div class="card">
+    <label>Kaise kaam karta hai</label>
+    <p class="hint">
+      <b>iframe mode</b> — har count pe page ko ek chhote frame me load karta hai, jaise asli visitor.
+      Page ka JS chalta hai, isliye jo bhi counter logic hai wo trigger hota hai. Sabse reliable.<br><br>
+      <b>ping mode</b> — sirf HTML request bhejta hai, page render nahi hota. Bohot tez, par sirf tab kaam
+      karega jab view server-side count hota ho.<br><br>
+      <b>Target = 0</b> rakho to jab tak Stop na dabao chalta rahega.
+    </p>
+    <details>
+      <summary>Important — per-IP dedupe ka case</summary>
+      <p class="hint">
+        Agar server ek IP ko 24 ghante me sirf 1 view ginta hai, to saare frames same IP se hain aur count
+        nahi badhega. Test: 10 views chalao, phir video page khol ke count dekho. Na badhe to ping mode try karo.
+      </p>
+    </details>
+  </div>
+</div>
+
+
+
