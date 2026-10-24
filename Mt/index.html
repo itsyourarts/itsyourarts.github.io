@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Booster v2</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f0f13;
+      color: #e8e8f0;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    h1 { font-size: 1.45rem; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .pill {
+      font-size: 0.7rem; padding: 3px 9px; border-radius: 999px;
+      background: #3a1a1a; color: #ff6b6b; font-weight: 600;
+    }
+    .pill.ok { background: #14321a; color: #4ade80; }
+    .sub { color: #9a9ab0; font-size: 0.9rem; margin-bottom: 22px; }
+    .card {
+      background: #16161e;
+      border: 1px solid #2a2a36;
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .field { margin-bottom: 14px; }
+    label { display: block; font-size: 0.8rem; color: #9a9ab0; margin-bottom: 5px; }
+    input[type="text"], input[type="number"] {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid #2a2a36; background: #0f0f13; color: #e8e8f0;
+      font-size: 0.95rem;
+    }
+    .row { display: flex; gap: 12px; }
+    .row .field { flex: 1; }
+    .chk { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin: 8px 0 16px; color: #c0c0d0; }
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    button {
+      padding: 9px 14px; border-radius: 10px; border: 1px solid #2a2a36;
+      background: #1e1e28; color: #e8e8f0; cursor: pointer; font-size: 0.88rem;
+    }
+    button:hover { background: #2a2a36; }
+    button.primary { background: #4f46e5; border-color: #4f46e5; }
+    button.primary:hover { background: #6366f1; }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .bar {
+      height: 6px; background: #1e1e28; border-radius: 99px; overflow: hidden; margin-bottom: 16px;
+    }
+    .bar i {
+      display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #4f46e5, #a855f7);
+      transition: width 0.25s;
+    }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+    .stat {
+      background: #0f0f13; border-radius: 10px; padding: 10px 6px; text-align: center;
+    }
+    .stat b { display: block; font-size: 1.15rem; }
+    .stat span { font-size: 0.7rem; color: #9a9ab0; }
+    .log {
+      background: #0a0a0e; border-radius: 10px; padding: 12px;
+      max-height: 220px; overflow-y: auto; font-size: 0.8rem; line-height: 1.5;
+      color: #b0b0c0;
+    }
+    .log div { margin-bottom: 4px; }
+    .hint { margin-top: 14px; font-size: 0.78rem; color: #7a7a90; line-height: 1.5; }
+    code { background: #1e1e28; padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>View Booster v2 <span id="ver" class="pill">JS load nahi hua</span></h1>
+    <p class="sub">API ko seedha call karta hai — video play karne ki zaroorat nahi. Bohot tez.</p>
+
+    <div class="card">
+      <div class="field">
+        <label>Video page URL</label>
+        <input id="url" type="text" spellcheck="false" value="https://yourstream.pages.dev/v/4748cd651a873c87f6399cef">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Kitne views</label>
+          <input id="target" type="number" min="0" value="200">
+        </div>
+        <div class="field">
+          <label>Parallel</label>
+          <input id="conc" type="number" min="1" max="20" value="4">
+        </div>
+        <div class="field">
+          <label>Gap (ms)</label>
+          <input id="delay" type="number" min="0" step="50" value="0">
+        </div>
+      </div>
+      <label class="chk"><input id="cred" type="checkbox" checked> Cookies bhejo (credentials: include)</label>
+      <div class="btns">
+        <button id="diag" type="button">API test</button>
+        <button id="one" type="button">Test 1 view</button>
+        <button id="start" type="button" class="primary">Start</button>
+        <button id="stop" type="button" disabled>Stop</button>
+      </div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="stats">
+        <div class="stat"><b id="done">0</b><span>Views added</span></div>
+        <div class="stat"><b id="err">0</b><span>Errors</span></div>
+        <div class="stat"><b id="rate">0</b><span>Per min</span></div>
+        <div class="stat"><b id="views">—</b><span>Abhi views</span></div>
+      </div>
+      <div class="log" id="log"></div>
+      <p class="hint">API endpoints: <code>GET /api/play/{id}</code> → viewToken, phir <code>POST /api/view/{id}?t=token</code>.
+      Pehle <b>API test</b> dabao — green aaya to Start dabao.</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+  </html>
