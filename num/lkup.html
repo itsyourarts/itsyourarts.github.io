@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GENZO OSINT Tools</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --surface:#fff; --primary:#4f46e5; --primary2:#06b6d4;
+    --text:#0f172a; --gray:#64748b; --light:#94a3b8;
+    --ok:#059669; --okbg:#d1fae5; --err:#b91c1c; --errbg:#fee2e2;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text);
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    background-image:radial-gradient(circle at 50% -15%,#e0e7ff 0%,var(--bg) 60%);
+    padding:24px 14px 50px;
+  }
+  .wrapper{max-width:560px;width:100%}
+  .header{text-align:center;margin-bottom:20px}
+  .header h1{font-size:1.5rem;font-weight:800}
+  .header h1 span{background:linear-gradient(135deg,var(--primary),var(--primary2));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .header p{font-size:.8rem;color:var(--gray);margin-top:4px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;background:var(--surface);
+    padding:6px;border-radius:100px;box-shadow:0 6px 20px -6px rgba(15,23,42,.12)}
+  .tab{flex:1;text-align:center;padding:10px 6px;border-radius:100px;font-size:.8rem;
+    font-weight:700;cursor:pointer;color:var(--gray);border:none;background:transparent;transition:.2s}
+  .tab.active{background:linear-gradient(135deg,var(--primary),#3b82f6);color:#fff;
+    box-shadow:0 4px 14px rgba(79,70,229,.35)}
+  .panel{display:none}
+  .panel.active{display:block;animation:pop .3s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .search-card{background:var(--surface);padding:6px 6px 6px 16px;border-radius:100px;
+    box-shadow:0 10px 30px -8px rgba(15,23,42,.15);display:flex;align-items:center;gap:6px;
+    border:1px solid #fff}
+  .search-card input{flex:1;padding:11px 6px;border:none;background:transparent;font-size:.95rem;
+    font-weight:600;outline:none;letter-spacing:.4px;text-transform:uppercase}
+  .search-card input::placeholder{text-transform:none;color:var(--light)}
+  .btn{background:linear-gradient(135deg,var(--primary),#3b82f6);color:#fff;border:none;
+    padding:10px 20px;border-radius:100px;font-weight:700;font-size:.85rem;cursor:pointer;
+    box-shadow:0 4px 14px rgba(79,70,229,.35);transition:.2s;white-space:nowrap}
+  .btn:hover:not(:disabled){transform:translateY(-1px)}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .term{background:#0b1120;border-radius:var(--radius);margin-top:16px;overflow:hidden;
+    box-shadow:0 14px 35px rgba(15,23,42,.2);border:1px solid #1e293b}
+  .term-head{background:#131b2e;padding:8px 14px;display:flex;gap:6px;align-items:center}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .dot.r{background:#ef4444}.dot.y{background:#f59e0b}.dot.g{background:#10b981}
+  .term-body{padding:14px;font-family:'JetBrains Mono',monospace;font-size:.75rem;
+    color:#38bdf8;min-height:60px;line-height:1.7;white-space:pre-wrap}
+  .result{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+  .card{background:var(--surface);border-radius:12px;padding:11px 14px;display:flex;
+    align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,.03);
+    border:1px solid #eef2f7;animation:pop .3s ease}
+  .card .k{font-size:.62rem;font-weight:700;color:var(--gray);text-transform:uppercase;
+    letter-spacing:.5px;margin-bottom:2px}
+  .card .v{font-size:.9rem;font-weight:600;word-break:break-word;line-height:1.4}
+  .card .v.mono{font-family:'JetBrains Mono',monospace}
+  .card.hi{background:#f0fdf4;border-color:#a7f3d0}
+  .card.hi .v{color:var(--ok)}
+  .copy{border:1px solid #e2e8f0;background:#f8fafc;color:var(--gray);width:30px;height:30px;
+    border-radius:7px;cursor:pointer;font-size:.75rem;flex-shrink:0;margin-left:10px}
+  .copy:hover{background:var(--primary);color:#fff}
+  .sec{font-size:.8rem;font-weight:800;color:var(--text);margin:14px 0 2px 4px;
+    text-transform:uppercase;letter-spacing:.5px}
+  .err{background:var(--errbg);color:var(--err);border:1px solid #fecaca;padding:12px 16px;
+    border-radius:12px;margin-top:16px;font-weight:600;font-size:.84rem}
+  .hide{display:none!important}
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#0f172a;
+    color:#fff;padding:11px 22px;border-radius:100px;font-size:.85rem;font-weight:600;z-index:99;
+    box-shadow:0 10px 25px rgba(0,0,0,.25)}
+  .sub{font-size:.72rem;color:var(--light);text-align:center;margin-top:20px}
+  .prefix{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.92rem;
+    padding-right:8px;border-right:2px solid #e2e8f0;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1>GENZO <span>OSINT Tools</span></h1>
+    <p>Number · Vehicle · Family Lookup</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="number">Number</button>
+    <button class="tab" data-tab="vehicle">Vehicle</button>
+    <button class="tab" data-tab="family">Family</button>
+  </div>
+
+  <!-- NUMBER -->
+  <div class="panel active" id="panel-number">
+    <div class="search-card">
+      <span class="prefix">+91</span>
+      <input type="tel" id="numberInput" placeholder="10 digit number" maxlength="10" autocomplete="off">
+      <button class="btn" id="numberBtn">Track</button>
+    </div>
+    <div class="term hide" id="numberTerm"><div class="term-head">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    </div><div class="term-body" id="numberLog"></div></div>
+    <div class="result hide" id="numberResult"></div>
+    <div class="err hide" id="numberErr"></div>
+  </div>
+
+  <!-- VEHICLE -->
+  <div class="panel" id="panel-vehicle">
+    <div class="search-card">
+      <input type="text" id="vehicleInput" placeholder="vehicle number e.g. DL01AB1234" autocomplete="off">
+      <button class="btn" id="vehicleBtn">Scan</button>
+    </div>
+    <div class="term hide" id="vehicleTerm"><div class="term-head">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    </div><div class="term-body" id="vehicleLog"></div></div>
+    <div class="result hide" id="vehicleResult"></div>
+    <div class="err hide" id="vehicleErr"></div>
+  </div>
+
+  <!-- FAMILY -->
+  <div class="panel" id="panel-family">
+    <div class="search-card">
+      <input type="tel" id="familyInput" placeholder="12 digit aadhaar number" maxlength="12" autocomplete="off">
+      <button class="btn" id="familyBtn">Map</button>
+    </div>
+    <div class="term hide" id="familyTerm"><div class="term-head">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    </div><div class="term-body" id="familyLog"></div></div>
+    <div class="result hide" id="familyResult"></div>
+    <div class="err hide" id="familyErr"></div>
+  </div>
+
+  <p class="sub">API: userinfo.site/freeosint/api.php</p>
+</div>
+
+<script>
+const API = "https://userinfo.site/freeosint/api.php";
+
+// ---- Tab switching ----
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById("panel-"+t.dataset.tab).classList.add("active");
+  });
+});
+
+function toast(msg){
+  const el=document.createElement("div");
+  el.className="toast"; el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1800);
+}
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+function row(label,val,{mono=false,hi=false}={}){
+  if(val===undefined||val===null||val===""||val==="N/A") return "";
+  return `<div class="card ${hi?'hi':''}">
+    <div><div class="k">${esc(label)}</div><div class="v ${mono?'mono':''}">${esc(val)}</div></div>
+    <button class="copy" data-copy="${esc(val)}">&#128203;</button>
+  </div>`;
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".copy");
+  if(b){ navigator.clipboard.writeText(b.dataset.copy).then(()=>toast("Copied!")); }
+});
+
+// Generic runner
+async function run({btn,term,log,result,err,action,body,render,placeholder}){
+  const t=document.getElementById(term), l=document.getElementById(log);
+  const r=document.getElementById(result), e=document.getElementById(err);
+  const b=document.getElementById(btn);
+  r.classList.add("hide"); e.classList.add("hide");
+  t.classList.remove("hide"); b.disabled=true;
+  const orig=b.textContent; b.textContent="...";
+  l.textContent=`$ querying -> ${placeholder}\n~ connecting to registry...`;
+  try{
+    const res=await fetch(`${API}?action=${action}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body)
+    });
+    const json=await res.json();
+    if(!json.success||!json.data) throw new Error(json.error||"No record found.");
+    l.textContent+=`\n~ [SUCCESS] record retrieved`;
+    setTimeout(()=>{ t.classList.add("hide"); r.innerHTML=render(json.data); r.classList.remove("hide"); },300);
+  }catch(x){
+    t.classList.add("hide");
+    e.textContent="⚠ "+ (x.message||"Request failed.");
+    e.classList.remove("hide");
+  }finally{
+    b.disabled=false; b.textContent=orig;
+  }
+}
+
+// ---- NUMBER ----
+document.getElementById("numberBtn").onclick=()=>{
+  const num=document.getElementById("numberInput").value.trim().replace(/\D/g,"");
+  if(num.length!==10){ alert("Enter valid 10-digit number"); return; }
+  run({
+    btn:"numberBtn",term:"numberTerm",log:"numberLog",result:"numberResult",err:"numberErr",
+    action:"lookup",body:{number:num},placeholder:"+91"+num,
+    render(data){
+      const arr=Array.isArray(data)?data:[data];
+      return arr.map(rec=>`
+        ${row("Full Name",rec.name||rec.Name)}
+        ${row("Mobile",rec.mobile||rec.Mobile||num,{mono:true})}
+        ${row("Aadhaar Number",rec.aadhaar||rec.id||rec.aadhar,{mono:true,hi:true})}
+        ${row("Father Name",rec.fname||rec["Father Name"])}
+        ${row("Address",rec.formatted_address||rec.address||rec.Address)}
+        ${row("Circle",rec.circle||rec.Circle)}
+        ${row("Alternate",rec.alt||rec.alternate)}
+        ${row("Email",rec.email||rec.Email)}
+      `).join("<div class='sec'>— Record —</div>");
+    }
+  });
+};
+
+// ---- VEHICLE ----
+document.getElementById("vehicleBtn").onclick=()=>{
+  const v=document.getElementById("vehicleInput").value.trim().toUpperCase().replace(/\s+/g,"");
+  if(!v){ alert("Enter vehicle number"); return; }
+  run({
+    btn:"vehicleBtn",term:"vehicleTerm",log:"vehicleLog",result:"vehicleResult",err:"vehicleErr",
+    action:"vehicle",body:{vehicle_num:v},placeholder:v,
+    render(d){return `
+      ${row("Registration No.",d.registration_number||d.vehicle_number||v,{mono:true,hi:true})}
+      ${row("Owner Name",d.owner_name)}
+      ${row("Mobile",d.mobile_number,{mono:true,hi:true})}
+      ${row("RTO",d.rto)}
+      ${row("RC Status",d.rc_status)}
+      <div class="sec">Vehicle</div>
+      ${row("Manufacturer",d.manufacturer)}
+      ${row("Model",d.vehicle)}
+      ${row("Variant",d.variant)}
+      ${row("Class",d.vehicle_class)}
+      ${row("Fuel",d.fuel_type)}
+      ${row("Engine CC",d.cubic_capacity)}
+      <div class="sec">Validity</div>
+      ${row("Registration Date",d.registration_date,{mono:true})}
+      ${row("Insurance Upto",d.insurance_upto,{mono:true})}
+      ${row("PUCC Upto",d.pucc_valid_upto,{mono:true})}
+      <div class="sec">Identifiers</div>
+      ${row("Chassis No.",d.chassis_number,{mono:true})}
+      ${row("Engine No.",d.engine_number,{mono:true})}
+    `;}
+  });
+};
+
+// ---- FAMILY ----
+document.getElementById("familyBtn").onclick=()=>{
+  const id=document.getElementById("familyInput").value.trim().replace(/\s+/g,"");
+  if(!id){ alert("Enter Aadhaar number"); return; }
+  run({
+    btn:"familyBtn",term:"familyTerm",log:"familyLog",result:"familyResult",err:"familyErr",
+    action:"family",body:{id_number:id},placeholder:id,
+    render(d){
+      const members=d.members||[];
+      return `
+        ${row("Ration Card No.",d.ration_card_number||d.rcId,{mono:true,hi:true})}
+        ${row("Head of Family",d.head_of_family||d.head)}
+        ${row("Scheme",d.scheme)}
+        ${row("State",d.state)}
+        ${row("District",d.district)}
+        ${row("FPS / Dealer ID",d.fps_id,{mono:true})}
+        ${row("Total Members",d.total_members||members.length)}
+        <div class="sec">Members (${members.length})</div>
+        ${members.map(m=>`
+          <div class="card">
+            <div><div class="k">${esc(m.relation||"Member")}</div>
+            <div class="v">${esc(m.name||"Unknown")} · <span class="mono">${esc(m.member_id||"")}</span></div></div>
+          </div>`).join("")}
+      `;
+    }
+  });
+};
+
+// Enter key support
+[["numberInput","numberBtn"],["vehicleInput","vehicleBtn"],["familyInput","familyBtn"]].forEach(([i,b])=>{
+  document.getElementById(i).addEventListener("keypress",e=>{ if(e.key==="Enter") document.getElementById(b).click(); });
+});
+</script>
+</body>
+</html>
