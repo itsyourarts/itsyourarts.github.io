@@ -99,7 +99,6 @@ const API = "https://userinfo.site/freeosint/api.php";
 const el  = id => document.getElementById(id);
 const esc = s => String(s==null?"":s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 
-/* ---------- tabs ---------- */
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
   document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
   document.querySelectorAll(".panel").forEach(x => x.classList.remove("on"));
@@ -107,7 +106,6 @@ document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
   el("p-" + t.dataset.t).classList.add("on");
 });
 
-/* ---------- helpers ---------- */
 function card(label, val, o){
   o = o || {};
   if(val==null || val==="" || val==="N/A" || val==="null") return "";
@@ -127,7 +125,6 @@ function toast(m){
   document.body.appendChild(d); setTimeout(()=>d.remove(), 1500);
 }
 
-/* ---------- API call with fallbacks ---------- */
 async function apiCall(action, payload){
   const target = API + "?action=" + action;
   const endpoints = [
@@ -155,7 +152,6 @@ async function apiCall(action, payload){
   throw lastErr || new Error("all endpoints failed");
 }
 
-/* ---------- generic runner ---------- */
 async function fire(cfg){
   const input = el(cfg.input);
   const val = cfg.clean(input.value);
@@ -178,14 +174,13 @@ async function fire(cfg){
     setTimeout(()=>log.classList.add("hide"), 900);
   } catch(e){
     log.classList.add("hide");
-    err.textContent = "⚠ " + e.message;
+    err.textContent = "! " + e.message;
     err.classList.remove("hide");
   } finally {
     btn.disabled = false; btn.textContent = old;
   }
 }
 
-/* ---------- configs ---------- */
 const CFG = {
   num: {
     input:"i-num", btn:"b-num", log:"l-num", out:"o-num", err:"e-num",
@@ -238,7 +233,7 @@ const CFG = {
         card("Total Members", d.total_members||m.length) +
         sec("Members (" + m.length + ")") +
         m.map(x => '<div class="card"><div><div class="k">'+esc(x.relation||"Member")+
-          '</div><div class="v">'+esc(x.name||"Unknown")+' · <span class="mono">'+
+          '</div><div class="v">'+esc(x.name||"Unknown")+' - <span class="mono">'+
           esc(x.member_id||"")+'</span></div></div></div>').join("");
     }
   }
