@@ -2,285 +2,255 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GENZO OSINT Tools</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GENZO API Tools</title>
 <style>
-  :root{
-    --bg:#f4f7fb; --surface:#fff; --primary:#4f46e5; --primary2:#06b6d4;
-    --text:#0f172a; --gray:#64748b; --light:#94a3b8;
-    --ok:#059669; --okbg:#d1fae5; --err:#b91c1c; --errbg:#fee2e2;
-    --radius:14px;
-  }
+  :root{--p:#4f46e5;--p2:#06b6d4;--bg:#f4f7fb;--tx:#0f172a;--gr:#64748b;--lt:#94a3b8;
+        --ok:#059669;--err:#b91c1c}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{
-    font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text);
-    min-height:100vh; display:flex; flex-direction:column; align-items:center;
-    background-image:radial-gradient(circle at 50% -15%,#e0e7ff 0%,var(--bg) 60%);
-    padding:24px 14px 50px;
-  }
-  .wrapper{max-width:560px;width:100%}
-  .header{text-align:center;margin-bottom:20px}
-  .header h1{font-size:1.5rem;font-weight:800}
-  .header h1 span{background:linear-gradient(135deg,var(--primary),var(--primary2));
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  .header p{font-size:.8rem;color:var(--gray);margin-top:4px}
-  .tabs{display:flex;gap:8px;margin-bottom:16px;background:var(--surface);
-    padding:6px;border-radius:100px;box-shadow:0 6px 20px -6px rgba(15,23,42,.12)}
-  .tab{flex:1;text-align:center;padding:10px 6px;border-radius:100px;font-size:.8rem;
-    font-weight:700;cursor:pointer;color:var(--gray);border:none;background:transparent;transition:.2s}
-  .tab.active{background:linear-gradient(135deg,var(--primary),#3b82f6);color:#fff;
-    box-shadow:0 4px 14px rgba(79,70,229,.35)}
-  .panel{display:none}
-  .panel.active{display:block;animation:pop .3s ease}
-  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-  .search-card{background:var(--surface);padding:6px 6px 6px 16px;border-radius:100px;
-    box-shadow:0 10px 30px -8px rgba(15,23,42,.15);display:flex;align-items:center;gap:6px;
-    border:1px solid #fff}
-  .search-card input{flex:1;padding:11px 6px;border:none;background:transparent;font-size:.95rem;
-    font-weight:600;outline:none;letter-spacing:.4px;text-transform:uppercase}
-  .search-card input::placeholder{text-transform:none;color:var(--light)}
-  .btn{background:linear-gradient(135deg,var(--primary),#3b82f6);color:#fff;border:none;
-    padding:10px 20px;border-radius:100px;font-weight:700;font-size:.85rem;cursor:pointer;
-    box-shadow:0 4px 14px rgba(79,70,229,.35);transition:.2s;white-space:nowrap}
-  .btn:hover:not(:disabled){transform:translateY(-1px)}
-  .btn:disabled{opacity:.6;cursor:not-allowed}
-  .term{background:#0b1120;border-radius:var(--radius);margin-top:16px;overflow:hidden;
-    box-shadow:0 14px 35px rgba(15,23,42,.2);border:1px solid #1e293b}
-  .term-head{background:#131b2e;padding:8px 14px;display:flex;gap:6px;align-items:center}
-  .dot{width:9px;height:9px;border-radius:50%}
-  .dot.r{background:#ef4444}.dot.y{background:#f59e0b}.dot.g{background:#10b981}
-  .term-body{padding:14px;font-family:'JetBrains Mono',monospace;font-size:.75rem;
-    color:#38bdf8;min-height:60px;line-height:1.7;white-space:pre-wrap}
-  .result{margin-top:18px;display:flex;flex-direction:column;gap:8px}
-  .card{background:var(--surface);border-radius:12px;padding:11px 14px;display:flex;
-    align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,.03);
-    border:1px solid #eef2f7;animation:pop .3s ease}
-  .card .k{font-size:.62rem;font-weight:700;color:var(--gray);text-transform:uppercase;
-    letter-spacing:.5px;margin-bottom:2px}
-  .card .v{font-size:.9rem;font-weight:600;word-break:break-word;line-height:1.4}
-  .card .v.mono{font-family:'JetBrains Mono',monospace}
-  .card.hi{background:#f0fdf4;border-color:#a7f3d0}
-  .card.hi .v{color:var(--ok)}
-  .copy{border:1px solid #e2e8f0;background:#f8fafc;color:var(--gray);width:30px;height:30px;
-    border-radius:7px;cursor:pointer;font-size:.75rem;flex-shrink:0;margin-left:10px}
-  .copy:hover{background:var(--primary);color:#fff}
-  .sec{font-size:.8rem;font-weight:800;color:var(--text);margin:14px 0 2px 4px;
-    text-transform:uppercase;letter-spacing:.5px}
-  .err{background:var(--errbg);color:var(--err);border:1px solid #fecaca;padding:12px 16px;
-    border-radius:12px;margin-top:16px;font-weight:600;font-size:.84rem}
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--tx);
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;
+       background-image:radial-gradient(circle at 50% -15%,#e0e7ff,var(--bg) 60%);padding:22px 14px 50px}
+  .wrap{max-width:560px;width:100%}
+  h1{text-align:center;font-size:1.45rem;font-weight:800;margin-bottom:16px}
+  h1 span{background:linear-gradient(135deg,var(--p),var(--p2));-webkit-background-clip:text;
+          background-clip:text;-webkit-text-fill-color:transparent}
+  .tabs{display:flex;gap:6px;background:#fff;padding:6px;border-radius:100px;
+        box-shadow:0 8px 22px -8px rgba(15,23,42,.18);margin-bottom:16px}
+  .tab{flex:1;padding:10px 4px;border:0;border-radius:100px;background:transparent;cursor:pointer;
+       font-weight:700;font-size:.82rem;color:var(--gr);transition:.2s}
+  .tab.on{background:linear-gradient(135deg,var(--p),#3b82f6);color:#fff;box-shadow:0 4px 14px rgba(79,70,229,.35)}
+  .panel{display:none}.panel.on{display:block;animation:up .25s ease}
+  @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .bar{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #fff;
+       padding:6px 6px 6px 16px;border-radius:100px;box-shadow:0 10px 28px -10px rgba(15,23,42,.2)}
+  .pfx{font-family:monospace;font-weight:700;padding-right:8px;border-right:2px solid #e2e8f0}
+  .bar input{flex:1;min-width:0;border:0;outline:0;background:transparent;padding:11px 4px;
+             font-size:.95rem;font-weight:600;text-transform:uppercase}
+  .bar input::placeholder{text-transform:none;color:var(--lt)}
+  .go{border:0;background:linear-gradient(135deg,var(--p),#3b82f6);color:#fff;font-weight:700;
+      padding:10px 20px;border-radius:100px;cursor:pointer;font-size:.85rem;
+      box-shadow:0 4px 14px rgba(79,70,229,.35);white-space:nowrap}
+  .go:disabled{opacity:.55;cursor:not-allowed}
+  .log{margin-top:14px;background:#0b1120;border:1px solid #1e293b;border-radius:12px;
+       padding:12px;font:600 .72rem/1.7 monospace;color:#38bdf8;white-space:pre-wrap}
+  .out{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+  .card{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;
+        border:1px solid #eef2f7;border-radius:12px;padding:11px 14px;box-shadow:0 2px 6px rgba(0,0,0,.03)}
+  .card.hi{background:#f0fdf4;border-color:#a7f3d0}.card.hi .v{color:var(--ok)}
+  .k{font-size:.62rem;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.5px}
+  .v{font-size:.9rem;font-weight:600;word-break:break-word;line-height:1.4}
+  .v.mono{font-family:monospace}
+  .cp{border:1px solid #e2e8f0;background:#f8fafc;color:var(--gr);width:30px;height:30px;
+      border-radius:7px;cursor:pointer;flex-shrink:0}
+  .cp:hover{background:var(--p);color:#fff}
+  .sec{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--tx);margin:12px 0 0 4px}
+  .err{margin-top:14px;background:#fee2e2;color:var(--err);border:1px solid #fecaca;
+       border-radius:12px;padding:12px 14px;font-weight:600;font-size:.84rem;white-space:pre-wrap}
   .hide{display:none!important}
-  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#0f172a;
-    color:#fff;padding:11px 22px;border-radius:100px;font-size:.85rem;font-weight:600;z-index:99;
-    box-shadow:0 10px 25px rgba(0,0,0,.25)}
-  .sub{font-size:.72rem;color:var(--light);text-align:center;margin-top:20px}
-  .prefix{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.92rem;
-    padding-right:8px;border-right:2px solid #e2e8f0;color:var(--text)}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;
+         padding:10px 20px;border-radius:100px;font-size:.82rem;font-weight:600;z-index:9}
 </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="header">
-    <h1>GENZO <span>OSINT Tools</span></h1>
-    <p>Number · Vehicle · Family Lookup</p>
-  </div>
+<div class="wrap">
+  <h1>GENZO <span>OSINT Tools</span></h1>
 
   <div class="tabs">
-    <button class="tab active" data-tab="number">Number</button>
-    <button class="tab" data-tab="vehicle">Vehicle</button>
-    <button class="tab" data-tab="family">Family</button>
+    <button class="tab on" data-t="num">Number</button>
+    <button class="tab" data-t="veh">Vehicle</button>
+    <button class="tab" data-t="fam">Family</button>
   </div>
 
-  <!-- NUMBER -->
-  <div class="panel active" id="panel-number">
-    <div class="search-card">
-      <span class="prefix">+91</span>
-      <input type="tel" id="numberInput" placeholder="10 digit number" maxlength="10" autocomplete="off">
-      <button class="btn" id="numberBtn">Track</button>
+  <section class="panel on" id="p-num">
+    <div class="bar">
+      <span class="pfx">+91</span>
+      <input id="i-num" placeholder="10 digit mobile" maxlength="10" inputmode="numeric">
+      <button class="go" id="b-num">Track</button>
     </div>
-    <div class="term hide" id="numberTerm"><div class="term-head">
-      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-    </div><div class="term-body" id="numberLog"></div></div>
-    <div class="result hide" id="numberResult"></div>
-    <div class="err hide" id="numberErr"></div>
-  </div>
+    <div class="log hide" id="l-num"></div>
+    <div class="out hide" id="o-num"></div>
+    <div class="err hide" id="e-num"></div>
+  </section>
 
-  <!-- VEHICLE -->
-  <div class="panel" id="panel-vehicle">
-    <div class="search-card">
-      <input type="text" id="vehicleInput" placeholder="vehicle number e.g. DL01AB1234" autocomplete="off">
-      <button class="btn" id="vehicleBtn">Scan</button>
+  <section class="panel" id="p-veh">
+    <div class="bar">
+      <input id="i-veh" placeholder="vehicle number e.g. DL01AB1234">
+      <button class="go" id="b-veh">Scan</button>
     </div>
-    <div class="term hide" id="vehicleTerm"><div class="term-head">
-      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-    </div><div class="term-body" id="vehicleLog"></div></div>
-    <div class="result hide" id="vehicleResult"></div>
-    <div class="err hide" id="vehicleErr"></div>
-  </div>
+    <div class="log hide" id="l-veh"></div>
+    <div class="out hide" id="o-veh"></div>
+    <div class="err hide" id="e-veh"></div>
+  </section>
 
-  <!-- FAMILY -->
-  <div class="panel" id="panel-family">
-    <div class="search-card">
-      <input type="tel" id="familyInput" placeholder="12 digit aadhaar number" maxlength="12" autocomplete="off">
-      <button class="btn" id="familyBtn">Map</button>
+  <section class="panel" id="p-fam">
+    <div class="bar">
+      <input id="i-fam" placeholder="12 digit aadhaar" maxlength="12" inputmode="numeric">
+      <button class="go" id="b-fam">Map</button>
     </div>
-    <div class="term hide" id="familyTerm"><div class="term-head">
-      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-    </div><div class="term-body" id="familyLog"></div></div>
-    <div class="result hide" id="familyResult"></div>
-    <div class="err hide" id="familyErr"></div>
-  </div>
-
-  <p class="sub">API: userinfo.site/freeosint/api.php</p>
+    <div class="log hide" id="l-fam"></div>
+    <div class="out hide" id="o-fam"></div>
+    <div class="err hide" id="e-fam"></div>
+  </section>
 </div>
 
 <script>
 const API = "https://userinfo.site/freeosint/api.php";
+const el  = id => document.getElementById(id);
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 
-// ---- Tab switching ----
-document.querySelectorAll(".tab").forEach(t=>{
-  t.addEventListener("click",()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-    document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));
-    t.classList.add("active");
-    document.getElementById("panel-"+t.dataset.tab).classList.add("active");
-  });
+/* ---------- tabs ---------- */
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
+  document.querySelectorAll(".panel").forEach(x => x.classList.remove("on"));
+  t.classList.add("on");
+  el("p-" + t.dataset.t).classList.add("on");
 });
 
-function toast(msg){
-  const el=document.createElement("div");
-  el.className="toast"; el.textContent=msg;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),1800);
+/* ---------- helpers ---------- */
+function card(label, val, o){
+  o = o || {};
+  if(val==null || val==="" || val==="N/A" || val==="null") return "";
+  return '<div class="card'+(o.hi?' hi':'')+'"><div><div class="k">'+esc(label)+
+         '</div><div class="v'+(o.mono?' mono':'')+'">'+esc(val)+
+         '</div></div><button class="cp" data-c="'+esc(val)+'">&#10064;</button></div>';
 }
-function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+const sec = t => '<div class="sec">'+esc(t)+'</div>';
 
-function row(label,val,{mono=false,hi=false}={}){
-  if(val===undefined||val===null||val===""||val==="N/A") return "";
-  return `<div class="card ${hi?'hi':''}">
-    <div><div class="k">${esc(label)}</div><div class="v ${mono?'mono':''}">${esc(val)}</div></div>
-    <button class="copy" data-copy="${esc(val)}">&#128203;</button>
-  </div>`;
-}
-
-document.addEventListener("click",e=>{
-  const b=e.target.closest(".copy");
-  if(b){ navigator.clipboard.writeText(b.dataset.copy).then(()=>toast("Copied!")); }
+document.addEventListener("click", e => {
+  const b = e.target.closest(".cp");
+  if(b) navigator.clipboard.writeText(b.dataset.c).then(()=>toast("Copied!"));
 });
+function toast(m){
+  const d = document.createElement("div");
+  d.className = "toast"; d.textContent = m;
+  document.body.appendChild(d); setTimeout(()=>d.remove(), 1500);
+}
 
-// Generic runner
-async function run({btn,term,log,result,err,action,body,render,placeholder}){
-  const t=document.getElementById(term), l=document.getElementById(log);
-  const r=document.getElementById(result), e=document.getElementById(err);
-  const b=document.getElementById(btn);
-  r.classList.add("hide"); e.classList.add("hide");
-  t.classList.remove("hide"); b.disabled=true;
-  const orig=b.textContent; b.textContent="...";
-  l.textContent=`$ querying -> ${placeholder}\n~ connecting to registry...`;
+/* ---------- API call with fallbacks ---------- */
+async function apiCall(action, payload){
+  const target = API + "?action=" + action;
+  const endpoints = [
+    ["direct",      target],
+    ["allorigins",  "https://api.allorigins.win/raw?url="  + encodeURIComponent(target)],
+    ["corsproxy",   "https://corsproxy.io/?url="            + encodeURIComponent(target)],
+    ["codetabs",    "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(target)],
+    ["thingproxy",  "https://thingproxy.freeboard.io/fetch/" + target]
+  ];
+  let lastErr = null;
+  for(const [name, url] of endpoints){
+    try{
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const txt = await res.text();
+      let json;
+      try { json = JSON.parse(txt); }
+      catch(_) { throw new Error("non-JSON: " + txt.replace(/\s+/g," ").slice(0,90)); }
+      return { json, via: name };
+    } catch(err){ lastErr = err; }
+  }
+  throw lastErr || new Error("all endpoints failed");
+}
+
+/* ---------- generic runner ---------- */
+async function fire(cfg){
+  const input = el(cfg.input);
+  const val = cfg.clean(input.value);
+  if(!cfg.valid(val)){ alert(cfg.hint); return; }
+
+  const out = el(cfg.out), log = el(cfg.log), err = el(cfg.err), btn = el(cfg.btn);
+  out.classList.add("hide"); err.classList.add("hide");
+  log.classList.remove("hide");
+  log.textContent = "$ POST api.php?action=" + cfg.action + "\n~ target: " + val + "\n~ contacting server...";
+  btn.disabled = true; const old = btn.textContent; btn.textContent = "...";
+
   try{
-    const res=await fetch(`${API}?action=${action}`,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(body)
-    });
-    const json=await res.json();
-    if(!json.success||!json.data) throw new Error(json.error||"No record found.");
-    l.textContent+=`\n~ [SUCCESS] record retrieved`;
-    setTimeout(()=>{ t.classList.add("hide"); r.innerHTML=render(json.data); r.classList.remove("hide"); },300);
-  }catch(x){
-    t.classList.add("hide");
-    e.textContent="⚠ "+ (x.message||"Request failed.");
-    e.classList.remove("hide");
-  }finally{
-    b.disabled=false; b.textContent=orig;
+    const { json, via } = await apiCall(cfg.action, cfg.payload(val));
+    log.textContent += "\n~ reply received via [" + via + "]";
+    const ok = (json.success === true || json.success === "true" || json.data != null);
+    if(!ok) throw new Error(json.error || "No record found");
+    log.textContent += "\n~ [SUCCESS] parsing data";
+    out.innerHTML = cfg.render(json.data != null ? json.data : json, val);
+    out.classList.remove("hide");
+    setTimeout(()=>log.classList.add("hide"), 900);
+  } catch(e){
+    log.classList.add("hide");
+    err.textContent = "⚠ " + e.message;
+    err.classList.remove("hide");
+  } finally {
+    btn.disabled = false; btn.textContent = old;
   }
 }
 
-// ---- NUMBER ----
-document.getElementById("numberBtn").onclick=()=>{
-  const num=document.getElementById("numberInput").value.trim().replace(/\D/g,"");
-  if(num.length!==10){ alert("Enter valid 10-digit number"); return; }
-  run({
-    btn:"numberBtn",term:"numberTerm",log:"numberLog",result:"numberResult",err:"numberErr",
-    action:"lookup",body:{number:num},placeholder:"+91"+num,
-    render(data){
-      const arr=Array.isArray(data)?data:[data];
-      return arr.map(rec=>`
-        ${row("Full Name",rec.name||rec.Name)}
-        ${row("Mobile",rec.mobile||rec.Mobile||num,{mono:true})}
-        ${row("Aadhaar Number",rec.aadhaar||rec.id||rec.aadhar,{mono:true,hi:true})}
-        ${row("Father Name",rec.fname||rec["Father Name"])}
-        ${row("Address",rec.formatted_address||rec.address||rec.Address)}
-        ${row("Circle",rec.circle||rec.Circle)}
-        ${row("Alternate",rec.alt||rec.alternate)}
-        ${row("Email",rec.email||rec.Email)}
-      `).join("<div class='sec'>— Record —</div>");
+/* ---------- configs ---------- */
+const CFG = {
+  num: {
+    input:"i-num", btn:"b-num", log:"l-num", out:"o-num", err:"e-num",
+    action:"lookup", clean:v=>v.replace(/\D/g,""), valid:v=>v.length===10,
+    hint:"Enter valid 10-digit number", payload:v=>({number:v}),
+    render:(d,q)=>{
+      const arr = Array.isArray(d) ? d : [d];
+      return arr.map((r,i)=> (arr.length>1 ? sec("Record "+(i+1)) : "") +
+        card("Full Name", r.name||r.Name) +
+        card("Mobile", r.mobile||r.Mobile||q, {mono:true}) +
+        card("Aadhaar Number", r.aadhaar||r.id||r.aadhar, {mono:true, hi:true}) +
+        card("Father Name", r.fname||r["Father Name"]) +
+        card("Address", r.formatted_address||r.address||r.Address) +
+        card("Circle", r.circle||r.Circle) +
+        card("Alternate", r.alt||r.alternate) +
+        card("Email", r.email||r.Email)
+      ).join("");
     }
-  });
-};
-
-// ---- VEHICLE ----
-document.getElementById("vehicleBtn").onclick=()=>{
-  const v=document.getElementById("vehicleInput").value.trim().toUpperCase().replace(/\s+/g,"");
-  if(!v){ alert("Enter vehicle number"); return; }
-  run({
-    btn:"vehicleBtn",term:"vehicleTerm",log:"vehicleLog",result:"vehicleResult",err:"vehicleErr",
-    action:"vehicle",body:{vehicle_num:v},placeholder:v,
-    render(d){return `
-      ${row("Registration No.",d.registration_number||d.vehicle_number||v,{mono:true,hi:true})}
-      ${row("Owner Name",d.owner_name)}
-      ${row("Mobile",d.mobile_number,{mono:true,hi:true})}
-      ${row("RTO",d.rto)}
-      ${row("RC Status",d.rc_status)}
-      <div class="sec">Vehicle</div>
-      ${row("Manufacturer",d.manufacturer)}
-      ${row("Model",d.vehicle)}
-      ${row("Variant",d.variant)}
-      ${row("Class",d.vehicle_class)}
-      ${row("Fuel",d.fuel_type)}
-      ${row("Engine CC",d.cubic_capacity)}
-      <div class="sec">Validity</div>
-      ${row("Registration Date",d.registration_date,{mono:true})}
-      ${row("Insurance Upto",d.insurance_upto,{mono:true})}
-      ${row("PUCC Upto",d.pucc_valid_upto,{mono:true})}
-      <div class="sec">Identifiers</div>
-      ${row("Chassis No.",d.chassis_number,{mono:true})}
-      ${row("Engine No.",d.engine_number,{mono:true})}
-    `;}
-  });
-};
-
-// ---- FAMILY ----
-document.getElementById("familyBtn").onclick=()=>{
-  const id=document.getElementById("familyInput").value.trim().replace(/\s+/g,"");
-  if(!id){ alert("Enter Aadhaar number"); return; }
-  run({
-    btn:"familyBtn",term:"familyTerm",log:"familyLog",result:"familyResult",err:"familyErr",
-    action:"family",body:{id_number:id},placeholder:id,
-    render(d){
-      const members=d.members||[];
-      return `
-        ${row("Ration Card No.",d.ration_card_number||d.rcId,{mono:true,hi:true})}
-        ${row("Head of Family",d.head_of_family||d.head)}
-        ${row("Scheme",d.scheme)}
-        ${row("State",d.state)}
-        ${row("District",d.district)}
-        ${row("FPS / Dealer ID",d.fps_id,{mono:true})}
-        ${row("Total Members",d.total_members||members.length)}
-        <div class="sec">Members (${members.length})</div>
-        ${members.map(m=>`
-          <div class="card">
-            <div><div class="k">${esc(m.relation||"Member")}</div>
-            <div class="v">${esc(m.name||"Unknown")} · <span class="mono">${esc(m.member_id||"")}</span></div></div>
-          </div>`).join("")}
-      `;
+  },
+  veh: {
+    input:"i-veh", btn:"b-veh", log:"l-veh", out:"o-veh", err:"e-veh",
+    action:"vehicle", clean:v=>v.toUpperCase().replace(/\s+/g,""), valid:v=>v.length>=6,
+    hint:"Enter vehicle number", payload:v=>({vehicle_num:v}),
+    render:d=> card("Registration No.", d.registration_number||d.vehicle_number, {mono:true,hi:true}) +
+      card("Owner Name", d.owner_name) +
+      card("Mobile", d.mobile_number, {mono:true,hi:true}) +
+      card("RTO", d.rto) + card("RC Status", d.rc_status) +
+      sec("Vehicle") +
+      card("Manufacturer", d.manufacturer) + card("Model", d.vehicle) +
+      card("Variant", d.variant) + card("Class", d.vehicle_class) +
+      card("Fuel", d.fuel_type) + card("Engine CC", d.cubic_capacity) +
+      sec("Validity") +
+      card("Registration Date", d.registration_date, {mono:true}) +
+      card("Insurance Upto", d.insurance_upto, {mono:true}) +
+      card("PUCC Upto", d.pucc_valid_upto, {mono:true}) +
+      sec("Identifiers") +
+      card("Chassis No.", d.chassis_number, {mono:true}) +
+      card("Engine No.", d.engine_number, {mono:true})
+  },
+  fam: {
+    input:"i-fam", btn:"b-fam", log:"l-fam", out:"o-fam", err:"e-fam",
+    action:"family", clean:v=>v.replace(/\D/g,""), valid:v=>v.length===12,
+    hint:"Enter 12-digit aadhaar", payload:v=>({id_number:v}),
+    render:d=>{
+      const m = d.members || [];
+      return card("Ration Card No.", d.ration_card_number||d.rcId, {mono:true,hi:true}) +
+        card("Head of Family", d.head_of_family||d.head) +
+        card("Scheme", d.scheme) + card("State", d.state) + card("District", d.district) +
+        card("FPS / Dealer ID", d.fps_id, {mono:true}) +
+        card("Total Members", d.total_members||m.length) +
+        sec("Members (" + m.length + ")") +
+        m.map(x => '<div class="card"><div><div class="k">'+esc(x.relation||"Member")+
+          '</div><div class="v">'+esc(x.name||"Unknown")+' · <span class="mono">'+
+          esc(x.member_id||"")+'</span></div></div></div>').join("");
     }
-  });
+  }
 };
 
-// Enter key support
-[["numberInput","numberBtn"],["vehicleInput","vehicleBtn"],["familyInput","familyBtn"]].forEach(([i,b])=>{
-  document.getElementById(i).addEventListener("keypress",e=>{ if(e.key==="Enter") document.getElementById(b).click(); });
-});
+el("b-num").onclick = () => fire(CFG.num);
+el("b-veh").onclick = () => fire(CFG.veh);
+el("b-fam").onclick = () => fire(CFG.fam);
+
+[["i-num","b-num"],["i-veh","b-veh"],["i-fam","b-fam"]].forEach(([i,b]) =>
+  el(i).addEventListener("keypress", e => { if(e.key==="Enter") el(b).click(); })
+);
 </script>
 </body>
 </html>
