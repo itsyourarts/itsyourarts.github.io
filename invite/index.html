@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#C22558">
+<title>NEVTA BOOK — System Locked</title>
+<meta name="description" content="Password-locked pink neon glass entrance to the NEVTA BOOK shagun register.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="lock-body">
+
+<!-- Background: radial pink gradient centred at (50%,44%) — no clock, no date, no subtitle -->
+<div class="bg-fx bg-fx--lock" aria-hidden="true"><div class="noise"></div></div>
+
+<!-- 390x390 breathing pink ambient glow behind the centre stage -->
+<div class="ambient-glow" aria-hidden="true"></div>
+
+<!-- Natural, slow rose-petal fall -->
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<main class="lock-stage">
+
+  <!-- TOP CIRCULAR EMBLEM + ROTATING DASH RING + 26° TIP-FLARE STREAK
+       200x200 borderless stage, exactly 15px above the lock card -->
+  <div class="lock-scene" id="lockScene">
+    <!-- 188x188 circular clip holding the 178x178 emblem, transparent corners -->
+    <div class="emblem-clip">
+      <div class="emblem">
+        <img src="assets/ganesha-circle.png" alt="Pink neon emblem, circle-cropped" />
+      </div>
+    </div>
+
+    <!-- dash ring: R=96, 94 crisp flat dashes, 0.92px stroke, ~3.3px dash, #E4FF526E,
+         rotating smoothly 360° every 28s
+         + second faster neon shine: compact 26° streak (360° / 3.6s, clockwise) with a
+         white-hot orb (5.6px core + star cross-glint + 16px neon halo) on the leading tip -->
+    <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+      <defs>
+        <linearGradient id="streakPink" gradientUnits="userSpaceOnUse" x1="193" y1="86" x2="179" y2="148">
+          <stop offset="0"   stop-color="#E8789E" stop-opacity="0"/>
+          <stop offset=".55" stop-color="#E8789E" stop-opacity=".93"/>
+          <stop offset="1"   stop-color="#FFFFFF"/>
+        </linearGradient>
+        <linearGradient id="streakGreen" gradientUnits="userSpaceOnUse" x1="193" y1="86" x2="179" y2="148">
+          <stop offset="0"   stop-color="#00FFA3" stop-opacity="0"/>
+          <stop offset=".55" stop-color="#00FFA3" stop-opacity=".93"/>
+          <stop offset="1"   stop-color="#FFFFFF"/>
+        </linearGradient>
+      </defs>
+      <circle class="ring-dash" cx="100" cy="100" r="96" fill="none" stroke="#E4FF526E" stroke-width="0.92" stroke-linecap="butt" stroke-dasharray="3.3 3.117"/>
+      <g class="streak-spin">
+        <circle class="ring-streak ring-streak--pink"  cx="100" cy="100" r="96" fill="none" stroke="url(#streakPink)" stroke-width="2" stroke-linecap="round" stroke-dasharray="43.56 559.63"/>
+        <circle class="ring-streak ring-streak--green" cx="100" cy="100" r="96" fill="none" stroke="url(#streakGreen)" stroke-width="2" stroke-linecap="round" stroke-dasharray="43.56 559.63"/>
+        <!-- leading tip at 26° on R=96: (186.28, 142.08) -->
+        <g class="tip-orb">
+          <line x1="179.28" y1="142.08" x2="193.28" y2="142.08"/>
+          <line x1="186.28" y1="135.08" x2="186.28" y2="149.08"/>
+          <circle cx="186.28" cy="142.08" r="2.8"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- MINIMAL NEON GLASSMORPHISM LOCK CARD (444px wide, pink neon glass) -->
+  <form class="lock-card" id="lockForm" autocomplete="off" novalidate>
+    <!-- 2px stationary glowing laser line at the top, inside the card -->
+    <span class="laser" aria-hidden="true"></span>
+    <!-- diagonal moving glass reflection band -->
+    <span class="sheen" aria-hidden="true"></span>
+    <!-- tactical HUD corner brackets 14x14 -->
+    <i class="hud hud--tl" aria-hidden="true"></i>
+    <i class="hud hud--tr" aria-hidden="true"></i>
+    <i class="hud hud--bl" aria-hidden="true"></i>
+    <i class="hud hud--br" aria-hidden="true"></i>
+
+    <!-- header: ONLY the 8px pulsing dot + SYSTEM LOCKED -->
+    <header class="lock-hd">
+      <span class="dot" aria-hidden="true"></span>
+      <h1 id="lockState">SYSTEM LOCKED</h1>
+    </header>
+
+    <div class="pw-wrap">
+      <span class="pw-icon" aria-hidden="true"></span>
+      <input type="password" id="pw" name="pw" placeholder="Master password"
+             autocomplete="current-password" spellcheck="false" aria-label="Master password" />
+      <button type="button" class="pw-eye" id="pwEye" aria-label="Show password" aria-pressed="false"><span class="pw-eye__icon" aria-hidden="true"></span></button>
+    </div>
+
+    <p class="lock-msg" id="lockMsg" role="status" aria-live="polite"></p>
+    <p class="caps-hint" id="capsHint" hidden>Caps Lock is on</p>
+
+    <button class="unlock-btn" id="unlockBtn" type="submit">
+      <span class="btn__label">UNLOCK</span>
+      <span class="btn-sheen" aria-hidden="true"></span>
+    </button>
+
+    <p class="lock-alt" id="lockAlt" hidden>
+      <a href="write.html" id="altLink">This session is already unlocked — continue</a>
+    </p>
+  </form>
+
+  <!-- FOOTER BRANDING: the X in GODXSHADOW glows neon pink (emerald while unlocking) -->
+  <footer class="lock-foot">© 2026 GOD<span class="fx-x">X</span>SHADOW — by Krishna UPX61</footer>
+</main>
+
+<!-- Curtain that closes here and reopens on the register page -->
+<div class="curtain" id="curtain" aria-hidden="true"><i></i><i></i></div>
+
+<script src="js/fx.js" defer></script>
+<script src="js/lock.js" defer></script>
+</body>
+</html>

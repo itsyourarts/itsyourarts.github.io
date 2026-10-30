@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NEVTA BOOK — Write Entries</title>
+<meta name="description" content="Write shagun entries fast: type, press Enter to jump to the next field, press Next to save, tap Previous to reopen and edit any earlier entry." />
+
+<script>
+  /* Lock gate + curtain pre-state (before first paint) */
+  (function () {
+    try {
+      if (sessionStorage.getItem('nv_unlocked') !== '1') location.replace('index.html');
+      if (sessionStorage.getItem('nv_curtain') === '1') document.documentElement.className += ' curtain-pre';
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2305060f'/%3E%3Cpath d='M16 5c6 3 9 8 8 13-1 5-5 9-8 9s-7-4-8-9c-1-5 2-10 8-13z' fill='%23ff4d6d'/%3E%3C/svg%3E" />
+</head>
+<body class="neon-glass">
+
+<div class="bg-fx" aria-hidden="true">
+  <div class="grid-lines"></div>
+  <div class="blob blob--cyan"></div>
+  <div class="blob blob--magenta"></div>
+  <div class="blob blob--violet"></div>
+  <div class="noise"></div>
+</div>
+<div class="petals" id="petals" aria-hidden="true"></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<header class="site-header">
+  <nav class="nav glass">
+    <a href="home.html" class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">NEVTA BOOK</span>
+    </a>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="home.html">Dashboard &amp; exports</a></li>
+      <li><a href="#writer">Writer</a></li>
+      <li><a href="#recent">Recent entries</a></li>
+    </ul>
+    <div class="nav__actions">
+      <span class="pill glass pill--sm"><span class="pill__dot"></span> Unlocked</span>
+      <button class="btn btn--ghost btn--sm" id="lockAgain" type="button">Lock</button>
+      <button class="nav__burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main class="writer-main" id="writer">
+
+  <!-- Live strip -->
+  <div class="wstrip reveal in">
+    <div class="wstrip__cell glass"><span>Entries</span><b id="wCount">0</b></div>
+    <div class="wstrip__cell glass"><span>Total shagun</span><b id="wTotal">₹0</b></div>
+    <div class="wstrip__cell glass"><span>Largest gift</span><b id="wHigh">₹0</b><i id="wHighWho">—</i></div>
+    <div class="wstrip__cell glass wstrip__cell--go">
+      <a href="home.html" class="btn btn--glass btn--sm">Open dashboard &amp; exports ⇢</a>
+    </div>
+  </div>
+
+  <section class="writer">
+    <form class="form glass writer__card" id="writerForm" novalidate autocomplete="off">
+
+      <header class="writer__head">
+        <h1 class="writer__title" id="wTitle">New shagun entry</h1>
+        <p class="writer__hint">Type anything, press <kbd>Enter</kbd> to jump to the next field.
+           Press <b>Save &amp; next</b> to store it. Tap <b>Previous entry</b> below to reopen and edit.
+           The note field stays dim on purpose — most entries never need one.</p>
+        <div class="edit-bar glass-soft" id="editBar" hidden>
+          <span id="editLabel">Editing entry</span>
+          <span class="edit-bar__nav">
+            <button type="button" class="btn btn--ghost btn--sm" id="btnNewer">Newer ▶</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="btnOlder">◀ Older</button>
+            <button type="button" class="btn btn--neon btn--sm" id="btnNew">＋ New entry</button>
+          </span>
+        </div>
+      </header>
+
+      <div class="grid-2">
+        <label class="field">
+          <span>Name *</span>
+          <input type="text" name="name" data-enter placeholder="Sh. Ramesh Chandra" required />
+        </label>
+        <label class="field">
+          <span>Father's / husband's name</span>
+          <input type="text" name="fatherName" data-enter placeholder="Sh. Mohan Lal" />
+        </label>
+        <label class="field">
+          <span>Phone number</span>
+          <input type="tel" name="phone" data-enter placeholder="+91 98xxxxxxxx" />
+        </label>
+        <label class="field">
+          <span>Amount (₹) *</span>
+          <input type="number" name="amount" data-enter min="0" step="1" placeholder="11000" required inputmode="numeric" />
+        </label>
+        <label class="field">
+          <span>Given as</span>
+          <select name="method" data-enter>
+            <option>Cash</option>
+            <option>UPI / Online</option>
+            <option>Cheque</option>
+            <option>Gold / Article gift</option>
+            <option>Promised (to be given later)</option>
+            <option>Other</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="field field--lit">
+        <span>Address</span>
+        <input type="text" name="address" data-enter placeholder="House 45, Ward 6, Gandhi Nagar, Delhi — 110001" />
+      </label>
+
+      <label class="field field--muted">
+        <span>Note / details</span>
+        <input type="text" name="note" data-enter placeholder="Rarely needed — skip it with Enter" />
+      </label>
+
+      <div class="form__actions writer__actions">
+        <button type="submit" class="btn btn--neon btn--lg" id="saveBtn">Save &amp; next</button>
+        <button type="button" class="btn btn--ghost" id="clearBtn">Clear form</button>
+      </div>
+      <p class="form__msg" id="formMsg" role="status" aria-live="polite"></p>
+
+      <div class="writer__prev">
+        <button type="button" class="btn btn--glass" id="btnPrev">◀ Previous entry</button>
+        <span class="writer__prevhint" id="prevHint">Reopen the last saved entry to check or edit it.</span>
+      </div>
+
+      <div class="writer__end">
+        <button type="button" class="btn btn--neon" id="endBtn">End &amp; download the book</button>
+        <span class="writer__prevhint">All entries done? Tap End and choose one format — that file downloads
+          instantly, is saved into the dashboard's Recent exports, and you land back on the home page.</span>
+      </div>
+
+    </form>
+
+    <!-- Recent entries -->
+    <aside class="recent glass" id="recent">
+      <h2 class="recent__title">Recent entries <span class="badge" id="recentCount">0</span></h2>
+      <p class="recent__hint">Tap any card to open it here for editing.</p>
+      <div class="recent__list" id="recentList"></div>
+      <p class="empty" id="recentEmpty">Nothing written yet — your first entry will appear here.</p>
+
+      <div class="breakup breakup--mini">
+        <h4>Breakup by method</h4>
+        <div class="breakup__grid" id="wBreakup"></div>
+        <p class="breakup__final" id="wFinal"></p>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<!-- Format chooser — opened by the End button when the book is finished -->
+<div class="modal" id="fmtModal" role="dialog" aria-modal="true" aria-labelledby="fmtModalTitle" hidden>
+  <div class="modal__scrim" data-close></div>
+  <div class="modal__panel glass modal__panel--sm">
+    <button class="modal__x" type="button" data-close aria-label="Close"></button>
+    <header class="modal__head">
+      <h3 id="fmtModalTitle">The book is finished — choose a format</h3>
+      <p>Pick one format: that file downloads instantly, gets saved into the dashboard's
+         Recent exports with its date and time, and you return to the home page.</p>
+    </header>
+    <div class="modal__body">
+      <div class="fmt-grid" id="fmtPick">
+        <button type="button" class="fmt glass-soft" data-fmt="pdf"><span class="fmt__k">PDF</span><i>Print-ready report</i></button>
+        <button type="button" class="fmt glass-soft" data-fmt="xml"><span class="fmt__k">XML</span><i>Backup / import elsewhere</i></button>
+        <button type="button" class="fmt glass-soft" data-fmt="json"><span class="fmt__k">JSON</span><i>Backup / developers</i></button>
+        <button type="button" class="fmt glass-soft" data-fmt="csv"><span class="fmt__k">CSV</span><i>Excel / Google Sheets</i></button>
+        <button type="button" class="fmt glass-soft" data-fmt="png"><span class="fmt__k">PNG</span><i>Image to share on WhatsApp</i></button>
+        <button type="button" class="fmt glass-soft" data-fmt="html"><span class="fmt__k">HTML</span><i>Standalone book in a browser</i></button>
+        <button type="button" class="fmt glass-soft" data-fmt="md"><span class="fmt__k">Markdown</span><i>For Notion / docs</i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Project / nevta name gate — the entry page opens only after naming -->
+<div class="modal" id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle" hidden>
+  <div class="modal__scrim"></div>
+  <div class="modal__panel glass modal__panel--sm">
+    <header class="modal__head">
+      <h3 id="nameModalTitle">Name this nevta / project</h3>
+      <p>What should this register be called? You will write entries under this name, the dashboard will show
+         them under it, and every export file will carry it with the date and time.</p>
+    </header>
+    <div class="modal__body">
+      <label class="field field--lit"><span>Project / nevta name *</span>
+        <input type="text" id="projNameInput" maxlength="80" autocomplete="off"
+               placeholder="e.g. Rahul &amp; Sneha — Wedding Nov 2026" /></label>
+      <p class="form__msg" id="nameMsg" role="status" aria-live="polite"></p>
+    </div>
+    <footer class="modal__foot">
+      <span class="hint">You can rename it later from the dashboard.</span>
+      <div class="modal__btns">
+        <button class="btn btn--neon" type="button" id="projNameSave">Start writing</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<div class="curtain" id="curtain" aria-hidden="true"><i></i><i></i></div>
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="js/fx.js" defer></script>
+<script src="js/writer.js" defer></script>
+</body>
+</html>
