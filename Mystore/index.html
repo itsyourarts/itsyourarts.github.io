@@ -356,6 +356,8 @@ select option{background:#0b1220;color:#e6eefc}
 .app-icon.exe{background:linear-gradient(150deg,var(--neon-3),var(--pink));color:#150417;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 0 26px rgba(176,107,255,.35)}
 .app-icon img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 .app-icon .initial{font-size:25px;font-weight:800;letter-spacing:-1.2px;line-height:1;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.app-icon .initial.glyph{display:flex;align-items:center;justify-content:center}
+.app-icon .initial.glyph svg{width:34px;height:34px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.28))}
 .icon-badge{position:absolute;right:-5px;bottom:-5px;display:grid;place-items:center;width:23px;height:23px;border-radius:8px;background:rgba(6,12,24,.92);border:1px solid rgba(255,255,255,.22);color:var(--neon);box-shadow:0 4px 14px rgba(0,0,0,.5)}
 .icon-badge svg{width:13px;height:13px}
 .app-icon svg{width:28px;height:28px}
@@ -721,7 +723,7 @@ const CONFIG = {
   // mirror of the same public release data is used first, so the store keeps working
   // even after the API limit is used up. The GitHub API stays as a direct fallback.
   mirror: 'https://ungh.cc/repos/',
-  pollMs: 120000,           // auto-refresh every 2 min while the tab is open
+  pollMs: 60000,            // full refresh every minute while the tab is open
   cacheKey: 'godxshadow:releases:v5'
 };
 
@@ -794,7 +796,9 @@ function kindOf(name) {
 function prettyName(fileName) {
   return fileName
     .replace(/\.(apk|apks|xapk|aab|ipa|exe|msi|zip|7z|rar|dmg|pkg|deb|rpm|appimage)$/i, '')
-    .replace(/[_.]+/g, ' ')
+    .replace(/[-_]+/g, ' ')
+    // dots inside a version number stay (v6.12), every other dot becomes a space
+    .replace(/\.(?![0-9])|(?<![0-9])\./g, ' ')
     .replace(/\s+/g, ' ')
     .replace(/\b(setup|installer|install)\b/gi, '')
     .replace(/\s+/g, ' ')
@@ -959,9 +963,10 @@ function rememberAssetName(repo, tag, asset) {
 async function refreshReleaseNames(src, list) {
   const tags = [...new Set(list.filter(a => !a.fromRepo && a.tag).map(a => a.tag))];
 
-  // 1) remembered names win over a cached mirror
+  // 1) a remembered name only fills in for a cached mirror - never over a fresh feed,
+  //    otherwise a second rename would be reverted to the previous name forever
   for (const a of list) {
-    if (a.fromRepo || !a.tag) continue;
+    if (a.fromRepo || !a.tag || a.fresh) continue;
     const known = assetNames[assetIdentity(src.repo, a.tag, a)];
     if (known && known !== a.name) renameAsset(a, a.tag, known);
   }
@@ -1007,12 +1012,62 @@ function renameAsset(asset, tag, newName) {
   asset.renamedFrom = oldName;
 }
 
+/* ungh.cc caches GitHub's API response for ~30 min, so a release uploaded a minute ago
+   can be invisible there. r.jina.ai mirrors the very same REST response without that
+   cache, allows CORS from any origin, and answers in about half a second. It is used
+   together with ungh: whatever is freshest wins. */
+const JINA = 'https://r.jina.ai/';
+async function fromJina(src) {
+  const res = await fetch(JINA + 'https://api.github.com/repos/' + CONFIG.owner + '/' + src.repo + '/releases?per_page=100',
+    { cache: 'no-store', headers: { 'x-respond-with': 'html' }, signal: AbortSignal.timeout(20000) });
+  if (!res.ok) throw new Error('jina HTTP ' + res.status);
+  const text = await res.text();
+  const start = text.indexOf('[');
+  const end = text.lastIndexOf(']');
+  if (start < 0 || end < start) throw new Error('jina: no payload');
+  let body = text.slice(start, end + 1);
+  // the mirror wraps the JSON in an HTML <pre>, so entities have to be decoded first
+  if (body.includes('&quot;') || body.includes('&amp;')) {
+    body = body.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<')
+               .replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  }
+  const data = JSON.parse(body);
+  if (!Array.isArray(data)) throw new Error('jina: invalid release feed');
+  return data.flatMap(rel => assetsFromRelease(src.repo, rel));
+}
+
+/** Two release feeds can disagree (one is cached). Keep one entry per real asset and
+    let the fresher feed win, including a renamed file name. */
+function mergeReleaseLists(lists) {
+  const out = [];
+  for (const list of lists) {
+    for (const a of list) {
+      const twin = out.findIndex(b =>
+        b.repo === a.repo && b.tag === a.tag && b.size === a.size && b.kind.key === a.kind.key);
+      if (twin >= 0) {
+        if (a.fresh || !out[twin].fresh) out[twin] = a;   // only a fresh feed may win
+      }
+      else if (!out.some(b => b.key === a.key)) out.push(a);
+    }
+  }
+  return out;
+}
+
+
 async function fetchSource(src) {
-  // 1) mirror (no rate limit anywhere)
-  try {
-    const list = await fromMirror(src);
-    if (list.length) { sourceState[src.repo] = 'ok'; return list; }
-  } catch (e) { /* fall through */ }
+  // 1) both quota-free mirrors at once - ungh (fast) and the uncached REST copy.
+  //    A stale ungh feed can no longer hide a release that was just uploaded.
+  const feeds = await Promise.allSettled([fromMirror(src), fromJina(src)]);
+  const lists = [];
+  if (feeds[0].status === 'fulfilled' && feeds[0].value && feeds[0].value.length) lists.push(feeds[0].value);
+  // entries from the uncached feed are marked fresh: they always win over a remembered name
+  if (feeds[1].status === 'fulfilled' && feeds[1].value && feeds[1].value.length) {
+    lists.push(feeds[1].value.map(a => ({ ...a, fresh: true })));
+  }
+  if (lists.length) {
+    sourceState[src.repo] = 'ok';
+    return mergeReleaseLists(lists);
+  }
 
   // 2) GitHub REST API
   try {
@@ -1506,6 +1561,56 @@ function initials(title) {
   if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
   return (words[0][0] + words[1][0]).toUpperCase();
 }
+const LOGO_TINTS = {
+  vidmax: ['#ffb347', '#ff6a3d'],
+  downloader: ['#ffb347', '#ff6a3d'],
+  youtube: ['#ff5d5d', '#c21414'],
+  instagram: ['#f5a05a', '#b4348c'],
+  facebook: ['#7fb2ff', '#1b5ae0'],
+  twitter: ['#9fd4ff', '#1d9bf0'],
+  whatsapp: ['#7ff0a8', '#12a150'],
+  telegram: ['#9fe0f5', '#1f8fd0'],
+  spotify: ['#8ef2b0', '#12a150'],
+  netflix: ['#ff8a8a', '#b20710'],
+  chrome: ['#9ad7ff', '#1a73e8'],
+  camera: ['#a7f3ff', '#0b7fa8'],
+  recorder: ['#7fe3ff', '#0b7b96'],
+  music: ['#e2b3ff', '#7a2bd6'],
+  video: ['#c0b6ff', '#4a2bd6'],
+  player: ['#b7c9ff', '#2a3ed6'],
+  vpn: ['#a8f0d0', '#0b8f6a'],
+  cleaner: ['#c8b6ff', '#5b2bd6'],
+  lock: ['#ffd27a', '#c26a07'],
+  vault: ['#a8f0ff', '#0b7f96'],
+  shield: ['#9ff5c8', '#0a8a5c'],
+  photo: ['#ffc3a0', '#c2521c'],
+  editor: ['#b8e6ff', '#1b6ea8']
+};
+const GLYPHS = {
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="13" height="10" rx="2.4"/><path d="m16 11 5-3v8l-5-3z"/></svg>',
+  music: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.6 8-8 9-4.4-1-8-4-8-9V6z"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4.5" y="10" width="15" height="10" rx="2.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
+  folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7h6l2 2h10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>'
+};
+function brandGlyph(app, tint) {
+  const k = (app.title + ' ' + app.name).toLowerCase();
+  if (/vidmax|downloader|download|ytdl|youtube/.test(k)) return GLYPHS.download;
+  if (/cam|recorder|record/.test(k)) return GLYPHS.camera;
+  if (/music|audio|song|player/.test(k)) return GLYPHS.music;
+  if (/vpn|proxy|browser|web/.test(k)) return GLYPHS.globe;
+  if (/lock|key|pass/.test(k)) return GLYPHS.lock;
+  if (/shield|guard|antivirus|defend/.test(k)) return GLYPHS.shield;
+  if (/vault|safe|hide/.test(k)) return GLYPHS.folder;
+  if (/studio|video|edit|film/.test(k)) return GLYPHS.play;
+  if (/clean|boost|fast/.test(k)) return GLYPHS.bolt;
+  return null;
+}
+
 function matchLogo(app) {
   const key = (app.title + ' ' + app.name + ' ' + app.releaseName).toLowerCase();
   if (key.includes('shadowvault')) return LOGOS.shadowvault;
@@ -1545,11 +1650,16 @@ function applyLogoImage(logo, app, src, title) {
 
 function paintFallbackLogo(logo, app) {
   const [c1, c2] = accentFor(app.title + app.repo);
-  logo.style.background = 'linear-gradient(150deg,' + c1 + ',' + c2 + ')';
-  logo.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,.6),0 0 26px ' + c1 + '55';
+  const tint = LOGO_TINTS[(app.title + ' ' + app.name).toLowerCase().split(/[^a-z]+/).find(w => LOGO_TINTS[w])] || null;
+  const [a, b] = tint || [c1, c2];
+  logo.style.background = 'radial-gradient(circle at 34% 28%,' + a + ',' + b + ' 78%)';
+  logo.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,.55),0 0 26px ' + a + '66';
+  logo.style.color = '#06121a';
   const initial = document.createElement('span');
   initial.className = 'initial';
-  initial.textContent = initials(app.title);
+  const art = brandGlyph(app, a);
+  if (art) { initial.innerHTML = art; initial.classList.add('glyph'); }
+  else initial.textContent = initials(app.title);
   const badge = document.createElement('span');
   badge.className = 'icon-badge';
   badge.innerHTML = ico(app.kind.key === 'apps' ? 'android' : app.kind.key === 'software' ? 'windows' : 'box');
@@ -1559,6 +1669,30 @@ function paintFallbackLogo(logo, app) {
 
 /** Automatic icon fetch: read the launcher icon out of the APK itself.
  *  Works for any .apk published in the future — no manual embedding needed. */
+/* GitHub never sends CORS headers for release binaries, so a browser cannot read them
+   directly. gh-proxy.com relays the very same download (HTTP Range supported,
+   Access-Control-Allow-Origin: *), which makes the real launcher icon readable for
+   release-hosted apps and gives those downloads a progress bar too. */
+const RELAYS = ['https://gh-proxy.com/', 'https://ghproxy.net/'];
+
+function relayUrls(url) {
+  if (!url || !/^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\/download\//.test(url)) return [];
+  return RELAYS.map(host => host + url);
+}
+
+async function fetchViaRelay(url, opts = {}) {
+  const tries = [...relayUrls(url), url];      // direct last: works for repo files
+  let lastError;
+  for (const candidate of tries) {
+    try {
+      const res = await fetch(candidate, { cache: 'no-store', redirect: 'follow', ...opts });
+      if (res.ok || res.type === 'opaque') return res;
+      lastError = new Error('HTTP ' + res.status);
+    } catch (e) { lastError = e; }
+  }
+  throw lastError || new Error('unreachable');
+}
+
 function queueApkIcon(app) {
   if (iconJobs.has(app.key)) {
     iconJobs.get(app.key).then(src => { if (src) swapIcon(app, src); });
@@ -1567,15 +1701,17 @@ function queueApkIcon(app) {
   if (app.size > ICON_LIMIT) return;      // too heavy for a lazy icon read
 
   const job = iconQueue.then(async () => {
-    const cacheKey = 'apk-icon:' + app.key;
+    // the cache key contains the file name + size, so a re-upload gets a fresh icon
+    const cacheKey = 'apk-icon:' + app.key + ':' + app.name + ':' + (app.size || 0);
     try {
       const hit = localStorage.getItem(cacheKey);
       if (hit) return hit;
     } catch {}
-    const candidates = [app.iconUrl, app.url, app.cdnUrl].filter(Boolean);
+    const direct = [app.iconUrl, app.url, app.cdnUrl].filter(Boolean);
+    const candidates = [...direct, ...direct.flatMap(relayUrls)];
     for (const url of candidates) {
       try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(90000), cache: 'force-cache' });
+        const res = await fetch(url, { signal: AbortSignal.timeout(90000), cache: 'default' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const buf = await res.arrayBuffer();
         const src = apkIconFromBytes(buf);
@@ -1888,15 +2024,24 @@ async function startDownload(app) {
     arm();
     // Files inside the repo (Files/ folder) are CORS-friendly, so they stream with a
     // real progress bar. Release binaries are not — those fall through to the browser.
-    let res = await fetch(app.url, { signal: controller.signal, mode: 'cors', redirect: 'follow', cache: 'no-store' });
-    if ((!res.ok || res.type === 'opaque') && app.cdnUrl && app.cdnUrl !== app.url) {
-      // last resort: jsDelivr keeps a copy of paths that were renamed or removed upstream
-      const alt = await fetch(app.cdnUrl, { signal: controller.signal, mode: 'cors', redirect: 'follow', cache: 'no-store' });
-      if (alt.ok) { res = alt; app.url = app.cdnUrl; }
+    const opts = { signal: controller.signal, mode: 'cors', redirect: 'follow', cache: 'no-store' };
+    let res = null;
+    try { res = await fetch(app.url, opts); } catch (e) { res = null; }
+    if (!res || !res.ok || res.type === 'opaque') {
+      // release binaries block CORS; the relay serves the same file with CORS + Range,
+      // which is what turns the plain link into a real progress bar
+      try { res = await fetchViaRelay(app.url, opts); } catch (e) { res = res || null; }
     }
-    if (!res.ok || res.type === 'opaque') {
+    if ((!res || !res.ok) && app.cdnUrl && app.cdnUrl !== app.url) {
+      // last resort: jsDelivr keeps a copy of paths that were renamed or removed upstream
+      try {
+        const alt = await fetch(app.cdnUrl, opts);
+        if (alt.ok) { res = alt; app.url = app.cdnUrl; }
+      } catch (e) { /* fall through */ }
+    }
+    if (!res || !res.ok || res.type === 'opaque') {
       const e = new Error('stream unavailable');
-      e.permanent = res.status === 404 || res.status === 410;
+      e.permanent = !!res && (res.status === 404 || res.status === 410);
       throw e;
     }
 
@@ -2019,11 +2164,11 @@ setView('all', false);
 paintSources();
 sync();
 /* ---------------- automatic refresh loop ----------------
-   • every 2 min while the tab is visible
+   • every minute while the tab is visible
    • instantly when the tab becomes visible again (after 30 s)
    • instantly when the network comes back
-   • instantly when a new release/file is published (change detection every 20 s,
-     cheap request to the no-rate-limit mirror) */
+   • instantly when a new release/file is published (change detection every 10 s,
+     cheap request to the uncached mirror every 10 s) */
 let lastSync = Date.now();
 function autoSync() {
   if (loading) return;
@@ -2037,32 +2182,47 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('online', autoSync);
 window.addEventListener('focus', () => { if (Date.now() - lastSync > 30000) autoSync(); });
 
-/* lightweight signature check: only the tiny mirror feed, no GitHub API quota */
+/* Change watcher. Instead of comparing two feed snapshots (which can capture the first
+   snapshot too late and miss a file uploaded right after the page opened), it compares
+   the live feeds with the cards that are actually on screen: any file the store does not
+   know yet - or a file whose name changed upstream - triggers a full sync. */
 let lastWatch = 0;
-let lastWatchSig = '';
 async function watchForChanges() {
-  if (document.hidden || loading || Date.now() - lastWatch < 20000) return;
+  if (document.hidden || loading || Date.now() - lastWatch < 8000) return;
   lastWatch = Date.now();
   try {
-    const parts = await Promise.all(CONFIG.sources.map(async src => {
-      const data = await json(CONFIG.mirror + CONFIG.owner + '/' + src.repo + '/releases');
-      return (data.releases || []).map(r => r.tag + ':' + (r.assets || []).map(a => a.downloadUrl).join(',')).join('|');
+    const feeds = [];
+    await Promise.all(CONFIG.sources.map(async src => {
+      try { feeds.push(...await fromJina(src)); }
+      catch (e) {
+        try { feeds.push(...await fromMirror(src)); } catch (e2) { /* skip this channel */ }
+      }
     }));
-    const folders = await Promise.all(CONFIG.folders.map(async src => {
-      const data = await json('https://ungh.cc/repos/' + CONFIG.owner + '/' + src.repo + '/files/' + encodeURIComponent(src.branch));
-      return (data.files || []).map(f => f.path + ':' + f.size).join('|');
+    await Promise.all(CONFIG.folders.map(async src => {
+      try {
+        const data = await json('https://ungh.cc/repos/' + CONFIG.owner + '/' + src.repo + '/files/' + encodeURIComponent(src.branch));
+        const files = (data.files || []).filter(f => String(f.path || '').startsWith(src.path + '/'));
+        feeds.push(...files.flatMap(f => assetsFromFile(src.repo, src.branch, f)));
+      } catch (e) { /* folder check is best-effort */ }
     }));
-    const signature = parts.concat(folders).join('##');
-    const changed = lastWatchSig && signature !== lastWatchSig;
-    lastWatchSig = signature;
-    if (changed) autoSync();   // something new upstream
+
+    const known = new Map(releases.map(a => [a.key, a]));
+    const needsSync = feeds.some(f => {
+      if (deadFiles.has(f.key)) return false;
+      const current = known.get(f.key);
+      if (!current) return !releases.some(a => isDuplicate(f, a));   // genuinely new file
+      return current.name !== f.name || current.title !== f.title;    // renamed upstream
+    });
+    if (needsSync) autoSync();
   } catch (e) { /* quiet: the main loop will retry */ }
 }
-setInterval(watchForChanges, 20000);
+setInterval(watchForChanges, 10000);
+setTimeout(watchForChanges, 3000);   // one early check right after the first sync
 window.addEventListener('beforeunload', e => {
   for (const s of states.values()) if (s.status === 'streaming') { e.preventDefault(); e.returnValue = ''; break; }
 });
 
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a529c1e7ed2996c0',t:'MTc5MzM1NjM2MA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a529c1e7ed2996c0',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5301aaa6eec8b19',t:'MTc5MzQyMjkxMQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5301aaa6eec8b19',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
