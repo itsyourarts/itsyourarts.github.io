@@ -1,0 +1,12 @@
+ShadowQR — Latest update: shining About button
+
+1. Extract this ZIP.
+2. Replace index.html at the ROOT of your ShadowQR GitHub repository.
+3. Upload the complete assets folder and .nojekyll alongside index.html.
+4. Do not nest these files inside an extra folder or upload just the ZIP.
+5. Settings > Pages > Deploy from a branch > main > / (root).
+6. Wait for deployment, then hard-refresh your live site.
+
+About is placed after FAQs in the header (inside the menu on mobile). Tap to open the introduction for Krishna Chauhan from Ghazipur.
+Copyright: © 2026 GODXSHADOW — by Krishna UPX61 (the X is red).
+Existing UPI branding options, QR generator features, and footer are retained.
