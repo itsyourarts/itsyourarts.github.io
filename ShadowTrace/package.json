@@ -1,0 +1,28 @@
+{
+  "name": "shadowtrace",
+  "version": "1.0.0",
+  "description": "ShadowTrace — Open-Source URL Redirect Checker, Tiny Link Expander, Affiliate Auditor, DNS Lookup & Domain RDAP Suite. Works 100% statically on GitHub Pages or with Deep Serverless API on Vercel.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "redirect-checker",
+    "url-expander",
+    "link-tracer",
+    "osint",
+    "seo-tools",
+    "dns-lookup",
+    "whois",
+    "rdap",
+    "url-shortener",
+    "wheregoes-alternative",
+    "github-pages",
+    "vercel"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

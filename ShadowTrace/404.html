@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShadowTrace — Redirecting...</title>
+  <script>
+    // GitHub Pages SPA Fallback: redirect clean paths gracefully to root hash route
+    (function () {
+      var loc = window.location;
+      var segments = loc.pathname.split('/').filter(Boolean);
+      var knownTabs = ['tracer', 'bulk', 'dns', 'domain', 'shortener', 'status-codes', 'docs', 'about'];
+      var last = segments[segments.length - 1] || '';
+      if (knownTabs.indexOf(last) !== -1) {
+        var base = loc.pathname.slice(0, loc.pathname.lastIndexOf('/' + last)) || '/';
+        loc.replace(base + (base.endsWith('/') ? '' : '/') + '#' + last);
+      } else {
+        loc.replace('./');
+      }
+    })();
+  </script>
+</head>
+<body style="background:#280619;color:#fff7fb;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+  <p>Redirecting to <a href="./" style="color:#ff66b5">ShadowTrace</a>...</p>
+</body>
+</html>

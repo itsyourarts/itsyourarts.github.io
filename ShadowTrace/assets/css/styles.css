@@ -1,0 +1,2755 @@
+/* ==========================================================================
+   ShadowTrace — AUTHENTIC NEON GLASSMORPHISM CSS (3D Frosted Glass + Neon Tubes)
+   Dual-Mode: 🌙 Night Cyber-Neon Glass & ☀️ Day Holographic Neon Crystal Glass
+   ========================================================================== */
+
+@property --neon-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root,
+[data-theme="dark"] {
+  /* Vibrant Cyber-Rose & Crystal Berry-Violet Night Background (Zero muddy brown!) */
+  --bg-base: #170526;
+  --bg-canvas:
+    radial-gradient(circle at 18% 18%, rgba(255, 56, 152, 0.30) 0%, transparent 45%),
+    radial-gradient(circle at 82% 22%, rgba(255, 110, 188, 0.25) 0%, transparent 46%),
+    radial-gradient(circle at 50% 86%, rgba(217, 70, 239, 0.24) 0%, transparent 50%),
+    linear-gradient(145deg, #140421 0%, #2d0836 50%, #190529 100%);
+
+  /* Pure See-Through Crystal Rose Frosted Glass */
+  --glass-card-bg: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(26, 8, 44, 0.44) 50%,
+    rgba(255, 77, 162, 0.14) 100%
+  );
+  --glass-elevated-bg: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(34, 10, 54, 0.48) 100%
+  );
+  --glass-hover-bg: linear-gradient(
+    135deg,
+    rgba(255, 92, 168, 0.24) 0%,
+    rgba(217, 70, 239, 0.18) 100%
+  );
+  --glass-header-bg: linear-gradient(
+    90deg,
+    rgba(22, 6, 38, 0.60) 0%,
+    rgba(44, 10, 56, 0.46) 50%,
+    rgba(22, 6, 38, 0.60) 100%
+  );
+  --glass-input-bg: rgba(18, 5, 32, 0.56);
+  --glass-code-bg: rgba(12, 3, 22, 0.80);
+  --select-menu-bg: #1c062e;
+
+  --glass-blur: blur(20px) saturate(190%);
+
+  /* 3D Cut-Glass Specular Bevel + Rose-Pink Neon Tube Edges */
+  --glass-border-top: rgba(255, 255, 255, 0.62);
+  --glass-border-left: rgba(255, 255, 255, 0.44);
+  --glass-border-right: rgba(255, 102, 181, 0.68);
+  --glass-border-bottom: rgba(255, 46, 147, 0.60);
+
+  /* Rose-Pink & Neon Tube Colors */
+  --neon-cyan: #ff75bc;
+  --neon-pink: #ff2e93;
+  --neon-purple: #d946ef;
+  --neon-green: #00eb7e;
+  --neon-amber: #f5b400;
+  --neon-red: #ff1e4d;
+
+  --accent-primary: #ff66b5;
+  --accent-secondary: #ff2e93;
+
+  /* Softened Rose-Pink Neon Shadows */
+  --neon-card-shadow:
+    0 20px 50px rgba(15, 2, 10, 0.68),
+    0 0 12px rgba(255, 92, 168, 0.28),
+    0 0 28px rgba(244, 63, 134, 0.16),
+    inset 0 1px 1.5px rgba(255, 235, 245, 0.36),
+    inset 0 0 18px rgba(255, 105, 180, 0.10);
+
+  --neon-card-hover-shadow:
+    0 24px 56px rgba(15, 2, 10, 0.76),
+    0 0 12px rgba(255, 92, 168, 0.68),
+    0 0 28px rgba(255, 46, 147, 0.38),
+    inset 0 1px 2px rgba(255, 240, 248, 0.52),
+    inset 0 0 24px rgba(255, 105, 180, 0.18);
+
+  --neon-input-focus:
+    0 0 8px rgba(255, 92, 168, 0.8),
+    0 0 22px rgba(255, 46, 147, 0.45),
+    inset 0 0 14px rgba(255, 105, 180, 0.18);
+
+  --neon-title-shadow:
+    0 2px 8px rgba(15, 2, 10, 0.75),
+    0 0 16px rgba(255, 92, 168, 0.50),
+    0 0 34px rgba(244, 63, 134, 0.30);
+
+  /* Typography */
+  --text-primary: #fff7fb;
+  --text-secondary: #fbd5e8;
+  --text-muted: #dfa3c2;
+
+  --grid-color: rgba(255, 105, 180, 0.06);
+  --sheen-color: rgba(255, 235, 245, 0.065);
+
+  /* Rose-Pink Neon Glass Button */
+  --neon-btn-bg: linear-gradient(
+    135deg,
+    rgba(255, 77, 148, 0.36) 0%,
+    rgba(217, 70, 239, 0.32) 55%,
+    rgba(225, 29, 72, 0.34) 100%
+  );
+  --neon-btn-hover-bg: linear-gradient(
+    135deg,
+    rgba(255, 77, 148, 0.56) 0%,
+    rgba(217, 70, 239, 0.52) 55%,
+    rgba(225, 29, 72, 0.54) 100%
+  );
+  --neon-btn-text: #ffffff;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
+/* ==========================================================================
+   ☀️ DAY MODE — Soft Blush Rose-Pink Background + Frosted Rose Quartz Glass
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-base: #f9c6dc;
+  --bg-canvas:
+    radial-gradient(circle at 18% 20%, rgba(244, 63, 134, 0.24) 0%, transparent 45%),
+    radial-gradient(circle at 82% 20%, rgba(251, 113, 165, 0.28) 0%, transparent 46%),
+    radial-gradient(circle at 50% 85%, rgba(236, 72, 153, 0.22) 0%, transparent 50%),
+    linear-gradient(135deg, #fcd3e4 0%, #f6b5d0 50%, #fde0ec 100%);
+
+  /* See-Through Frosted Blush Rose Quartz Glass */
+  --glass-card-bg: linear-gradient(
+    135deg,
+    rgba(255, 246, 251, 0.62) 0%,
+    rgba(255, 234, 244, 0.46) 50%,
+    rgba(255, 120, 178, 0.16) 100%
+  );
+  --glass-elevated-bg: linear-gradient(
+    135deg,
+    rgba(255, 248, 252, 0.72) 0%,
+    rgba(255, 238, 246, 0.54) 100%
+  );
+  --glass-hover-bg: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.84) 0%,
+    rgba(255, 130, 185, 0.24) 100%
+  );
+  --glass-header-bg: linear-gradient(
+    90deg,
+    rgba(255, 242, 248, 0.68) 0%,
+    rgba(255, 234, 244, 0.52) 50%,
+    rgba(255, 242, 248, 0.68) 100%
+  );
+  --glass-input-bg: rgba(255, 248, 252, 0.78);
+  --glass-code-bg: rgba(34, 6, 22, 0.90);
+  --select-menu-bg: #fff5f9;
+
+  --glass-blur: blur(20px) saturate(175%);
+
+  --glass-border-top: rgba(255, 255, 255, 0.85);
+  --glass-border-left: rgba(255, 255, 255, 0.72);
+  --glass-border-right: rgba(236, 72, 153, 0.68);
+  --glass-border-bottom: rgba(225, 29, 98, 0.60);
+
+  --neon-cyan: #be185d;
+  --neon-pink: #db2777;
+  --neon-purple: #9333ea;
+  --neon-green: #047857;
+  --neon-amber: #b45309;
+  --neon-red: #be123c;
+
+  --accent-primary: #be185d;
+  --accent-secondary: #db2777;
+
+  --neon-card-shadow:
+    0 18px 44px rgba(131, 24, 67, 0.15),
+    0 0 14px rgba(236, 72, 153, 0.34),
+    0 0 30px rgba(244, 63, 134, 0.18),
+    inset 0 1px 2px rgba(255, 255, 255, 0.85),
+    inset 0 0 18px rgba(255, 255, 255, 0.35);
+
+  --neon-card-hover-shadow:
+    0 22px 50px rgba(131, 24, 67, 0.22),
+    0 0 14px rgba(236, 72, 153, 0.65),
+    0 0 34px rgba(225, 29, 98, 0.34),
+    inset 0 2px 3px #ffffff,
+    inset 0 0 24px rgba(255, 150, 195, 0.25);
+
+  --neon-input-focus:
+    0 0 10px rgba(236, 72, 153, 0.72),
+    0 0 26px rgba(225, 29, 98, 0.32),
+    inset 0 0 12px rgba(255, 255, 255, 0.8);
+
+  --neon-title-shadow:
+    0 1px 8px rgba(236, 72, 153, 0.28);
+
+  --text-primary: #290519;
+  --text-secondary: #4c0f30;
+  --text-muted: #7a2250;
+
+  --grid-color: rgba(190, 24, 93, 0.06);
+  --sheen-color: rgba(255, 255, 255, 0.34);
+
+  --neon-btn-bg: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.90) 0%,
+    rgba(219, 39, 119, 0.90) 55%,
+    rgba(225, 29, 72, 0.90) 100%
+  );
+  --neon-btn-hover-bg: linear-gradient(
+    135deg,
+    #f43f5e 0%,
+    #ec4899 52%,
+    #be185d 100%
+  );
+  --neon-btn-text: #ffffff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  background-image: var(--bg-canvas);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+select option {
+  background-color: var(--select-menu-bg);
+  color: var(--text-primary);
+}
+
+a {
+  color: var(--neon-cyan);
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+/* ==========================================================================
+   3D NEON SPHERES, RINGS, LASERS & CYBER GRID BEHIND THE FROSTED GLASS!
+   (Positioned right behind card edges so backdrop-filter visibly blurs them!)
+   ========================================================================== */
+.ambient-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, #000 35%, transparent 95%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, #000 35%, transparent 95%);
+}
+
+.ambient-plasma {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+}
+
+.plasma-cyan {
+  width: 520px;
+  height: 360px;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-65%);
+  background: rgba(255, 102, 181, 0.09);
+}
+
+.plasma-magenta {
+  width: 520px;
+  height: 360px;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-15%);
+  background: rgba(255, 0, 229, 0.08);
+}
+
+/* CRISP 3D GLOSSY NEON SPHERES (Gently dimmed so glass refraction stays rich without glare!) */
+.glass-3d-sphere {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.72;
+  animation: float3d 9s ease-in-out infinite alternate;
+}
+
+/* Vivid Pink/Magenta 3D Neon Sphere intersecting top-right of main glass card */
+.sphere-pink {
+  width: 185px;
+  height: 185px;
+  top: 165px;
+  right: max(3%, calc(50% - 575px));
+  background: radial-gradient(
+    circle at 32% 28%,
+    #ffb8fa 0%,
+    #ff52ef 18%,
+    #d900c4 48%,
+    #6600d9 78%,
+    #220054 100%
+  );
+  box-shadow:
+    0 0 22px rgba(255, 0, 229, 0.65),
+    0 0 55px rgba(255, 0, 229, 0.45),
+    inset -12px -14px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* Vivid Electric Cyan 3D Neon Sphere intersecting bottom-left of main glass card */
+.sphere-cyan {
+  width: 165px;
+  height: 165px;
+  top: 315px;
+  left: max(3%, calc(50% - 575px));
+  background: radial-gradient(
+    circle at 30% 28%,
+    #b8fcff 0%,
+    #4cefff 20%,
+    #00c8e0 48%,
+    #0055d4 80%,
+    #001652 100%
+  );
+  box-shadow:
+    0 0 22px rgba(255, 102, 181, 0.65),
+    0 0 55px rgba(255, 102, 181, 0.45),
+    inset -10px -12px 24px rgba(0, 0, 0, 0.5);
+  animation-delay: -3.5s;
+}
+
+/* Glowing 3D Neon Violet Torus Ring behind middle cards */
+.glass-3d-ring.ring-violet {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  bottom: 14%;
+  right: max(6%, calc(50% - 530px));
+  border: 22px solid #9e10db;
+  opacity: 0.70;
+  box-shadow:
+    0 0 20px rgba(188, 19, 254, 0.6),
+    0 0 48px rgba(188, 19, 254, 0.45),
+    inset 0 0 18px #9e10db,
+    inset 3px 3px 8px rgba(255, 255, 255, 0.5);
+  animation: float3d 12s ease-in-out infinite alternate-reverse;
+}
+
+/* Neon Green-Cyan 3D Sphere behind lower left cards */
+.sphere-emerald {
+  width: 130px;
+  height: 130px;
+  bottom: 10%;
+  left: max(8%, calc(50% - 490px));
+  background: radial-gradient(
+    circle at 32% 30%,
+    #b8ffe2 0%,
+    #4dffb5 22%,
+    #00d673 52%,
+    #007564 85%,
+    #002e2a 100%
+  );
+  box-shadow:
+    0 0 20px rgba(0, 255, 136, 0.55),
+    0 0 48px rgba(0, 255, 136, 0.4);
+  animation-delay: -6s;
+}
+
+/* Diagonal Glowing Neon Laser Tubes passing behind the glass */
+.neon-laser-bar {
+  position: absolute;
+  height: 4px;
+  border-radius: 999px;
+}
+
+.laser-1 {
+  width: 420px;
+  top: 265px;
+  left: calc(50% - 420px);
+  transform: rotate(-18deg);
+  background: #ff66b5;
+  box-shadow:
+    0 0 10px #ff66b5,
+    0 0 26px rgba(255, 102, 181, 0.65);
+  opacity: 0.28;
+}
+
+.laser-2 {
+  width: 380px;
+  top: 390px;
+  right: calc(50% - 440px);
+  transform: rotate(15deg);
+  background: #f000d8;
+  box-shadow:
+    0 0 10px #f000d8,
+    0 0 26px rgba(255, 0, 229, 0.65);
+  opacity: 0.26;
+}
+
+[data-theme="light"] .glass-3d-sphere,
+[data-theme="light"] .glass-3d-ring.ring-violet {
+  opacity: 0.50;
+}
+
+[data-theme="light"] .neon-laser-bar {
+  opacity: 0.18;
+}
+
+@keyframes float3d {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(18px, -24px, 0) scale(1.06);
+  }
+}
+
+@keyframes spinNeonAngle {
+  to {
+    --neon-angle: 360deg;
+  }
+}
+
+/* ==========================================================================
+   FLOATING NEON FROSTED GLASS HEADER & DAY/NIGHT TUBE SWITCH
+   ========================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--glass-header-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1.5px solid rgba(255, 102, 181, 0.55);
+  box-shadow:
+    0 6px 32px rgba(0, 0, 0, 0.4),
+    0 2px 20px rgba(255, 102, 181, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.site-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 2%,
+    #ff66b5 24%,
+    #ffd6ea 50%,
+    #ff00e5 76%,
+    transparent 98%
+  );
+  box-shadow: 0 0 10px rgba(255, 102, 181, 0.7), 0 0 18px rgba(255, 0, 229, 0.55);
+  opacity: 0.78;
+}
+
+.header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0.72rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  flex-wrap: wrap;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-weight: 900;
+  font-size: 1.26rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-decoration: none !important;
+  text-shadow: 0 0 12px rgba(255, 102, 181, 0.55);
+}
+
+.brand-logo svg {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px #ff66b5) drop-shadow(0 0 20px rgba(255, 0, 229, 0.5));
+}
+
+.brand-text span {
+  color: #ff66b5;
+  text-shadow:
+    0 0 6px #ffffff,
+    0 0 14px #ff66b5,
+    0 0 28px #ff00e5;
+}
+
+[data-theme="light"] .brand-text span {
+  color: #d900b8;
+  text-shadow: 0 0 12px rgba(217, 0, 184, 0.45);
+}
+
+.brand-tag {
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 0, 229, 0.16);
+  border: 1px solid #ff00e5;
+  color: #ffffff;
+  text-shadow: 0 0 8px #ff00e5;
+  box-shadow: 0 0 12px rgba(255, 0, 229, 0.6), inset 0 0 8px rgba(255, 0, 229, 0.35);
+}
+
+[data-theme="light"] .brand-tag {
+  color: #b8009e;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Frosted Neon Glass Nav Dock — Concentric radius (24px = 17px pill + 6px pad + 1px border)
+   so inner tab pills NEVER poke outside the outer capsule on 1, 2, or 3 rows! */
+.main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+  flex-wrap: wrap;
+  padding: 6px;
+  border-radius: 24px;
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--glass-border-top);
+  border-left: 1px solid var(--glass-border-left);
+  border-right: 1px solid var(--glass-border-right);
+  border-bottom: 1px solid var(--glass-border-bottom);
+  box-shadow: 0 0 18px rgba(255, 102, 181, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.nav-tab {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  font-weight: 700;
+  height: 34px;
+  padding: 0 0.88rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.nav-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.10);
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.nav-tab.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 102, 181, 0.30), rgba(255, 0, 229, 0.26));
+  border: 1px solid var(--neon-cyan);
+  box-shadow:
+    0 0 10px rgba(255, 102, 181, 0.60),
+    0 0 18px rgba(255, 0, 229, 0.32),
+    inset 0 0 10px rgba(255, 102, 181, 0.35);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65), 0 0 12px rgba(255, 102, 181, 0.65);
+}
+
+[data-theme="light"] .nav-tab.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #db2777, #bc13fe);
+  border-color: #ffffff;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.engine-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--glass-elevated-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(0, 255, 136, 0.65);
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(0, 255, 136, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease;
+}
+
+.engine-pill:hover {
+  box-shadow: 0 0 22px rgba(0, 255, 136, 0.65), inset 0 1px 2px #ffffff;
+}
+
+.engine-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff66b5;
+  box-shadow: 0 0 8px #fff, 0 0 16px #ff66b5;
+}
+
+.engine-dot.server {
+  background: #00ff88;
+  box-shadow: 0 0 8px #fff, 0 0 16px #00ff88;
+}
+
+/* Prominent Neon Glass Day / Night Switch */
+.day-night-switch {
+  appearance: none;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.dn-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 144px;
+  height: 38px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid #ff00e5;
+  box-shadow:
+    0 0 14px rgba(255, 0, 229, 0.55),
+    0 0 26px rgba(255, 102, 181, 0.35),
+    inset 0 1px 2px rgba(255, 255, 255, 0.65);
+}
+
+.dn-option {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.dn-thumb {
+  position: absolute;
+  z-index: 1;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 102, 181, 0.48), rgba(255, 0, 229, 0.48));
+  border: 1.5px solid #ff66b5;
+  box-shadow:
+    0 0 14px #ff66b5,
+    0 0 26px #ff00e5,
+    inset 0 1px 2px #ffffff;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1), all 0.3s ease;
+}
+
+[data-theme="dark"] .dn-night {
+  color: #ffffff;
+  text-shadow: 0 0 8px #ffffff, 0 0 16px #ff66b5;
+}
+
+[data-theme="light"] .dn-track {
+  border-color: #db2777;
+  box-shadow:
+    0 0 16px rgba(219, 39, 119, 0.55),
+    0 0 28px rgba(255, 190, 11, 0.35),
+    inset 0 1px 2px #ffffff;
+}
+
+[data-theme="light"] .dn-thumb {
+  transform: translateX(0%);
+  background: linear-gradient(135deg, #ffbe0b, #ff007f);
+  border-color: #ffffff;
+  box-shadow: 0 0 16px rgba(255, 190, 11, 0.8), 0 0 26px rgba(255, 0, 127, 0.45);
+}
+
+[data-theme="light"] .dn-day {
+  color: #ffffff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* ==========================================================================
+   MAIN CONTAINER & NEON SIGN TYPOGRAPHY
+   ========================================================================== */
+.main-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.2rem 1.25rem 3.8rem;
+  flex: 1;
+}
+
+.tool-panel {
+  display: none;
+  animation: glassPop 0.28s ease;
+}
+
+.tool-panel.active {
+  display: block;
+}
+
+@keyframes glassPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hero-head {
+  text-align: center;
+  margin-bottom: 1.85rem;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 102, 181, 0.22), rgba(255, 0, 229, 0.22));
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid #ff66b5;
+  box-shadow:
+    0 0 12px rgba(255, 102, 181, 0.65),
+    0 0 28px rgba(255, 0, 229, 0.40),
+    inset 0 1px 1px rgba(255, 255, 255, 0.75);
+  text-shadow: 0 0 10px #ff66b5;
+  padding: 0.34rem 1.05rem;
+  border-radius: 999px;
+  margin-bottom: 0.95rem;
+}
+
+[data-theme="light"] .hero-eyebrow {
+  color: #0b0726;
+  background: rgba(255, 255, 255, 0.65);
+  text-shadow: none;
+}
+
+.hero-head h1 {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.95rem, 4vw, 2.85rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 1.16;
+  color: var(--text-primary);
+  text-shadow: var(--neon-title-shadow);
+}
+
+.hero-head p {
+  margin: 0 auto;
+  max-width: 680px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   AUTHENTIC 3D FROSTED GLASS + ROTATING NEON LASER CARDS
+   ========================================================================== */
+.surface-card {
+  position: relative;
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1.5px solid var(--glass-border-top);
+  border-left: 1.5px solid var(--glass-border-left);
+  border-right: 1.5px solid var(--glass-border-right);
+  border-bottom: 1.5px solid var(--glass-border-bottom);
+  border-radius: var(--radius-lg);
+  padding: 1.65rem;
+  box-shadow: var(--neon-card-shadow);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* Diagonal Tempered-Glass Specular Light Reflection Streak */
+.surface-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    118deg,
+    transparent 12%,
+    var(--sheen-color) 28%,
+    rgba(255, 255, 255, 0.02) 38%,
+    transparent 52%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glowing Dual-Tone Neon Top Laser Tube */
+.surface-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 6%;
+  right: 6%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff66b5, #ffd6ea, #ff00e5, transparent);
+  box-shadow: 0 0 10px rgba(255, 102, 181, 0.65), 0 0 18px rgba(255, 0, 229, 0.5);
+  opacity: 0.76;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.surface-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.surface-card:hover {
+  box-shadow: var(--neon-card-hover-shadow);
+}
+
+/* ==========================================================================
+   NEON GLASS INPUTS & GLOWING NEON PLASMA BUTTONS
+   ========================================================================== */
+.tracer-input-row {
+  display: flex;
+  gap: 0.85rem;
+  align-items: stretch;
+}
+
+.url-input-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.url-input-icon {
+  position: absolute;
+  left: 1.05rem;
+  color: #ff66b5;
+  pointer-events: none;
+  display: flex;
+  filter: drop-shadow(0 0 8px #ff66b5);
+}
+
+[data-theme="light"] .url-input-icon {
+  color: #be185d;
+}
+
+.url-input {
+  width: 100%;
+  background: var(--glass-input-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-primary);
+  border: 1.5px solid rgba(255, 102, 181, 0.65);
+  border-radius: var(--radius-md);
+  padding: 0.98rem 5.6rem 0.98rem 2.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.96rem;
+  font-weight: 500;
+  outline: none;
+  box-shadow:
+    0 0 14px rgba(255, 102, 181, 0.22),
+    inset 0 2px 12px rgba(0, 0, 0, 0.22),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35);
+  transition: all 0.2s ease;
+}
+
+.url-input::placeholder {
+  color: var(--text-muted);
+}
+
+.url-input:focus {
+  border-color: #ffffff;
+  box-shadow: var(--neon-input-focus);
+}
+
+.input-inline-actions {
+  position: absolute;
+  right: 0.6rem;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.mini-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 102, 181, 0.55);
+  background: var(--glass-elevated-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 0.32rem 0.65rem;
+  border-radius: 9px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 102, 181, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  transition: all 0.18s ease;
+}
+
+.mini-btn:hover {
+  border-color: #ff00e5;
+  box-shadow: 0 0 14px #ff66b5, 0 0 24px rgba(255, 0, 229, 0.55);
+  transform: translateY(-1px);
+}
+
+/* Signature Translucent Glowing Neon Tube Button! */
+.primary-btn {
+  position: relative;
+  overflow: hidden;
+  appearance: none;
+  border: 1.5px solid #ff66b5;
+  background: var(--neon-btn-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--neon-btn-text);
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 0.98rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.95rem 1.75rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65), 0 0 14px rgba(255, 102, 181, 0.7);
+  box-shadow:
+    0 0 10px #ff66b5,
+    0 0 28px rgba(255, 102, 181, 0.65),
+    0 0 52px rgba(255, 0, 229, 0.42),
+    inset 0 0 20px rgba(255, 102, 181, 0.45),
+    inset 0 1px 2px #ffffff;
+  transition: all 0.2s ease;
+}
+
+.primary-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 48%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  transform: rotate(25deg);
+  transition: left 0.48s ease;
+  pointer-events: none;
+}
+
+.primary-btn:hover:not(:disabled)::after {
+  left: 130%;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: var(--neon-btn-hover-bg);
+  border-color: #ffffff;
+  transform: translateY(-2px) scale(1.01);
+  box-shadow:
+    0 0 14px #ffffff,
+    0 0 32px #ff66b5,
+    0 0 64px #ff00e5,
+    inset 0 0 26px rgba(255, 255, 255, 0.55);
+}
+
+.primary-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.secondary-btn {
+  appearance: none;
+  border: 1.5px solid rgba(255, 0, 229, 0.65);
+  background: var(--glass-elevated-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.86rem;
+  padding: 0.66rem 1.1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow:
+    0 0 14px rgba(255, 0, 229, 0.30),
+    inset 0 1px 2px rgba(255, 255, 255, 0.55);
+  transition: all 0.2s ease;
+}
+
+.secondary-btn:hover {
+  border-color: #ff66b5;
+  box-shadow:
+    0 0 18px #ff66b5,
+    0 0 32px rgba(255, 0, 229, 0.48),
+    inset 0 1px 2px #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Sample Chips & Advanced Options */
+.tracer-subbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.05rem;
+}
+
+.sample-chips {
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+  flex-wrap: wrap;
+}
+
+.sample-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.chip-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 102, 181, 0.5);
+  background: var(--glass-elevated-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.28rem 0.68rem;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 102, 181, 0.20), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  transition: all 0.18s ease;
+}
+
+.chip-btn:hover {
+  border-color: #ff00e5;
+  box-shadow: 0 0 14px #ff66b5, 0 0 24px #ff00e5;
+  transform: translateY(-1.5px);
+}
+
+.adv-toggle-btn {
+  appearance: none;
+  background: var(--glass-elevated-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 0, 229, 0.58);
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.34rem 0.85rem;
+  box-shadow: 0 0 14px rgba(255, 0, 229, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  transition: all 0.18s ease;
+}
+
+.adv-toggle-btn:hover {
+  border-color: #ff66b5;
+  box-shadow: 0 0 18px #ff66b5, 0 0 28px #ff00e5;
+}
+
+.adv-panel {
+  display: none;
+  margin-top: 1.15rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid rgba(255, 102, 181, 0.35);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.95rem;
+}
+
+.adv-panel.open {
+  display: grid;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field-group label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.select-input,
+.text-input,
+.textarea-input {
+  width: 100%;
+  background: var(--glass-input-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--text-primary);
+  border: 1.5px solid rgba(255, 102, 181, 0.55);
+  border-radius: var(--radius-sm);
+  padding: 0.64rem 0.8rem;
+  font-family: inherit;
+  font-size: 0.86rem;
+  outline: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.18s ease;
+}
+
+.select-input:focus,
+.text-input:focus,
+.textarea-input:focus {
+  border-color: #ff00e5;
+  box-shadow: var(--neon-input-focus);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.38rem;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.checkbox-row input[type="checkbox"] {
+  accent-color: #ff00e5;
+}
+
+/* ==========================================================================
+   NEON GLASS KPI CARDS, HOP TIMELINE & LASER BADGES
+   ========================================================================== */
+.error-banner {
+  margin-top: 1.2rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 42, 109, 0.18);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid #ff2a6d;
+  box-shadow: 0 0 20px rgba(255, 42, 109, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+[data-theme="light"] .error-banner {
+  color: #880d33;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.trace-output-wrap {
+  margin-top: 1.65rem;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+
+.kpi-card {
+  position: relative;
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1.5px solid var(--glass-border-top);
+  border-left: 1.5px solid var(--glass-border-left);
+  border-right: 1.5px solid var(--glass-border-right);
+  border-bottom: 1.5px solid var(--glass-border-bottom);
+  border-radius: var(--radius-md);
+  padding: 1.05rem 1.15rem;
+  box-shadow: var(--neon-card-shadow);
+  transition: all 0.22s ease;
+  overflow: hidden;
+}
+
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, #ff66b5, #ff00e5, #00ff88);
+  box-shadow: 0 0 12px #ff66b5;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--neon-card-hover-shadow);
+}
+
+.kpi-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--neon-cyan);
+  margin-bottom: 0.35rem;
+}
+
+.kpi-value {
+  font-size: 1.18rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.kpi-sub {
+  font-size: 0.77rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.trace-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding: 0.85rem 1.15rem;
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 102, 181, 0.55);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 18px rgba(255, 102, 181, 0.20), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  margin-bottom: 1.1rem;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+
+/* Hop Cards & Glowing Neon Laser Timeline */
+.hops-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.hop-card {
+  position: relative;
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1.5px solid var(--glass-border-top);
+  border-left: 1.5px solid var(--glass-border-left);
+  border-right: 1.5px solid var(--glass-border-right);
+  border-bottom: 1.5px solid var(--glass-border-bottom);
+  border-radius: var(--radius-md);
+  box-shadow: var(--neon-card-shadow);
+  overflow: hidden;
+  transition: all 0.22s ease;
+}
+
+.hop-card:hover {
+  box-shadow: var(--neon-card-hover-shadow);
+}
+
+.hop-card.final-hop {
+  border-right-color: #00ff88;
+  border-bottom-color: #ff66b5;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.55),
+    0 0 16px rgba(0, 255, 136, 0.55),
+    0 0 38px rgba(255, 102, 181, 0.30),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+.hop-header {
+  padding: 1.05rem 1.2rem;
+  display: grid;
+  grid-template-columns: 44px 90px 1fr auto;
+  align-items: center;
+  gap: 0.88rem;
+  cursor: pointer;
+}
+
+.hop-num {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 102, 181, 0.16);
+  border: 1.5px solid #ff66b5;
+  box-shadow: 0 0 14px rgba(255, 102, 181, 0.65), inset 0 0 10px rgba(255, 102, 181, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.86rem;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+/* True Neon Tube Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 0.85rem;
+  padding: 0.34rem 0.7rem;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: all 0.16s ease;
+}
+
+.status-badge:hover {
+  transform: scale(1.07);
+}
+
+.status-1xx {
+  background: rgba(255, 102, 181, 0.18);
+  color: #ff66b5;
+  border: 1.5px solid #ff66b5;
+  box-shadow: 0 0 12px rgba(255, 102, 181, 0.6), inset 0 0 8px rgba(255, 102, 181, 0.35);
+  text-shadow: 0 0 8px rgba(255, 102, 181, 0.8);
+}
+
+.status-2xx {
+  background: rgba(0, 255, 136, 0.18);
+  color: #00ff88;
+  border: 1.5px solid #00ff88;
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.6), inset 0 0 8px rgba(0, 255, 136, 0.35);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
+}
+
+.status-3xx {
+  background: rgba(255, 190, 11, 0.20);
+  color: #ffd13b;
+  border: 1.5px solid #ffbe0b;
+  box-shadow: 0 0 14px rgba(255, 190, 11, 0.65), inset 0 0 8px rgba(255, 190, 11, 0.35);
+  text-shadow: 0 0 8px rgba(255, 190, 11, 0.75);
+}
+
+.status-4xx {
+  background: rgba(255, 42, 109, 0.20);
+  color: #ff4d88;
+  border: 1.5px solid #ff2a6d;
+  box-shadow: 0 0 14px rgba(255, 42, 109, 0.65), inset 0 0 8px rgba(255, 42, 109, 0.35);
+  text-shadow: 0 0 8px rgba(255, 42, 109, 0.75);
+}
+
+.status-5xx,
+.status-err {
+  background: rgba(255, 0, 229, 0.20);
+  color: #ff5cf0;
+  border: 1.5px solid #ff00e5;
+  box-shadow: 0 0 14px rgba(255, 0, 229, 0.65), inset 0 0 8px rgba(255, 0, 229, 0.35);
+  text-shadow: 0 0 8px rgba(255, 0, 229, 0.75);
+}
+
+.status-meta {
+  background: rgba(188, 19, 254, 0.22);
+  color: #df88ff;
+  border: 1.5px solid #bc13fe;
+  box-shadow: 0 0 14px rgba(188, 19, 254, 0.65), inset 0 0 8px rgba(188, 19, 254, 0.35);
+}
+
+[data-theme="light"] .status-1xx { color: #005f80; text-shadow: none; background: rgba(255, 255, 255, 0.75); }
+[data-theme="light"] .status-2xx { color: #00663d; text-shadow: none; background: rgba(255, 255, 255, 0.75); }
+[data-theme="light"] .status-3xx { color: #8a5a00; text-shadow: none; background: rgba(255, 255, 255, 0.78); }
+[data-theme="light"] .status-4xx { color: #9e0b3b; text-shadow: none; background: rgba(255, 255, 255, 0.78); }
+[data-theme="light"] .status-5xx { color: #8f0080; text-shadow: none; background: rgba(255, 255, 255, 0.78); }
+
+.hop-url-col {
+  min-width: 0;
+}
+
+.hop-url-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.hop-url-text {
+  font-family: var(--font-mono);
+  font-size: 0.91rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.hop-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
+}
+
+.meta-pill {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  padding: 0.16rem 0.55rem;
+  border-radius: 8px;
+  background: var(--glass-elevated-bg);
+  border: 1px solid rgba(255, 102, 181, 0.42);
+  color: var(--text-secondary);
+}
+
+.meta-pill.cookie {
+  border-color: #ffbe0b;
+  color: #ffd13b;
+  box-shadow: 0 0 10px rgba(255, 190, 11, 0.35);
+}
+[data-theme="light"] .meta-pill.cookie { color: #8a5a00; }
+
+.meta-pill.tracker {
+  border-color: #ff00e5;
+  color: #ff7af6;
+  box-shadow: 0 0 10px rgba(255, 0, 229, 0.35);
+}
+[data-theme="light"] .meta-pill.tracker { color: #9c008b; }
+
+.hop-right-col {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* White-Hot Neon Laser Beam Between Redirect Hops */
+.hop-connector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0 0.55rem 2rem;
+  color: #ffd13b;
+  font-size: 0.82rem;
+  font-weight: 900;
+  font-family: var(--font-mono);
+  text-shadow: 0 0 10px rgba(255, 190, 11, 0.75);
+}
+
+[data-theme="light"] .hop-connector {
+  color: #b45309;
+  text-shadow: none;
+}
+
+.hop-connector-line {
+  width: 3.5px;
+  height: 28px;
+  background: #ffffff;
+  border-radius: 999px;
+  box-shadow:
+    0 0 6px #ffffff,
+    0 0 14px #ff66b5,
+    0 0 26px #ff00e5;
+}
+
+/* Expandable Glass Hop Inspector */
+.hop-details {
+  display: none;
+  padding: 1.1rem 1.2rem 1.25rem;
+  border-top: 1px solid rgba(255, 102, 181, 0.42);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="light"] .hop-details {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.hop-card.expanded .hop-details {
+  display: block;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1rem;
+}
+
+.code-panel {
+  background: var(--glass-code-bg);
+  color: #dcffff;
+  border: 1px solid rgba(255, 102, 181, 0.45);
+  box-shadow:
+    0 0 14px rgba(255, 102, 181, 0.16),
+    inset 0 2px 14px rgba(0, 0, 0, 0.55);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.58;
+  overflow-x: auto;
+  max-height: 240px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+.kv-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.kv-item {
+  background: var(--glass-elevated-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 102, 181, 0.38);
+  border-radius: 10px;
+  padding: 0.5rem 0.72rem;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45);
+}
+
+.kv-item span {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.kv-item strong {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+
+/* Trace Complete Neon Tube Banner */
+.trace-complete-banner {
+  margin-top: 1rem;
+  padding: 0.95rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: rgba(0, 255, 136, 0.16);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid #00ff88;
+  box-shadow:
+    0 0 18px rgba(0, 255, 136, 0.48),
+    inset 0 1px 2px rgba(255, 255, 255, 0.55);
+  color: #00ff88;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+[data-theme="light"] .trace-complete-banner {
+  color: #00663d;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.trace-complete-banner.warn {
+  background: rgba(255, 42, 109, 0.18);
+  border-color: #ff2a6d;
+  box-shadow: 0 0 18px rgba(255, 42, 109, 0.5);
+  color: #ff5c8d;
+}
+
+/* Clean URL / Affiliate Box */
+.clean-url-box {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 0, 229, 0.15);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px solid #ff00e5;
+  box-shadow: 0 0 22px rgba(255, 0, 229, 0.42), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Share Trace Card */
+.share-trace-card {
+  margin-top: 1.05rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1.5px dashed #ff66b5;
+  box-shadow: 0 0 20px rgba(255, 102, 181, 0.28), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.share-url-mono {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  word-break: break-all;
+}
+
+.disclaimer-box {
+  margin-top: 1.05rem;
+  padding: 0.95rem 1.1rem;
+  border-radius: var(--radius-sm);
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   3D FROSTED NEON FEATURE CARDS, TABLES, QR & MODAL
+   ========================================================================== */
+.info-section {
+  margin-top: 2.95rem;
+}
+
+.info-section h2 {
+  font-size: 1.55rem;
+  font-weight: 900;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 18px rgba(255, 102, 181, 0.45);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.15rem;
+  margin-top: 1.2rem;
+}
+
+.info-card {
+  position: relative;
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1.5px solid var(--glass-border-top);
+  border-left: 1.5px solid var(--glass-border-left);
+  border-right: 1.5px solid var(--glass-border-right);
+  border-bottom: 1.5px solid var(--glass-border-bottom);
+  border-radius: var(--radius-md);
+  padding: 1.35rem;
+  box-shadow: var(--neon-card-shadow);
+  transition: all 0.24s ease;
+  overflow: hidden;
+}
+
+/* Alternating Cyan & Pink Neon Glow accents on feature cards */
+.info-card:nth-child(even) {
+  border-right-color: #ff00e5;
+  border-bottom-color: #ff66b5;
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 15%,
+    var(--sheen-color) 32%,
+    transparent 48%
+  );
+  pointer-events: none;
+}
+
+.info-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff66b5, #ff00e5, transparent);
+  box-shadow: 0 0 12px #ff66b5;
+  pointer-events: none;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--neon-card-hover-shadow);
+}
+
+.info-card h3 {
+  position: relative;
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-shadow: 0 0 12px rgba(255, 102, 181, 0.35);
+}
+
+.info-card p {
+  position: relative;
+  margin: 0;
+  font-size: 0.89rem;
+  color: var(--text-secondary);
+}
+
+.info-card code {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  font-weight: 700;
+  padding: 0.12rem 0.4rem;
+  border-radius: 6px;
+  background: rgba(255, 102, 181, 0.15);
+  border: 1px solid rgba(255, 102, 181, 0.55);
+  color: var(--neon-cyan);
+}
+
+/* Frosted Neon Glass Tables */
+.data-table-wrap {
+  overflow-x: auto;
+  border-top: 1.5px solid var(--glass-border-top);
+  border-left: 1.5px solid var(--glass-border-left);
+  border-right: 1.5px solid var(--glass-border-right);
+  border-bottom: 1.5px solid var(--glass-border-bottom);
+  border-radius: var(--radius-md);
+  background: var(--glass-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--neon-card-shadow);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.86rem;
+}
+
+.data-table th {
+  padding: 0.85rem 1rem;
+  background: rgba(255, 102, 181, 0.12);
+  color: var(--neon-cyan);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1.5px solid rgba(255, 102, 181, 0.55);
+  text-shadow: 0 0 10px rgba(255, 102, 181, 0.4);
+}
+
+.data-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  font-family: var(--font-mono);
+  word-break: break-word;
+}
+
+[data-theme="light"] .data-table td {
+  border-bottom-color: rgba(0, 153, 204, 0.2);
+}
+
+.data-table tbody tr {
+  transition: background 0.16s ease;
+}
+
+.data-table tbody tr:hover {
+  background: var(--glass-hover-bg);
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Domain Expiry Neon Laser Meter */
+.expiry-meter {
+  height: 11px;
+  border-radius: 999px;
+  background: var(--glass-input-bg);
+  overflow: hidden;
+  margin-top: 0.55rem;
+  border: 1px solid rgba(255, 102, 181, 0.5);
+}
+
+.expiry-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff66b5, #00ff88, #ff00e5);
+  box-shadow: 0 0 16px #ff66b5;
+  transition: width 0.45s ease;
+}
+
+/* Shortener Result & Neon QR Box */
+.shortener-result-grid {
+  display: grid;
+  grid-template-columns: 1fr 188px;
+  gap: 1.35rem;
+  align-items: center;
+}
+
+.qr-preview-box {
+  background: #ffffff;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  border: 2px solid #ff66b5;
+  box-shadow:
+    0 0 18px #ff66b5,
+    0 0 38px rgba(255, 0, 229, 0.55);
+  text-align: center;
+}
+
+.qr-preview-box svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Status Codes Filter Pills */
+.filter-pills {
+  display: flex;
+  gap: 0.48rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  appearance: none;
+  border: 1px solid rgba(255, 102, 181, 0.5);
+  background: var(--glass-elevated-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 0.44rem 0.95rem;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 102, 181, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  transition: all 0.18s ease;
+}
+
+.filter-pill:hover {
+  border-color: #ff00e5;
+  box-shadow: 0 0 16px #ff00e5;
+}
+
+.filter-pill.active {
+  background: linear-gradient(135deg, rgba(255, 102, 181, 0.45), rgba(255, 0, 229, 0.45));
+  color: #ffffff;
+  border: 1.5px solid #ff66b5;
+  box-shadow: 0 0 16px #ff66b5, 0 0 28px #ff00e5;
+  text-shadow: 0 0 8px #ffffff;
+}
+
+[data-theme="light"] .filter-pill.active {
+  background: linear-gradient(135deg, #db2777, #ff00c3);
+}
+
+.status-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+/* Neon Glass Modal — NO backdrop-filter on parent backdrop so child glass card refracts live page! */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 2, 18, 0.32);
+  z-index: 250;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: clamp(0.75rem, 3vw, 1.5rem);
+}
+
+[data-theme="light"] .modal-backdrop {
+  background: rgba(88, 12, 52, 0.16);
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(28px) saturate(220%);
+  -webkit-backdrop-filter: blur(28px) saturate(220%);
+  border-top: 1.5px solid var(--glass-border-top);
+  border-left: 1.5px solid var(--glass-border-left);
+  border-right: 1.5px solid #ff66b5;
+  border-bottom: 1.5px solid #ff00e5;
+  border-radius: var(--radius-lg);
+  max-width: 540px;
+  width: 100%;
+  padding: 1.6rem;
+  box-shadow: var(--neon-card-hover-shadow);
+}
+
+/* Neon Toast Notification */
+.toast-container {
+  position: fixed;
+  bottom: 1.3rem;
+  right: 1.3rem;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.toast {
+  background: var(--glass-elevated-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--text-primary);
+  border: 1.5px solid #ff66b5;
+  padding: 0.75rem 1.15rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-shadow:
+    0 0 16px #ff66b5,
+    0 0 34px rgba(255, 0, 229, 0.48),
+    inset 0 1px 2px rgba(255, 255, 255, 0.65);
+  animation: glassPop 0.2s ease;
+}
+
+/* Frosted Neon Footer */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1.5px solid rgba(255, 102, 181, 0.5);
+  background: var(--glass-header-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 -4px 28px rgba(255, 102, 181, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  padding: 1.85rem 1.25rem;
+  margin-top: auto;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.15rem;
+  flex-wrap: wrap;
+  font-weight: 700;
+}
+
+/* Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2.4px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Neon Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(6, 2, 22, 0.4);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff66b5, #ff00e5);
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   🌹 PHOTOREALISTIC 60FPS 3D VELVET ROSE PETALS CANVAS
+   ========================================================================== */
+.rose-petals-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   ✨ CRYSTAL GLASS-SHINING ("GLASSESS SHINING") & LUXURY ABOUT GLASS BOX
+   ========================================================================== */
+/* Real Twin-Line Optical Tempered-Glass Specular Reflection Glide */
+@keyframes glassSpecularGlide {
+  0% {
+    transform: translateX(-145%) skewX(-24deg);
+  }
+  52%,
+  100% {
+    transform: translateX(265%) skewX(-24deg);
+  }
+}
+
+@keyframes crystalRimBreath {
+  0%,
+  100% {
+    box-shadow:
+      0 12px 32px rgba(20, 2, 12, 0.36),
+      0 0 14px rgba(255, 115, 179, 0.28),
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.72),
+      inset 0 -1px 1px rgba(255, 180, 215, 0.22);
+  }
+  50% {
+    box-shadow:
+      0 14px 36px rgba(20, 2, 12, 0.42),
+      0 0 22px rgba(255, 130, 190, 0.52),
+      inset 0 1.5px 2px rgba(255, 255, 255, 0.92),
+      inset 0 0 18px rgba(255, 255, 255, 0.14);
+  }
+}
+
+/* Glass-Shining About Pill in Top Nav */
+.about-shine-nav-btn {
+  position: relative;
+  overflow: hidden;
+  color: #ffffff !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.20) 0%,
+    rgba(255, 102, 181, 0.24) 52%,
+    rgba(225, 29, 72, 0.22) 100%
+  ) !important;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.75) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.50) !important;
+  border-right: 1px solid rgba(255, 130, 190, 0.65) !important;
+  border-bottom: 1px solid rgba(244, 63, 134, 0.58) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  animation: crystalRimBreath 3s ease-in-out infinite;
+}
+
+[data-theme="light"] .about-shine-nav-btn {
+  color: #380620 !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 195, 222, 0.62) 100%
+  ) !important;
+  text-shadow: none;
+}
+
+/* Twin-Line Optical Glass Reflection Streak on Nav Button & Bottom Trigger */
+.about-shine-nav-btn::after,
+.about-shine-trigger::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: 0;
+  width: 56%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 28%,
+    rgba(255, 255, 255, 0.62) 44%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 54%,
+    rgba(255, 255, 255, 0.32) 62%,
+    transparent 74%,
+    transparent 100%
+  );
+  pointer-events: none;
+  animation: glassSpecularGlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Crystal Glass-Shining Trigger Capsule above Footer */
+.about-showcase-wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 920px;
+  width: 100%;
+  margin: 0 auto 2.3rem;
+  padding: 0 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.about-shine-trigger {
+  position: relative;
+  overflow: hidden;
+  appearance: none;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  padding: 0.82rem 1.85rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(72, 14, 48, 0.44) 48%,
+    rgba(255, 105, 180, 0.18) 100%
+  );
+  backdrop-filter: blur(22px) saturate(185%);
+  -webkit-backdrop-filter: blur(22px) saturate(185%);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.72);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.48);
+  border-right: 1.5px solid rgba(255, 130, 190, 0.62);
+  border-bottom: 1.5px solid rgba(244, 63, 134, 0.55);
+  color: var(--text-primary);
+  animation: crystalRimBreath 3s ease-in-out infinite;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+[data-theme="light"] .about-shine-trigger {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(255, 232, 243, 0.56) 52%,
+    rgba(255, 170, 210, 0.34) 100%
+  );
+  border-top-color: rgba(255, 255, 255, 0.95);
+  border-left-color: rgba(255, 255, 255, 0.85);
+}
+
+.about-shine-trigger:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.about-shine-sparkle {
+  font-size: 1.05rem;
+}
+
+.about-shine-label {
+  font-size: 0.96rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.about-shine-hint {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   💎 TRUE SEE-THROUGH NEON FROSTED CRYSTAL GLASS "ABOUT BOX"
+   (Zero nested backdrop-filter trap — pure transparent glass + rose petals + shine!)
+   ========================================================================== */
+.about-backdrop {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+@keyframes aboutNeonGlassPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 24px 60px rgba(8, 1, 16, 0.55),
+      0 0 16px rgba(255, 102, 181, 0.45),
+      0 0 38px rgba(255, 46, 147, 0.25),
+      inset 0 1.5px 2px rgba(255, 255, 255, 0.82),
+      inset 0 0 26px rgba(255, 140, 200, 0.14);
+  }
+  50% {
+    box-shadow:
+      0 26px 64px rgba(8, 1, 16, 0.62),
+      0 0 24px rgba(255, 102, 181, 0.78),
+      0 0 54px rgba(255, 46, 147, 0.42),
+      inset 0 2px 3px #ffffff,
+      inset 0 0 34px rgba(255, 165, 215, 0.24);
+  }
+}
+
+.about-glass-box {
+  position: relative;
+  overflow: hidden;
+  max-width: 520px;
+  width: 100%;
+  margin: auto;
+  border-radius: clamp(20px, 4vw, 28px);
+  padding: clamp(1.4rem, 4vw, 2.05rem) clamp(1.1rem, 4vw, 1.85rem) clamp(1.25rem, 3.5vw, 1.65rem);
+  /* Pure Clear See-Through Crystal Glass — matches .surface-card! */
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(22px) saturate(200%);
+  -webkit-backdrop-filter: blur(22px) saturate(200%);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.58);
+  border-right: 1.5px solid #ff66b5;
+  border-bottom: 1.5px solid #ff2e93;
+  animation: glassBoxPop 0.3s cubic-bezier(0.22, 1, 0.36, 1), aboutNeonGlassPulse 3s ease-in-out infinite;
+}
+
+[data-theme="light"] .about-glass-box {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.64) 0%,
+    rgba(255, 238, 247, 0.46) 52%,
+    rgba(255, 145, 198, 0.24) 100%
+  );
+  border-top-color: #ffffff;
+  border-left-color: rgba(255, 255, 255, 0.9);
+  border-right-color: rgba(236, 72, 153, 0.72);
+  border-bottom-color: rgba(219, 39, 119, 0.65);
+  animation: glassBoxPop 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow:
+    0 24px 58px rgba(131, 24, 67, 0.20),
+    0 0 22px rgba(244, 63, 134, 0.35),
+    inset 0 2px 3px #ffffff,
+    inset 0 0 28px rgba(255, 255, 255, 0.52);
+}
+
+@keyframes glassBoxPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Static Tempered-Glass Reflection + Top Neon Laser Rim */
+.about-glass-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    118deg,
+    transparent 10%,
+    rgba(255, 255, 255, 0.14) 26%,
+    rgba(255, 255, 255, 0.03) 36%,
+    transparent 50%
+  );
+}
+
+.about-glass-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  pointer-events: none;
+  z-index: 4;
+  background: linear-gradient(90deg, transparent, #ff66b5, #ffffff, #ff2e93, transparent);
+  box-shadow: 0 0 12px #ff66b5, 0 0 20px #ff2e93;
+}
+
+/* Animated Twin-Line Crystal Glass Specular Shine */
+.glass-specular-streak {
+  position: absolute;
+  top: -35%;
+  bottom: -35%;
+  left: 0;
+  width: 56%;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(255, 255, 255, 0.42) 45%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 54%,
+    rgba(255, 255, 255, 0.22) 61%,
+    transparent 70%,
+    transparent 100%
+  );
+  animation: glassSpecularGlide 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Canvas for Realistic 3D Rose Petals Inside About Glass Box */
+.about-box-petals-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Crystal Glass Circular Close Button (NO nested backdrop-filter!) */
+.about-glass-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  z-index: 5;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  appearance: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.14);
+  border-top: 1px solid rgba(255, 255, 255, 0.78);
+  border-left: 1px solid rgba(255, 255, 255, 0.55);
+  border-right: 1px solid rgba(255, 102, 181, 0.65);
+  border-bottom: 1px solid rgba(255, 46, 147, 0.60);
+  box-shadow: 0 0 12px rgba(255, 102, 181, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.about-glass-close:hover {
+  transform: scale(1.08);
+  background: rgba(255, 102, 181, 0.28);
+}
+
+.about-glass-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* 3D Crystal Neon Glass Avatar Medallion */
+.about-avatar-medallion {
+  position: relative;
+  overflow: hidden;
+  width: clamp(62px, 14vw, 74px);
+  height: clamp(62px, 14vw, 74px);
+  border-radius: 50%;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+    circle at 30% 26%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 82, 162, 0.55) 38%,
+    rgba(217, 20, 105, 0.52) 78%,
+    rgba(130, 10, 72, 0.58) 100%
+  );
+  border-top: 1.5px solid #ffffff;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.78);
+  border-right: 1.5px solid #ff66b5;
+  border-bottom: 1.5px solid #ff2e93;
+  box-shadow:
+    0 8px 24px rgba(10, 2, 18, 0.35),
+    0 0 22px rgba(255, 82, 162, 0.55),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.about-avatar-medallion::after {
+  content: '';
+  position: absolute;
+  top: -25%;
+  bottom: -25%;
+  left: 0;
+  width: 55%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  animation: glassSpecularGlide 3s ease-in-out infinite;
+}
+
+.about-avatar-initials {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1.22rem, 3vw, 1.46rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(10, 2, 18, 0.55);
+}
+
+.about-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+
+.about-glass-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.26rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.75);
+  border-left: 1px solid rgba(255, 255, 255, 0.52);
+  border-right: 1px solid rgba(255, 102, 181, 0.62);
+  border-bottom: 1px solid rgba(255, 46, 147, 0.55);
+  box-shadow: 0 0 10px rgba(255, 102, 181, 0.20), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .about-glass-pill {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.about-glass-title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+  line-height: 1.35;
+  font-weight: 900;
+  color: var(--text-primary);
+  text-shadow: var(--neon-title-shadow);
+}
+
+/* Inner Clear Crystal Glass Bio Plaque (NO dark brown fill, NO nested blur!) */
+.about-glass-plaque {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  text-align: left;
+  padding: clamp(0.85rem, 2.5vw, 1.08rem) clamp(0.9rem, 3vw, 1.2rem);
+  border-radius: 18px;
+  margin-bottom: 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.04) 55%,
+    rgba(255, 102, 181, 0.10) 100%
+  );
+  border-top: 1px solid rgba(255, 255, 255, 0.62);
+  border-left: 1px solid rgba(255, 255, 255, 0.42);
+  border-right: 1px solid rgba(255, 102, 181, 0.45);
+  border-bottom: 1px solid rgba(255, 46, 147, 0.40);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.52);
+}
+
+[data-theme="light"] .about-glass-plaque {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.68) 0%,
+    rgba(255, 240, 248, 0.50) 100%
+  );
+  border-top-color: #ffffff;
+  border-left-color: rgba(255, 255, 255, 0.85);
+}
+
+.about-glass-plaque p {
+  margin: 0 0 0.65rem;
+  font-size: clamp(0.85rem, 2.2vw, 0.93rem);
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+
+.about-glass-plaque p:last-child {
+  margin-bottom: 0;
+}
+
+.about-glass-sig-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.42rem 1.05rem;
+  border-radius: 999px;
+  font-size: clamp(0.74rem, 2vw, 0.81rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.72);
+  border-left: 1px solid rgba(255, 255, 255, 0.48);
+  border-right: 1px solid rgba(255, 102, 181, 0.55);
+  border-bottom: 1px solid rgba(255, 46, 147, 0.48);
+  box-shadow: 0 0 12px rgba(255, 102, 181, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .about-glass-sig-pill {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+/* Red "X" inside GODXSHADOW + Footer Credit Signature */
+.godx-word {
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.godx-red-x {
+  color: #ff173a !important;
+  font-weight: 900;
+  font-style: normal;
+  display: inline-block;
+  padding: 0 1px;
+  text-shadow:
+    0 0 8px rgba(255, 23, 58, 0.9),
+    0 0 18px rgba(255, 0, 51, 0.6);
+}
+
+.footer-credit-bar {
+  max-width: 1100px;
+  margin: 1.15rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 102, 181, 0.24);
+  text-align: center;
+  font-size: clamp(0.82rem, 2.2vw, 0.92rem);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   📱 FULL RESPONSIVE CSS (DESKTOP, SPLIT-SCREEN, TABLET & SMALL PHONES)
+   ========================================================================== */
+@media (max-width: 1360px) {
+  .main-nav {
+    order: 3;
+    margin: 0.15rem auto 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-container {
+    padding: 1.65rem 1rem 3rem;
+  }
+  .surface-card {
+    padding: 1.35rem 1.15rem;
+  }
+  .hero-head h1 {
+    font-size: clamp(1.55rem, 5vw, 2.2rem);
+  }
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .header-inner {
+    padding: 0.6rem 0.9rem;
+    gap: 0.55rem;
+  }
+  .brand-tag {
+    display: none;
+  }
+  .engine-pill {
+    padding: 0.34rem 0.62rem;
+    font-size: 0.68rem;
+  }
+  .tracer-input-row {
+    flex-direction: column;
+  }
+  .primary-btn {
+    width: 100%;
+    padding: 0.88rem 1.25rem;
+  }
+  .hop-header {
+    grid-template-columns: 36px 72px 1fr;
+    gap: 0.5rem;
+    padding: 0.8rem 0.85rem;
+  }
+  .hop-right-col {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+  .shortener-result-grid {
+    grid-template-columns: 1fr;
+  }
+  .qr-preview-box {
+    max-width: 175px;
+    margin: 0 auto;
+  }
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+  }
+  .footer-links {
+    justify-content: center;
+    gap: 0.8rem 1rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-logo {
+    font-size: 1.1rem;
+    gap: 0.45rem;
+  }
+  .brand-logo svg {
+    width: 32px;
+    height: 32px;
+  }
+  .engine-pill #engineStatusLabel {
+    max-width: 92px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dn-track {
+    width: 122px;
+    height: 34px;
+  }
+  .dn-option {
+    font-size: 0.66rem;
+    gap: 0.18rem;
+  }
+  .main-nav {
+    padding: 5px;
+    border-radius: 20px;
+    gap: 0.26rem;
+  }
+  .nav-tab {
+    height: 30px;
+    padding: 0 0.68rem;
+    font-size: 0.75rem;
+  }
+  .surface-card {
+    padding: 1.1rem 0.9rem;
+    border-radius: 18px;
+  }
+  .url-input {
+    font-size: 0.86rem;
+    padding: 0.88rem 4.9rem 0.88rem 2.55rem;
+  }
+  .url-input-icon {
+    left: 0.82rem;
+  }
+  .mini-btn {
+    padding: 0.28rem 0.5rem;
+    font-size: 0.68rem;
+  }
+  .about-shine-trigger {
+    width: 100%;
+    padding: 0.72rem 1.1rem;
+    font-size: 0.85rem;
+  }
+  .about-shine-hint {
+    font-size: 0.78rem;
+  }
+  .toast-container {
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.85rem;
+  }
+}

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShadowTrace — URL Redirect Checker, Link Expander, DNS &amp; WHOIS Suite</title>
+  <meta name="description" content="Uncover where any link goes. Trace full HTTP 301/302, Meta-Refresh &amp; JS redirect chains, expand tiny URLs, audit affiliate hops, query DNS records, and check domain expiry." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ShadowTrace — URL Redirect Checker &amp; Link Intelligence Suite" />
+  <meta property="og:description" content="Follow every redirect hop, inspect HTTP headers &amp; cookies, detect affiliate middle-men, lookup DNS &amp; WHOIS RDAP, and shorten links." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=12" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=12" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ShadowTrace",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "description": "Open-source URL redirect checker, tiny link expander, DNS lookup, domain WHOIS/RDAP expiry checker, and HTTP status code reference."
+  }
+  </script>
+</head>
+<body>
+  <!-- Ambient Scene: Photorealistic 60fps 3D Velvet Rose Petals Falling Randomly -->
+  <div class="ambient-scene" aria-hidden="true">
+    <canvas class="rose-petals-canvas" id="rosePetalsCanvas"></canvas>
+  </div>
+
+  <!-- Sticky Top Glass Navigation -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#tracer" class="brand-logo" id="brandHomeLink">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="nav-grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff85c0"/>
+              <stop offset="50%" stop-color="#ff2e93"/>
+              <stop offset="100%" stop-color="#e11d48"/>
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="16" fill="#240517"/>
+          <rect x="2" y="2" width="60" height="60" rx="14" stroke="url(#nav-grad)" stroke-opacity="0.8" stroke-width="2.5"/>
+          <path d="M16 42C22 42 22 22 31 22C40 22 40 34 48 22" stroke="url(#nav-grad)" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M41 20H49V28" stroke="#ff75bc" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="16" cy="42" r="4.5" fill="#ff66b5"/>
+          <circle cx="31" cy="22" r="3.5" fill="#240517" stroke="#ff66b5" stroke-width="2.5"/>
+        </svg>
+        <div class="brand-text">Shadow<span>Trace</span></div>
+        <span class="brand-tag">NEON OSINT</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary Tools">
+        <button type="button" class="nav-tab active" data-tab="tracer">Redirect Tracer</button>
+        <button type="button" class="nav-tab" data-tab="bulk">Bulk Checker</button>
+        <button type="button" class="nav-tab" data-tab="dns">DNS Lookup</button>
+        <button type="button" class="nav-tab" data-tab="domain">Domain WHOIS</button>
+        <button type="button" class="nav-tab" data-tab="shortener">Create Tiny URL</button>
+        <button type="button" class="nav-tab" data-tab="status-codes">HTTP Codes</button>
+        <button type="button" class="nav-tab" data-tab="docs">Bot &amp; Docs</button>
+        <button type="button" class="nav-tab about-shine-nav-btn" id="headerAboutBtn" title="Tap to view About Krishna Chauhan">✨ About</button>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="engine-pill" id="engineStatusBtn" title="Click to view or switch execution engine">
+          <span class="engine-dot" id="engineStatusDot"></span>
+          <span id="engineStatusLabel">Detecting Engine...</span>
+        </button>
+
+        <!-- Prominent Day / Night Neon Glass Mode Switch -->
+        <button
+          type="button"
+          class="day-night-switch"
+          id="themeToggleBtn"
+          role="switch"
+          aria-checked="true"
+          aria-label="Toggle Day and Night Mode"
+          title="Switch between Night Neon Glass &amp; Day Crystal Glass (Alt+T)"
+        >
+          <span class="dn-track">
+            <span class="dn-option dn-day">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <circle cx="12" cy="12" r="4.5"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+              </svg>
+              <span>Day</span>
+            </span>
+            <span class="dn-option dn-night">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+              <span>Night</span>
+            </span>
+            <span class="dn-thumb" id="dnThumb"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- ==================================================================
+         1. URL REDIRECT CHECKER / LINK TRACER (MAIN TOOL)
+         ================================================================== -->
+    <section id="panel-tracer" class="tool-panel active">
+      <div class="hero-head">
+        <div class="hero-eyebrow">
+          <span>⚡</span> URL Redirect Detective &amp; Tiny Link Expander
+        </div>
+        <h1>Where Does That Link Actually Go?</h1>
+        <p>Trace full HTTP 301/302/307/308 chains, Meta-Refresh &amp; JS redirects, inspect response headers &amp; cookies, and uncover hidden affiliate hops before you click.</p>
+      </div>
+
+      <div class="surface-card">
+        <form id="traceForm" autocomplete="off" spellcheck="false">
+          <div class="tracer-input-row">
+            <div class="url-input-wrap">
+              <span class="url-input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+              </span>
+              <input
+                type="text"
+                id="traceUrlInput"
+                class="url-input"
+                placeholder="http://... or shortened link (e.g., https://is.gd/SzNOOZ)"
+                autofocus
+                required
+              />
+              <div class="input-inline-actions">
+                <button type="button" class="mini-btn" id="pasteUrlBtn" title="Paste from clipboard">Paste</button>
+                <button type="button" class="mini-btn" id="clearUrlBtn" title="Clear input">Clear</button>
+              </div>
+            </div>
+            <button type="submit" class="primary-btn" id="traceSubmitBtn">
+              <span>Trace URL</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <path d="M5 12h14M13 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="tracer-subbar">
+            <div class="sample-chips">
+              <span class="sample-label">Try sample:</span>
+              <button type="button" class="chip-btn" data-sample="http://github.com">http://github.com</button>
+              <button type="button" class="chip-btn" data-sample="https://is.gd/SzNOOZ">is.gd/SzNOOZ</button>
+              <button type="button" class="chip-btn" data-sample="http://google.com">http://google.com</button>
+              <button type="button" class="chip-btn" data-sample="http://wikipedia.org">http://wikipedia.org</button>
+            </div>
+            <button type="button" class="adv-toggle-btn" id="advToggleBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Advanced Options</span>
+            </button>
+          </div>
+
+          <div class="adv-panel" id="advPanel">
+            <div class="field-group">
+              <label for="uaSelect">User-Agent Profile</label>
+              <select id="uaSelect" class="select-input">
+                <option value="shadowtrace">ShadowTrace — ShadowTrace/1.0 Redirect Checker</option>
+                <option value="my_ua" id="myBrowserUaOption">My User-Agent (Current Browser)</option>
+                <option value="chrome_desktop">Chrome 131 (Windows Desktop)</option>
+                <option value="iphone_safari">Safari Mobile (iPhone iOS 18)</option>
+                <option value="googlebot">Googlebot 2.1 (Search Crawler)</option>
+                <option value="twitterbot">Twitterbot 1.0 (Social Preview)</option>
+                <option value="curl">curl/8.7.1 (CLI Probe)</option>
+                <option value="custom">Custom User-Agent String...</option>
+              </select>
+            </div>
+
+            <div class="field-group" id="customUaWrap" style="display:none">
+              <label for="customUaInput">Custom User-Agent</label>
+              <input type="text" id="customUaInput" class="text-input" placeholder="Mozilla/5.0 ..." />
+            </div>
+
+            <div class="field-group">
+              <label for="engineSelect">Trace Execution Mode</label>
+              <select id="engineSelect" class="select-input">
+                <option value="auto">Auto (Vercel/Node Server → GitHub Pages Static Fallback)</option>
+                <option value="browser">GitHub Pages Pure Browser Mode (Zero Backend)</option>
+                <option value="custom">Custom Cloudflare Edge Worker URL</option>
+              </select>
+            </div>
+
+            <div class="field-group" id="customWorkerWrap" style="display:none">
+              <label for="customWorkerInput">Cloudflare Worker Endpoint</label>
+              <input type="url" id="customWorkerInput" class="text-input" placeholder="https://shadowtrace.yourname.workers.dev" />
+            </div>
+
+            <div class="field-group">
+              <label for="maxHopsSelect">Maximum Redirect Hops</label>
+              <select id="maxHopsSelect" class="select-input">
+                <option value="10">10 Hops</option>
+                <option value="15" selected>15 Hops (Recommended)</option>
+                <option value="20">20 Hops (Max)</option>
+              </select>
+              <label class="checkbox-row">
+                <input type="checkbox" id="followMetaCheckbox" checked />
+                <span>Follow HTML Meta-Refresh &amp; JS Redirects</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Dynamic Trace Results Container -->
+      <div id="traceErrorContainer"></div>
+      <div id="traceResultContainer" class="trace-output-wrap"></div>
+
+      <!-- Recent Trace History -->
+      <div id="recentTracesSection" class="info-section" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+          <h3 style="margin:0;font-size:1.05rem;">Recent Traces (Local Session)</h3>
+          <button type="button" class="mini-btn" id="clearHistoryBtn">Clear History</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Input URL</th>
+                <th>Hops</th>
+                <th>Final Status</th>
+                <th>Final Destination</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentTracesBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- WhereGoes-Style Educational & Use-Case Guide Rebranded for ShadowTrace -->
+      <div class="info-section">
+        <h2>Why Use ShadowTrace URL Redirect Checker?</h2>
+        <p style="color:var(--text-secondary);margin-top:0;max-width:780px;">
+          Whether migrating domains, auditing SEO backlink equity, verifying affiliate campaigns, or inspecting suspicious shortened URLs, ShadowTrace maps every server and client hop along the path.
+        </p>
+        <div class="info-grid">
+          <article class="info-card">
+            <h3>🔍 Troubleshoot Redirect Loops &amp; 404s</h3>
+            <p>Diagnose NGINX, Apache <code>.htaccess</code>, PHP, Cloudflare Page Rules, Meta-Refresh, and JavaScript redirects. Catch broken 404 or 500 hops in the middle of a migration before visitors or bots hit a dead end.</p>
+          </article>
+          <article class="info-card">
+            <h3>📈 Protect SEO &amp; PageRank Equity</h3>
+            <p>Long redirect chains add round-trip latency and increase the risk of broken crawl paths. Consolidate multi-hop <code>http → www → https → trailing-slash</code> chains into a single clean <code>301</code> or <code>308</code> hop.</p>
+          </article>
+          <article class="info-card">
+            <h3>🎯 Audit Affiliate Links &amp; Middle-Men</h3>
+            <p>Spot every sub-affiliate network, attribution tracker (<code>utm_*</code>, <code>clickid</code>, <code>aff_id</code>), and cookie drop before the final merchant landing page — so you can partner directly with primary programs.</p>
+          </article>
+          <article class="info-card">
+            <h3>🛡️ Expand Tiny URLs Safely</h3>
+            <p>Preview shortened links from <code>bit.ly</code>, <code>is.gd</code>, <code>t.co</code>, <code>tinyurl</code>, and QR codes without opening unknown sites in your browser tab. See TLS status, destination domain, and server headers first.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         2. BULK LINK CHECKER
+         ================================================================== -->
+    <section id="panel-bulk" class="tool-panel">
+      <div class="hero-head">
+        <div class="hero-eyebrow">⚡ Batch Redirect Auditor</div>
+        <h1>Bulk URL Redirect Checker</h1>
+        <p>Audit up to 10 URLs at once to compare HTTP status codes, total redirect hops, HTTPS upgrades, and final landing URLs.</p>
+      </div>
+
+      <div class="surface-card">
+        <form id="bulkForm">
+          <div class="field-group">
+            <label for="bulkUrlsInput">Enter URLs (one per line, max 10)</label>
+            <textarea
+              id="bulkUrlsInput"
+              class="textarea-input"
+              rows="6"
+              style="font-family:var(--font-mono);font-size:0.86rem;"
+              placeholder="http://github.com&#10;https://is.gd/SzNOOZ&#10;http://wikipedia.org"
+              required
+            ></textarea>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.9rem;flex-wrap:wrap;gap:0.6rem;">
+            <button type="button" class="secondary-btn" id="loadBulkSampleBtn">Load Sample Batch</button>
+            <div style="display:flex;gap:0.6rem;">
+              <button type="button" class="secondary-btn" id="exportBulkCsvBtn" style="display:none">Export CSV</button>
+              <button type="submit" class="primary-btn" id="bulkSubmitBtn">Run Bulk Trace</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="bulkResultContainer" class="trace-output-wrap"></div>
+    </section>
+
+    <!-- ==================================================================
+         3. DNS LOOKUP TOOL
+         ================================================================== -->
+    <section id="panel-dns" class="tool-panel">
+      <div class="hero-head">
+        <div class="hero-eyebrow">🌐 Live DNS-over-HTTPS Inspector</div>
+        <h1>DNS Record Lookup</h1>
+        <p>Query authoritative DNS records in real time via Cloudflare (1.1.1.1) or Google (8.8.8.8) — works 100% client-side on GitHub Pages &amp; Vercel.</p>
+      </div>
+
+      <div class="surface-card">
+        <form id="dnsForm" autocomplete="off">
+          <div style="display:grid;grid-template-columns:1fr 165px 190px auto;gap:0.65rem;align-items:end;" class="dns-form-grid">
+            <div class="field-group">
+              <label for="dnsDomainInput">Domain Name</label>
+              <input type="text" id="dnsDomainInput" class="text-input" style="font-family:var(--font-mono)" placeholder="github.com" required />
+            </div>
+            <div class="field-group">
+              <label for="dnsTypeSelect">Record Type</label>
+              <select id="dnsTypeSelect" class="select-input">
+                <option value="ALL">ALL (Full Sweep)</option>
+                <option value="A" selected>A (IPv4)</option>
+                <option value="AAAA">AAAA (IPv6)</option>
+                <option value="CAA">CAA</option>
+                <option value="CNAME">CNAME</option>
+                <option value="HINFO">HINFO</option>
+                <option value="MX">MX (Mail)</option>
+                <option value="NAPTR">NAPTR</option>
+                <option value="NS">NS (Nameserver)</option>
+                <option value="PTR">PTR</option>
+                <option value="SOA">SOA</option>
+                <option value="SRV">SRV</option>
+                <option value="TXT">TXT (SPF/DMARC)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="dnsProviderSelect">DoH Resolver</label>
+              <select id="dnsProviderSelect" class="select-input">
+                <option value="cloudflare">Cloudflare (1.1.1.1)</option>
+                <option value="google">Google Public DNS (8.8.8.8)</option>
+              </select>
+            </div>
+            <button type="submit" class="primary-btn" id="dnsSubmitBtn" style="padding:0.62rem 1.3rem;">Check DNS</button>
+          </div>
+          <div class="sample-chips" style="margin-top:0.85rem;">
+            <span class="sample-label">Quick lookup:</span>
+            <button type="button" class="chip-btn" data-dns-sample="github.com" data-dns-type="ALL">github.com (ALL)</button>
+            <button type="button" class="chip-btn" data-dns-sample="cloudflare.com" data-dns-type="TXT">cloudflare.com (TXT)</button>
+            <button type="button" class="chip-btn" data-dns-sample="google.com" data-dns-type="MX">google.com (MX)</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="dnsResultContainer" class="trace-output-wrap"></div>
+    </section>
+
+    <!-- ==================================================================
+         4. DOMAIN CHECKER / WHOIS RDAP EXPIRY
+         ================================================================== -->
+    <section id="panel-domain" class="tool-panel">
+      <div class="hero-head">
+        <div class="hero-eyebrow">📅 Official IANA RDAP &amp; Expiry Monitor</div>
+        <h1>Domain WHOIS &amp; Expiry Checker</h1>
+        <p>Inspect domain registration dates, renewal countdown, registrar IANA ID, EPP transfer locks, DNSSEC status, and active nameservers directly from official TLD registries.</p>
+      </div>
+
+      <div class="surface-card">
+        <form id="domainForm" autocomplete="off">
+          <div class="tracer-input-row">
+            <div class="url-input-wrap">
+              <span class="url-input-icon">🌐</span>
+              <input type="text" id="domainCheckInput" class="url-input" placeholder="example.com (e.g., github.com, vercel.com, wikipedia.org)" required />
+            </div>
+            <button type="submit" class="primary-btn" id="domainSubmitBtn">Check WHOIS / RDAP</button>
+          </div>
+          <div class="sample-chips" style="margin-top:0.85rem;">
+            <span class="sample-label">Try domain:</span>
+            <button type="button" class="chip-btn" data-domain-sample="github.com">github.com</button>
+            <button type="button" class="chip-btn" data-domain-sample="wikipedia.org">wikipedia.org</button>
+            <button type="button" class="chip-btn" data-domain-sample="cloudflare.com">cloudflare.com</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="domainResultContainer" class="trace-output-wrap"></div>
+    </section>
+
+    <!-- ==================================================================
+         5. CREATE TINY URL (URL SHORTENER + OFFLINE QR)
+         ================================================================== -->
+    <section id="panel-shortener" class="tool-panel">
+      <div class="hero-head">
+        <div class="hero-eyebrow">🔗 Instant Link Shortener + Vector QR</div>
+        <h1>Create Tiny URL</h1>
+        <p>Shorten long links cleanly with zero signup, generate crisp offline SVG QR codes, and verify the redirect path in one click.</p>
+      </div>
+
+      <div class="surface-card">
+        <form id="shortenForm" autocomplete="off">
+          <div class="tracer-input-row">
+            <div class="url-input-wrap">
+              <span class="url-input-icon">🔗</span>
+              <input type="url" id="longUrlInput" class="url-input" placeholder="https://example.com/very/long/path?utm_source=github" required />
+            </div>
+            <button type="submit" class="primary-btn" id="shortenSubmitBtn">Shorten URL</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0.8rem;margin-top:0.9rem;">
+            <div class="field-group">
+              <label for="shortProviderSelect">Shortener Service</label>
+              <select id="shortProviderSelect" class="select-input">
+                <option value="isgd">is.gd (Fast Direct 301)</option>
+                <option value="vgd">v.gd (Preview-Capable Shortener)</option>
+                <option value="spoome">spoo.me (Modern Open Shortener)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="customAliasInput">Custom Back-Half / Alias (Optional)</label>
+              <input type="text" id="customAliasInput" class="text-input" placeholder="e.g. my_project_2026" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="shortenResultContainer" class="trace-output-wrap"></div>
+
+      <div id="shortHistorySection" class="info-section" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+          <h3 style="margin:0;font-size:1.02rem;">Created Short URLs</h3>
+          <button type="button" class="mini-btn" id="clearShortHistoryBtn">Clear</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Short Link</th>
+                <th>Original Destination</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="shortHistoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         6. HTTP STATUS CODES CHEAT SHEET
+         ================================================================== -->
+    <section id="panel-status-codes" class="tool-panel">
+      <div class="hero-head">
+        <div class="hero-eyebrow">📚 Complete HTTP Protocol Reference</div>
+        <h1>HTTP Status Codes Cheat Sheet</h1>
+        <p>Understand every 1xx, 2xx, 3xx, 4xx, and 5xx HTTP response code, how browsers follow redirects, and how search engines treat them for SEO.</p>
+      </div>
+
+      <div class="surface-card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.85rem;">
+        <div class="filter-pills" id="statusFilterPills">
+          <button type="button" class="filter-pill active" data-cat="all">All Codes</button>
+          <button type="button" class="filter-pill" data-cat="1xx">1xx Info</button>
+          <button type="button" class="filter-pill" data-cat="2xx">2xx Success</button>
+          <button type="button" class="filter-pill" data-cat="3xx">3xx Redirects</button>
+          <button type="button" class="filter-pill" data-cat="4xx">4xx Client Error</button>
+          <button type="button" class="filter-pill" data-cat="5xx">5xx Server Error</button>
+        </div>
+        <div style="min-width:240px;flex:1;max-width:320px;">
+          <input type="text" id="statusSearchInput" class="text-input" placeholder="Search code or keyword (e.g., 301, SEO, HSTS)..." />
+        </div>
+      </div>
+
+      <div id="statusCodesGrid" class="status-cards-grid"></div>
+    </section>
+
+    <!-- ==================================================================
+         7. BOT INFO & HYBRID DEPLOYMENT DOCS
+         ================================================================== -->
+    <section id="panel-docs" class="tool-panel">
+      <div class="hero-head">
+        <div class="hero-eyebrow">🤖 Crawler &amp; Deployment Architecture</div>
+        <h1>ShadowTrace Bot &amp; Hybrid Architecture</h1>
+        <p>Designed to run effortlessly on both Static GitHub Pages (zero backend) and Vercel / Self-Hosted Node.js.</p>
+      </div>
+
+      <div class="info-grid">
+        <article class="info-card">
+          <h3>🤖 ShadowTrace User-Agent</h3>
+          <p>When running in Server or Edge Worker mode, ShadowTrace identifies itself by default as:</p>
+          <div class="code-panel" style="margin-top:0.6rem;">ShadowTrace/1.0 (+https://github.com/shadowtrace; Redirect Checker)</div>
+          <p style="margin-top:0.6rem;">Webmasters can whitelist this User-Agent in WAF rules when auditing staging or production redirect chains, or switch User-Agent profiles in Advanced Options.</p>
+        </article>
+
+        <article class="info-card">
+          <h3>⚡ Hybrid Dual-Engine Design</h3>
+          <p><strong>1. GitHub Pages Static Mode:</strong> Works 100% in the browser with zero server setup! Uses CORS-enabled HTTP header chain inspection, Google/Cloudflare DNS-over-HTTPS, official IANA RDAP registries, and public shorteners.</p>
+          <p style="margin-top:0.55rem;"><strong>2. Vercel / Node Deep Mode:</strong> Automatically activates when <code>/api/health</code> is present — unlocking custom User-Agent spoofing, millisecond socket timings, TLS certificate inspection, and HTML Meta/JS redirect parsing.</p>
+        </article>
+
+        <article class="info-card">
+          <h3>🚀 Deploy on GitHub Pages (Zero Config)</h3>
+          <p>Push this repository to GitHub, open <strong>Settings → Pages</strong>, and deploy from <code>main</code> branch (root <code>/</code>) or via the included GitHub Actions workflow (<code>.github/workflows/deploy-pages.yml</code>). All relative paths work automatically on <code>username.github.io/ShadowTrace/</code>!</p>
+        </article>
+
+        <article class="info-card">
+          <h3>▲ Deploy on Vercel (Full Serverless API)</h3>
+          <p>Import the exact same GitHub repository into Vercel with zero configuration changes. Vercel serves the static UI on its Edge CDN while automatically mounting <code>api/trace.js</code> and <code>api/health.js</code> as serverless functions with built-in SSRF protection.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Status Code Quick Inspector Modal -->
+  <div class="modal-backdrop" id="statusModal" role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+    <div class="modal-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:0.8rem;">
+        <div style="display:flex;align-items:center;gap:0.65rem;">
+          <span id="statusModalBadge" class="status-badge status-3xx">301</span>
+          <h3 id="statusModalTitle" style="margin:0;font-size:1.15rem;">Moved Permanently</h3>
+        </div>
+        <button type="button" class="mini-btn" id="closeStatusModalBtn">Close ✕</button>
+      </div>
+      <p id="statusModalSummary" style="color:var(--text-secondary);font-size:0.92rem;margin:0 0 0.9rem;"></p>
+      <div class="kv-item" style="margin-bottom:0.6rem;">
+        <span>SEO &amp; Link Equity Impact</span>
+        <strong id="statusModalSeo" style="font-family:var(--font-sans);font-weight:500;font-size:0.85rem;"></strong>
+      </div>
+      <div class="kv-item">
+        <span>Troubleshooting Tip</span>
+        <strong id="statusModalTip" style="font-family:var(--font-sans);font-weight:500;font-size:0.85rem;"></strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crystal Glass-Shining "About Me" Trigger above Footer -->
+  <section class="about-showcase-wrap" aria-label="About Creator">
+    <button
+      type="button"
+      class="about-shine-trigger"
+      id="aboutSectionToggleBtn"
+      aria-haspopup="dialog"
+      aria-controls="aboutModal"
+    >
+      <span class="about-shine-sparkle">🌹</span>
+      <span class="about-shine-label">About Me</span>
+      <span class="about-shine-hint">— Tap to View Krishna Chauhan</span>
+      <span class="about-shine-sparkle">✨</span>
+    </button>
+  </section>
+
+  <!-- Luxury 3D Crystal Frosted Glass "About Box" Modal (Glass Shining + Realistic Rose Petals Inside) -->
+  <div class="modal-backdrop about-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutModalHeading">
+    <div class="about-glass-box">
+      <!-- Real Optical Twin-Line Tempered Glass Specular Shine -->
+      <div class="glass-specular-streak" aria-hidden="true"></div>
+      <!-- Photorealistic 3D Velvet Rose Petals Falling Randomly Inside the Glass Box -->
+      <canvas class="about-box-petals-canvas" id="aboutBoxPetalsCanvas" aria-hidden="true"></canvas>
+
+      <button type="button" class="about-glass-close" id="closeAboutModalBtn" aria-label="Close About Box" title="Close">✕</button>
+
+      <div class="about-glass-content">
+        <div class="about-avatar-medallion">
+          <span class="about-avatar-initials">KC</span>
+        </div>
+
+        <div class="about-badges-row">
+          <span class="about-glass-pill">GOD<b class="godx-red-x">X</b>SHADOW</span>
+          <span class="about-glass-pill">📍 Ghazipur • UPX61</span>
+        </div>
+
+        <h2 id="aboutModalHeading" class="about-glass-title">
+          Hello Dear, it's Krishna Chauhan from Ghazipur! 👋
+        </h2>
+
+        <div class="about-glass-plaque">
+          <p>
+            <strong>Hello Dear, it's Krishna Chauhan from Ghazipur!</strong> Welcome to <strong>ShadowTrace</strong> — crafted with passion, clean code, and crystal rose-glass aesthetics from the historic land of <strong>Ghazipur, Uttar Pradesh (UPX61)</strong>.
+          </p>
+          <p>
+            Focused on modern <strong>Glassmorphism UI</strong>, fast <strong>Cyber &amp; OSINT web utilities</strong>, and seamless browser-first network intelligence under the signature of <strong>GOD<span class="godx-red-x">X</span>SHADOW</strong>. Thank you for visiting! 🌹✨
+          </p>
+        </div>
+
+        <div class="about-glass-sig-pill">
+          © 2026 <span>GOD<b class="godx-red-x">X</b>SHADOW</span> — by Krishna UPX61
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong style="color:var(--text-primary);">ShadowTrace</strong> — URL Redirect Detective &amp; Domain Intelligence Suite.
+      </div>
+      <div class="footer-links">
+        <a href="#tracer" data-nav-link="tracer">Redirect Tracer</a>
+        <a href="#dns" data-nav-link="dns">DNS Lookup</a>
+        <a href="#domain" data-nav-link="domain">Domain WHOIS</a>
+        <a href="#shortener" data-nav-link="shortener">Tiny URL</a>
+        <a href="#status-codes" data-nav-link="status-codes">HTTP Status Codes</a>
+        <a href="#about" id="footerAboutLink">✨ About</a>
+      </div>
+    </div>
+    <div class="footer-credit-bar">
+      © 2026 <span class="godx-word">GOD<span class="godx-red-x">X</span>SHADOW</span> — by Krishna UPX61
+    </div>
+  </footer>
+
+  <style>
+    @media (max-width: 820px) {
+      .dns-form-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+  <script type="module" src="./assets/js/app.js?v=12"></script>
+</body>
+</html>
