@@ -1,0 +1,8 @@
+{
+  "name": "shadowshare",
+  "version": "1.0.0",
+  "description": "Private peer-to-peer file sharing",
+  "main": "server.js",
+  "scripts": {"start":"node server.js"},
+  "dependencies": {"ws":"^8.18.0"}
+}
