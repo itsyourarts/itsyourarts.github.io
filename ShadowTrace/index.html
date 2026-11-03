@@ -393,7 +393,7 @@
       <div class="hero-head">
         <div class="hero-eyebrow">🔗 Instant Link Shortener + Vector QR</div>
         <h1>Create Tiny URL</h1>
-        <p>Shorten long links cleanly with zero signup, generate crisp offline SVG QR codes, and verify the redirect path in one click.</p>
+        <p>Choose a shortening service, generate an offline SVG QR code, and verify the redirect path. Providers may apply expiry, rate limits or network restrictions.</p>
       </div>
 
       <div class="surface-card">
@@ -412,10 +412,16 @@
                 <option value="isgd">is.gd (Fast Direct 301)</option>
                 <option value="vgd">v.gd (Preview-Capable Shortener)</option>
                 <option value="spoome">spoo.me (Modern Open Shortener)</option>
+                <option value="urlvanish">URLVanish (no scheduled expiry)</option>
+                <option value="shrink">shrink.site (no scheduled expiry)</option>
+                <option value="urlfy">URLFY (expires after inactivity)</option>
+                <option value="lnkua">lnk.ua</option>
+                <option value="aisense">307.fi (expires after 24 hours)</option>
+                <option value="devtoolbox">DevToolbox (30-day expiry)</option>
               </select>
             </div>
             <div class="field-group">
-              <label for="customAliasInput">Custom Back-Half / Alias (Optional)</label>
+              <label for="customAliasInput">Custom Alias (is.gd, v.gd, spoo.me only)</label>
               <input type="text" id="customAliasInput" class="text-input" placeholder="e.g. my_project_2026" />
             </div>
           </div>
