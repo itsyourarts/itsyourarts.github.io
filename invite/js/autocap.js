@@ -93,6 +93,88 @@
       });
     });
   }
+   /* ==========================================================================
+   NAV — Enter ya double-space dabane par agla field
+   (autocap.js ke sabse neeche, alag block)
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var ENTER_IN_TEXTAREA_NEXT = false;   // true kar de to address box me bhi Enter = agla field
+  var BUSY = '__navBusy';
+
+  function isField(el) {
+    if (!el || el.disabled || el.readOnly) return false;
+    var t = (el.getAttribute('type') || 'text').toLowerCase();
+    if (t === 'checkbox' || t === 'radio' || t === 'file' || t === 'submit' || t === 'button') return false;
+    if (el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') return true;
+    return ['text', 'tel', 'number', 'search', 'date', 'url', 'email'].indexOf(t) > -1;
+  }
+
+  function inApp(el) {
+    return !!(el.form || el.id === 'projNameInput');
+  }
+
+  function fieldList(form) {
+    return Array.prototype.filter.call(form.querySelectorAll('input, textarea, select'), isField);
+  }
+
+  /* agla field → focus; agar aakhri field hai to "Add entry" dab jaye */
+  function goNext(el) {
+    var form = el.form;
+    if (!form) return false;
+    var list = fieldList(form);
+    var i = list.indexOf(el);
+    if (i < 0) return false;
+    var nx = list[i + 1];
+    if (nx) {
+      nx.focus();
+      try { nx.setSelectionRange(nx.value.length, nx.value.length); } catch (_) {}
+      return true;
+    }
+    var btn = form.querySelector('#homeSaveBtn, button[type="submit"], .btn--neon');
+    if (btn) { btn.click(); return true; }
+    return false;
+  }
+
+  /* ---- Enter ---- */
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.shiftKey || e.isComposing || e.keyCode === 229) return;
+    var el = e.target;
+    if (!isField(el) || !inApp(el)) return;
+    if (el.tagName === 'SELECT') return;
+    if (el.tagName === 'TEXTAREA' && !ENTER_IN_TEXTAREA_NEXT && !(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();          // form ka default submit / reload rok do
+    goNext(el);
+  }, true);
+
+  /* ---- double space ---- */
+  document.addEventListener('input', function (e) {
+    var el = e.target;
+    if (!isField(el) || !inApp(el)) return;
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return;
+    if (el[BUSY] || e.isComposing) return;
+    if (e.inputType !== 'insertText' || e.data !== ' ') return;
+
+    var v = el.value, p = el.selectionStart;
+    if (el.selectionStart !== el.selectionEnd) return;
+    if (p < 2 || v.slice(p - 2, p) !== '  ') return;   // sirf jab do space lagatar lage
+
+    el[BUSY] = true;
+    el.value = v.slice(0, p - 2) + v.slice(p);          // dono space hata do
+    try { el.setSelectionRange(p - 2, p - 2); } catch (_) {}
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el[BUSY] = false;
+
+    goNext(el);
+  }, true);
+
+  /* mobile keyboard par bhi "Next" button dikhe */
+  document.addEventListener('focusin', function (e) {
+    var el = e.target;
+    if (isField(el) && inApp(el)) el.setAttribute('enterkeyhint', 'next');
+  }, true);
+})();
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
