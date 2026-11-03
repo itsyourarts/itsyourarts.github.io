@@ -1,0 +1,26 @@
+{
+  "name": "ShadowWord — Your everyday office",
+  "short_name": "ShadowWord",
+  "description": "A private, local-first office for documents, spreadsheets, presentations and PDFs.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f8f9fc",
+  "theme_color": "#7655e8",
+  "lang": "en",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "./"
+}
