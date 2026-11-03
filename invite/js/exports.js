@@ -105,21 +105,24 @@
     return rows;
   }
 
+    /* khali field → "NA"; jo likha hai wo jaisa hai waisa hi */
+  const NA = v => {
+    const s = String(v ?? '').trim();
+    return (s === '' || s === '—' || s === '-' || s === '--' || s === 'N/A') ? 'NA' : s;
+  };
+
   function cellValue(row, field) {
     const v = row[field.key];
     if (field.key === 'amount')    return Number(v || 0);
-    if (field.key === 'createdAt') return v || '';
-    return v == null ? '' : String(v);
+    if (field.key === 'createdAt') return v ? String(v) : 'NA';
+    return NA(v);
   }
 
   function cellDisplay(row, field) {
     switch (field.key) {
       case 'amount':    return A().inr(row.amount);
       case 'createdAt': return A().fmtDate(row.createdAt);
-      default: {
-        const v = row[field.key];
-        return (v === '' || v == null) ? '—' : String(v);
-      }
+      default:          return NA(row[field.key]);
     }
   }
 
