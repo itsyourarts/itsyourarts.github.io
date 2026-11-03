@@ -1098,6 +1098,18 @@ function renderShortHistory() {
 }
 
 function initShortenerTool() {
+  const providerSelect = document.getElementById('shortProviderSelect');
+  const aliasInput = document.getElementById('customAliasInput');
+  const aliasHint = document.getElementById('aliasSupportHint');
+  const updateAliasAvailability = () => {
+    const supported = ['isgd', 'vgd', 'spoome'].includes(providerSelect.value);
+    aliasInput.disabled = !supported;
+    if (!supported) aliasInput.value = '';
+    aliasInput.placeholder = supported ? 'e.g. my_project_2026' : 'Not available for this service';
+    aliasHint.textContent = supported ? 'Optional: set a custom ending.' : 'This provider generates the link automatically; custom alias is unavailable.';
+  };
+  providerSelect.addEventListener('change', updateAliasAvailability);
+  updateAliasAvailability();
   document.getElementById('shortenForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const longUrl = document.getElementById('longUrlInput').value.trim();
