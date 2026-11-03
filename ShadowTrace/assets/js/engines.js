@@ -680,69 +680,47 @@ export async function performDomainCheck(rawInput) {
   };
 }
 
-/**
- * Create Tiny URL Tool (100% Client-Side CORS Shorteners: is.gd, v.gd, spoo.me)
- */
+/** Create links directly through the selected provider. */
 export async function createShortUrl(rawLongUrl, provider = 'isgd', customAlias = '') {
   const longUrl = normalizeInputUrl(rawLongUrl);
-  const alias = String(customAlias || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
-
-  const tryIsGdOrVGd = async (domain) => {
-    let endpoint = `https://${domain}/create.php?format=json&url=${encodeURIComponent(longUrl)}`;
-    if (alias) endpoint += `&shorturl=${encodeURIComponent(alias)}`;
-    const resp = await fetch(endpoint);
-    const data = await resp.json();
-    if (data && data.shorturl) {
-      return { shortUrl: data.shorturl, provider: domain, longUrl };
-    }
-    throw new Error((data && data.errormessage) || `${domain} failed to shorten URL`);
-  };
-
-  const trySpooMe = async () => {
-    const body = new URLSearchParams({ url: longUrl });
-    if (alias) body.set('alias', alias);
-    const resp = await fetch('https://spoo.me/', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: body.toString()
-    });
-    const data = await resp.json();
-    if (data && data.short_url) {
-      return { shortUrl: data.short_url.replace(/^http:/, 'https:'), provider: 'spoo.me', longUrl };
-    }
-    throw new Error((data && (data.message || data.UrlError || data.AliasError)) || 'spoo.me failed');
-  };
-
-  if (provider === 'vgd') {
-    try {
-      return await tryIsGdOrVGd('v.gd');
-    } catch (e) {
-      if (alias) throw e;
-      return await trySpooMe();
-    }
-  }
-
-  if (provider === 'spoome') {
-    try {
-      return await trySpooMe();
-    } catch (e) {
-      if (alias) throw e;
-      return await tryIsGdOrVGd('is.gd');
-    }
-  }
-
-  // Default: is.gd -> fallback v.gd -> fallback spoo.me
+  const alias = String(customAlias || '').trim();
+  if (alias && !['isgd', 'vgd', 'spoome'].includes(provider)) throw new Error('Custom aliases are supported only by is.gd, v.gd and spoo.me.');
+  if (alias && !/^[a-zA-Z0-9_-]+$/.test(alias)) throw new Error('Alias may only contain letters, numbers, underscores and hyphens.');
+  const hosts = {isgd:'is.gd',vgd:'v.gd',spoome:'spoo.me',urlvanish:'urlvanish.com',shrink:'shrink.site',urlfy:'urlfy.org',lnkua:'lnk.ua',aisense:'307.fi',devtoolbox:'devtoolbox-api.devtoolbox-api.workers.dev'};
+  const host = hosts[provider];
+  if (!host) throw new Error('Unknown shortener service.');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 30000);
   try {
-    return await tryIsGdOrVGd('is.gd');
-  } catch (e) {
-    if (alias) throw e;
-    try {
-      return await tryIsGdOrVGd('v.gd');
-    } catch {
-      return await trySpooMe();
+    let endpoint, options = {signal:controller.signal, credentials:'omit'}, result, data;
+    if (provider === 'isgd' || provider === 'vgd') {
+      endpoint = new URL(`https://${host}/create.php`); endpoint.searchParams.set('format','json'); endpoint.searchParams.set('url',longUrl); if(alias) endpoint.searchParams.set('shorturl',alias);
+    } else if (provider === 'spoome') {
+      endpoint = 'https://spoo.me/'; const body = new URLSearchParams({url:longUrl}); if(alias) body.set('alias',alias);
+      options = {...options, method:'POST', headers:{Accept:'application/json','Content-Type':'application/x-www-form-urlencoded'}, body};
+    } else if (provider === 'urlvanish') {
+      endpoint = new URL('https://urlvanish.com/api/shorten'); endpoint.searchParams.set('url',longUrl);
+    } else if (provider === 'shrink') {
+      endpoint = new URL('https://shrink.site/s'); endpoint.searchParams.set('url',longUrl);
+    } else {
+      const specs={urlfy:['https://urlfy.org/api/v1/shorten',{url:longUrl}],lnkua:['https://lnk.ua/api/v1/link/create',{link:longUrl}],aisense:['https://aisenseapi.com/services/v1/url_shortener',{longUrl}],devtoolbox:['https://devtoolbox-api.devtoolbox-api.workers.dev/shorten',{url:longUrl}]};
+      endpoint=specs[provider][0]; options={...options,method:'POST',headers:{'Content-Type':'application/json',...(provider==='lnkua'?{Authorization:'Bearer public'}:{})},body:JSON.stringify(specs[provider][1])};
     }
-  }
+    const response=await fetch(endpoint,options);
+    const raw=await response.text();
+    if(provider==='shrink') { result=raw.trim(); data={}; }
+    else {
+      try { data=JSON.parse(raw); } catch { throw new Error(`${host} returned an invalid response (HTTP ${response.status}).`); }
+      result=data.shorturl || data.shortUrl || data.data?.shortUrl || data.short_url || data.result?.lnk;
+    }
+    if(!response.ok || !result) throw new Error(data.errormessage || data.error || data.message || data.UrlError || data.AliasError || data.result?.errors?.link?.[0] || data.result?.message || `${host} could not shorten the link (HTTP ${response.status}).`);
+    if(provider==='spoome') result=result.replace(/^http:\/\//,'https://');
+    const parsed=new URL(result);
+    if(parsed.protocol!=='https:' || parsed.hostname!==host) throw new Error('Invalid short URL returned by provider.');
+    return {shortUrl:parsed.href,provider:host,longUrl};
+  } catch(err) {
+    if(err.name==='AbortError') throw new Error(`${host} timed out. Try another provider.`);
+    if(err instanceof TypeError) throw new Error(`${host} could not be reached. Check your connection or try another provider.`);
+    throw err;
+  } finally { clearTimeout(timer); }
 }
