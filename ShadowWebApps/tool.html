@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tool — ShadowWebApps</title>
+<meta name="description" content="Free browser-based file tool by ShadowWebApps. Files are processed on your device and never uploaded.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%238b5cf6'/%3E%3Cpath d='M16 6a8 8 0 0 1 8 8v12l-3-2-2.5 2L16 24l-2.5 2L11 24l-3 2V14a8 8 0 0 1 8-8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <span class="mark" id="brandMark"></span>
+      <span>ShadowWebApps<small>edit · convert · create</small></span>
+    </a>
+    <nav class="nav-links">
+      <button class="pill nav-back" onclick="swaBack()" title="Go back (Alt + ←)" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+        Back
+      </button>
+      <a href="index.html#tools">All tools</a>
+      <a href="index.html#why">Why us</a>
+      <a class="pill" href="index.html#tools"><span class="dot"></span> 100% in-browser</a>
+    </nav>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="site">
+  <div class="wrap foot">
+    <div>
+      <a class="brand" href="index.html" style="font-size:14px">
+        <span class="mark" style="width:26px;height:26px;border-radius:8px"></span>
+        <span>ShadowWebApps</span>
+      </a>
+      <div style="margin-top:10px;max-width:340px">Browser-native file tools. Your media never touches a server.</div>
+    </div>
+    <div class="foot-links">
+      <a href="index.html#tools">All tools</a>
+      <a href="index.html#why">Privacy</a>
+      <a href="index.html#faq">FAQ</a>
+    </div>
+  </div>
+
+  <div class="wrap credit">© 2026 <b>God<span class="x">X</span>Shadow</b> — by Krishna UPX61</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function swaBack(){
+  const ref = document.referrer || '';
+  const sameSite = !ref || ref.includes(location.host);
+  if (sameSite && history.length > 1) history.back();
+  else location.href = 'index.html';
+}
+</script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/tools-data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/kit.js"></script>
+<script src="assets/js/tools.js"></script>
+<script src="assets/js/vendor/lame.min.js"></script>
+<script>
+(function(){
+  const slug = new URLSearchParams(location.search).get('t') || 'trim-audio';
+  const tool = swaGetTool(slug);
+  const app = document.getElementById('app');
+  document.getElementById('brandMark').innerHTML = swaIcon('ghost');
+  document.querySelectorAll('footer .mark').forEach(m => m.innerHTML = swaIcon('ghost'));
+
+  if (!tool){
+    document.title = 'Tool not found — ShadowWebApps';
+    app.innerHTML = `<div class="wrap" style="padding:80px 0 100px;text-align:center">
+      <h1 style="font-size:32px;letter-spacing:-.03em">That tool does not exist (yet)</h1>
+      <p style="color:var(--muted)">The link may be old. Browse the full catalogue instead.</p>
+      <a class="btn" href="index.html#tools" style="margin-top:14px">${swaIcon('grid')} All tools</a></div>`;
+    return;
+  }
+
+  const ctx = SWA.kit.shell(tool);
+
+  if (!tool.live){
+    const d = document.createElement('div');
+    d.className = 'panel';
+    d.innerHTML = `<div style="text-align:center;padding:30px 10px">
+        <div class="dz-ico" style="margin:0 auto 16px;width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:var(--grad-soft);border:1px solid rgba(139,92,246,.3)">
+          ${swaIcon(tool.icon)}
+        </div>
+        <h2 style="margin:0 0 8px;font-size:20px">${SWA.esc(tool.name)} is on the way</h2>
+        <p style="color:var(--muted);max-width:520px;margin:0 auto 20px;font-size:13.5px">
+          This one needs a heavier engine than a browser can run reliably today, so it is catalogued but not live yet.
+          ${swaLiveCount()} other tools are fully working right now — all offline, all free.
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <a class="btn" href="index.html#tools">${swaIcon('grid')} Browse live tools</a>
+          <a class="btn ghost" href="index.html#faq">Why?</a>
+        </div>
+      </div>`;
+    ctx.main.appendChild(d);
+    return;
+  }
+
+  const impl = SWA.tools[tool.slug] || SWA.tools[SWA_ALIASES[tool.slug]];
+  if (!impl){
+    ctx.main.innerHTML = `<div class="err">This tool has no implementation registered.</div>`;
+    return;
+  }
+
+  try { impl(ctx); }
+  catch (e){
+    console.error(e);
+    ctx.main.innerHTML = `<div class="err"><b>Failed to open this tool.</b><br>${SWA.esc(e.message)}</div>`;
+  }
+})();
+</script>
+</body>
+</html>

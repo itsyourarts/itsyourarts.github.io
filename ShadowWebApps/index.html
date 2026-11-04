@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ShadowWebApps — Free Online Video, Audio, PDF & Image Tools</title>
+<meta name="description" content="ShadowWebApps is a suite of free browser-based tools: trim video, convert audio, merge PDFs, resize images and more. No uploads, no signup, no watermarks.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%238b5cf6'/%3E%3Cpath d='M16 6a8 8 0 0 1 8 8v12l-3-2-2.5 2L16 24l-2.5 2L11 24l-3 2V14a8 8 0 0 1 8-8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="index.html">
+      <span class="mark" id="brandMark"></span>
+      <span>ShadowWebApps<small>edit · convert · create</small></span>
+    </a>
+    <nav class="nav-links">
+      <button class="pill nav-back" onclick="swaBack()" title="Go back (Alt + ←)" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg>
+        Back
+      </button>
+      <a href="#tools">All tools</a>
+      <a href="#why">Why us</a>
+      <a href="#faq">FAQ</a>
+      <a class="pill" href="#tools"><span class="dot"></span> 100% in-browser</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <div class="eyebrow"><span class="tag">NEW</span> <b>ShadowWebApps 2.0</b> — <span id="ebLive">48</span> tools, all in your tab</div>
+    <h1 class="hero-title">Every file tool you need.<br><span class="g">Nothing leaves your device.</span></h1>
+    <p class="lead">Trim video, convert audio, merge PDFs, resize images — all in the browser.
+      No uploads to a server, no account, no watermark, no file-size paywall.</p>
+
+    <div class="searchbar">
+      <span id="searchIcon"></span>
+      <input id="q" type="search" placeholder="Search 50+ tools — try “mp3”, “pdf merge”, “trim”…" autocomplete="off" aria-label="Search tools">
+      <kbd>/</kbd>
+    </div>
+
+    <div class="hero-stats">
+      <div id="statLive"></div>
+      <div id="statPriv"></div>
+      <div id="statFree"></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="tools">
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="grid" id="grid"></div>
+    <div class="grid" id="emptyWrap" style="display:none"></div>
+  </section>
+
+  <section class="wrap" id="why">
+    <div class="perks" id="perks"></div>
+  </section>
+
+  <section class="wrap" id="faq">
+    <div class="section-head"><h2>Questions</h2><span>the short answers</span></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))" id="faqGrid"></div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap foot">
+    <div>
+      <a class="brand" href="index.html" style="font-size:14px">
+        <span class="mark" style="width:26px;height:26px;border-radius:8px"></span>
+        <span>ShadowWebApps</span>
+      </a>
+      <div style="margin-top:10px;max-width:340px">Browser-native file tools. Your media never touches a server.</div>
+    </div>
+    <div class="foot-links">
+      <a href="#tools">All tools</a>
+      <a href="#why">Privacy</a>
+      <a href="#faq">FAQ</a>
+      <a href="index.html#tools">Video</a>
+      <a href="index.html#tools">Audio</a>
+      <a href="index.html#tools">PDF</a>
+    </div>
+  </div>
+
+  <div class="wrap credit">© 2026 <b>God<span class="x">X</span>Shadow</b> — by Krishna UPX61</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function swaBack(){
+  const ref = document.referrer || '';
+  const sameSite = !ref || ref.includes(location.host);
+  if (sameSite && history.length > 1) history.back();
+  else location.href = 'index.html';
+}
+</script>
+<script src="assets/js/icons.js"></script>
+<script src="assets/js/tools-data.js"></script>
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const els = { grid:$('#grid'), tabs:$('#tabs'), q:$('#q') };
+  let activeCat = 'all';
+
+  /* brand mark + static icons */
+  $('#brandMark').innerHTML = swaIcon('ghost');
+  $('#searchIcon').innerHTML = swaIcon('search');
+  document.querySelectorAll('footer .mark').forEach(m => m.innerHTML = swaIcon('ghost'));
+
+  const eb = document.getElementById('ebLive'); if (eb) eb.textContent = swaLiveCount();
+  $('#statLive').innerHTML = swaIcon('bolt') + `<b>${swaLiveCount()}</b> working tools`;
+  $('#statPriv').innerHTML = swaIcon('shield') + `<b>0</b> files uploaded`;
+  $('#statFree').innerHTML = swaIcon('globe') + `<b>Free</b> forever`;
+
+  const perks = [
+    ['shield','Private by design','Files are processed by JavaScript on your own machine. Nothing is sent anywhere, so nothing can leak.'],
+    ['bolt','Instant results','No queue, no upload bar. Conversion speed is limited only by your CPU.'],
+    ['archive','No size paywall','Big files are fine. There is no 100 MB “upgrade to Pro” gate.'],
+    ['globe','Works offline','Once the page has loaded, most tools keep working with Wi-Fi switched off.']
+  ];
+  $('#perks').innerHTML = perks.map(([i,h,p]) => `
+    <div class="perk">${swaIcon(i)}<h4>${h}</h4><p>${p}</p></div>`).join('');
+
+  const faqs = [
+    ['Are my files really not uploaded?','Correct. Every live tool uses the File API, Canvas, WebAudio and ffmpeg-style decoding inside your tab. Open DevTools → Network while converting and you will see zero file traffic.'],
+    ['Do I need an account?','No. There is no login, no email wall and no limit on how many files you process.'],
+    ['Is there a file size limit?','Only your device memory. Multi-gigabyte videos are best handled on a desktop browser rather than a phone.'],
+    ['Which tools are fully working today?','The ones marked LIVE. Everything else is on the roadmap and shows a “Soon” badge so you can plan around it.']
+  ];
+  $('#faqGrid').innerHTML = faqs.map(([q,a]) => `
+    <div class="card" style="display:block">
+      <h3 style="font-size:14.5px;margin-bottom:8px">${q}</h3>
+      <p style="font-size:12.8px">${a}</p>
+    </div>`).join('');
+
+  /* tabs */
+  function renderTabs(){
+    els.tabs.innerHTML = SWA_CATEGORIES.map(c => {
+      const n = c.id === 'all' ? SWA_TOOLS.length : SWA_TOOLS.filter(t => t.cat === c.id).length;
+      return `<button class="tab${c.id === activeCat ? ' active' : ''}" data-cat="${c.id}" role="tab">
+        ${swaIcon(c.icon)} ${c.name} <span class="n">${n}</span></button>`;
+    }).join('');
+    els.tabs.querySelectorAll('.tab').forEach(b =>
+      b.onclick = () => { activeCat = b.dataset.cat; renderTabs(); render(); });
+  }
+
+  function cardHTML(t){
+    const href = t.live ? `tool.html?t=${t.slug}` : null;
+    const tag = t.live
+      ? `<span class="live-dot">Live</span>`
+      : `<span class="soon">Soon</span>`;
+    const inner = `
+      <div class="ico">${swaIcon(t.icon)}</div>
+      <div style="min-width:0">
+        <h3>${t.name} ${tag}</h3>
+        <p>${t.blurb}</p>
+      </div>`;
+    return href
+      ? `<a class="card cat-${t.cat}" href="${href}" data-slug="${t.slug}">${inner}</a>`
+      : `<div class="card soon-card cat-${t.cat}" data-slug="${t.slug}" title="Coming soon">${inner}</div>`;
+  }
+
+  function render(){
+    const q = els.q.value.trim().toLowerCase();
+    let list = SWA_TOOLS.filter(t => activeCat === 'all' || t.cat === activeCat);
+    if (q) list = SWA_TOOLS.filter(t =>
+      (t.name + ' ' + t.blurb + ' ' + t.cat + ' ' + t.slug).toLowerCase().includes(q));
+
+    if (!list.length){
+      els.grid.innerHTML = '';
+      els.grid.style.display = 'none';
+      $('#emptyWrap').style.display = 'grid';
+      $('#emptyWrap').innerHTML = `<div class="empty"><b>No tool matches “${q.replace(/</g,'')}”</b>
+        Try “pdf”, “audio”, “trim”, “convert” — or browse all tools.</div>`;
+      return;
+    }
+    els.grid.style.display = 'grid';
+    $('#emptyWrap').style.display = 'none';
+
+    if (q){
+      els.grid.innerHTML = list.map(cardHTML).join('');
+      return;
+    }
+    if (activeCat !== 'all'){
+      els.grid.innerHTML = list.map(cardHTML).join('');
+      return;
+    }
+    /* grouped by category on the "All" tab */
+    els.grid.innerHTML = SWA_CATEGORIES.filter(c => c.id !== 'all').map(c => {
+      const items = list.filter(t => t.cat === c.id);
+      return `<div style="grid-column:1/-1;margin-top:22px" class="section-head">
+          <h2>${c.name}</h2><span>${items.filter(t=>t.live).length} live · ${items.length} total</span>
+        </div>` + items.map(cardHTML).join('');
+    }).join('');
+  }
+
+  els.q.addEventListener('input', render);
+  els.q.addEventListener('keydown', e => {
+    if (e.key === 'Escape'){ els.q.value = ''; render(); }
+    if (e.key === 'Enter'){
+      const first = els.grid.querySelector('a.card');
+      if (first) location.href = first.getAttribute('href');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== els.q){ e.preventDefault(); els.q.focus(); }
+  });
+
+  if (location.hash === '#tools') $('#tools').scrollIntoView();
+  renderTabs(); render();
+})();
+</script>
+</body>
+</html>
