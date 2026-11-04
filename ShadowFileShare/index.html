@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Share | Vercel</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top-bar">
+  <div class="logo">📁 File Share</div>
+  <div class="top-right">
+    <button class="btn btn-ghost" onclick="listFiles()" title="Refresh">↻</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <h1>Apni files upload karo</h1>
+    <p>Vercel pe host — koi git commit nahi banta</p>
+  </div>
+
+  <div class="upload-card card">
+    <div class="drop-zone" id="dropZone">
+      <p class="drop-text">📎 Kahan bhi click karo ya file khinchi kar yahan daalo</p>
+      <p class="drop-hint">Multiple files support ki jati hain</p>
+      <input type="file" id="fileInput" multiple class="file-input">
+    </div>
+    <div class="upload-actions">
+      <button class="btn btn-primary" onclick="uploadFiles()">Upload karo</button>
+      <button class="btn btn-ghost" onclick="listFiles()">List refresh karo</button>
+    </div>
+    <div id="progressBox" class="progress-box" style="display:none;">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span id="progressText">0%</span>
+    </div>
+  </div>
+
+  <div class="files-card card">
+    <div class="card-header">
+      <h2>📂 Meri Files</h2>
+      <span id="fileCount" class="badge">0</span>
+    </div>
+    <div id="filesGrid" class="files-grid"></div>
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <p>Abhi koi file nahi hai</p>
+      <p class="empty-hint">Upar se koi file upload karo</p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</div>
+
+<script src="app.js"></script>
+
+<footer class="site-footer">
+  <p>© 2026 <strong>God<span class="red-x">X</span>Shadow</strong> — by Krishna UPX61</p>
+</footer>
+
+</body>
+</html>

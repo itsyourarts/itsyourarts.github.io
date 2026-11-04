@@ -1,0 +1,9 @@
+{
+  "name": "file-sharing-vercel",
+  "version": "1.0.0",
+  "description": "File sharing site on Vercel without git commits",
+  "main": "index.html",
+  "dependencies": {
+    "@vercel/blob": "^0.24.0"
+  }
+}
