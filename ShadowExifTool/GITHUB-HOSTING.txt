@@ -1,0 +1,25 @@
+SHADOWEXIF — GITHUB PAGES HOSTING (HINGLISH)
+
+AUTOMATIC BUILD WALA TARIKA
+1. ZIP extract karo.
+2. GitHub par nayi PUBLIC repository banao, jaise: shadowexif
+3. Extracted ShadowExif-Website folder ke CONTENTS repo root par upload karo.
+   ZIP khud nahi, aur sirf ek extra parent folder bhi nahi.
+   .github/workflows/deploy-pages.yml upload karna zaroori hai.
+4. Commit changes karo; branch main rakho.
+5. Repo Settings > Pages > Build and deployment > Source: GitHub Actions.
+6. Actions > Deploy ShadowExif to GitHub Pages > green check ka wait karo.
+   Zaroorat ho to Run workflow manually chala sakte ho.
+7. Settings > Pages > Visit site kholo.
+   URL example: https://AAPKA-USERNAME.github.io/shadowexif/
+
+DIRECT UPLOAD WALA TARIKA (NODE/ACTIONS NHI CHAHIYE)
+1. ShadowExif-Pages-Direct.zip extract karo.
+2. Uske contents repository root par upload/commit karo.
+3. Settings > Pages > Deploy from a branch > main > / (root) > Save.
+4. Kuch minute baad Pages URL kholo.
+
+NOTE
+Ye ready-to-host files hain; aapke account mein site abhi publish nahi hui.
+GitHub Free par is setup ke liye public repository use karo.
+Future updates ke liye automatic source package recommended hai.
