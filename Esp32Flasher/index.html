@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ESP32 KING · Royal Web Flasher</title>
+<meta name="description" content="Esp32King – Flash ESP32 / ESP8266 firmware directly from your browser using Web Serial." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><rect x='22' y='22' width='76' height='76' rx='14' fill='%2305030f' stroke='%2300f0ff' stroke-width='6'/><path d='M36 80 L32 48 L48 62 L60 40 L72 62 L88 48 L84 80 Z' fill='%23ffd000'/><circle cx='60' cy='38' r='5' fill='%23ff00e6'/></svg>" />
+<style>
+  :root{
+    --neon1:#00f0ff; --neon2:#ff00e6; --neon3:#7cff00; --warn:#ffb800; --err:#ff3b6b;
+    --glass:rgba(255,255,255,.06); --glass-b:rgba(255,255,255,.16);
+    --text:#e9f6ff; --muted:#8aa0b8;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Ubuntu,sans-serif;
+    color:var(--text);
+    background:#05030f;
+    overflow-x:hidden;
+    min-height:100vh;
+    display:flex;flex-direction:column;
+  }
+  /* ---------- animated neon background ---------- */
+  .bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;animation:float 18s ease-in-out infinite alternate}
+  .b1{width:520px;height:520px;background:var(--neon2);top:-140px;left:-120px}
+  .b2{width:480px;height:480px;background:var(--neon1);bottom:-160px;right:-100px;animation-delay:-6s}
+  .b3{width:360px;height:360px;background:#6a00ff;top:40%;left:45%;animation-delay:-12s}
+  @keyframes float{0%{transform:translate(0,0) scale(1)}50%{transform:translate(80px,-60px) scale(1.15)}100%{transform:translate(-60px,70px) scale(.9)}}
+  .grid{position:fixed;inset:0;z-index:-1;
+    background-image:linear-gradient(rgba(0,240,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.07) 1px,transparent 1px);
+    background-size:44px 44px;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%)}
+
+  /* ---------- glass ---------- */
+  .glass{
+    background:var(--glass);
+    border:1px solid var(--glass-b);
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border-radius:var(--radius);
+    box-shadow:0 8px 32px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:12px;z-index:20;margin:12px auto 0;width:min(1100px,calc(100% - 24px));
+    display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;
+  }
+  .logo{display:flex;align-items:center;gap:12px;user-select:none;text-decoration:none;color:inherit}
+  .emblem{width:58px;height:58px;flex:none;overflow:visible;transition:transform .4s}
+  .logo:hover .emblem{transform:rotate(-8deg) scale(1.08)}
+  .emblem .orbit{transform-origin:60px 60px;animation:spin 14s linear infinite}
+  .emblem .crownG{transform-origin:60px 60px;animation:crownBob 3s ease-in-out infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes crownBob{50%{transform:translateY(-2.5px)}}
+  .wordmark{display:flex;flex-direction:column;line-height:1}
+  .wm-main{font-family:"Orbitron","Segoe UI Black","Arial Black",Impact,sans-serif;font-weight:900;font-size:1.75rem;letter-spacing:2px;display:flex;align-items:baseline}
+  .wm-esp{color:#eaffff;text-shadow:0 0 4px #fff,0 0 10px var(--neon1),0 0 22px var(--neon1),0 0 42px var(--neon1);animation:flicker 5s infinite}
+  .wm-king{position:relative;margin-left:4px;
+    background:linear-gradient(180deg,#fff6a8 0%,#ffd000 45%,#ff8a00 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 6px rgba(255,200,0,.8)) drop-shadow(0 0 16px rgba(255,0,230,.6))}
+  .wm-tag{margin-top:5px;font-size:.62rem;letter-spacing:4.5px;font-weight:800;color:#7ff8ff;text-shadow:0 0 6px var(--neon1),0 0 2px #000}
+  /* glitch */
+  .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden;
+    background:inherit;-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.85}
+  .glitch::before{text-shadow:none;-webkit-text-fill-color:var(--neon1);animation:glitchA 3.2s infinite steps(1)}
+  .glitch::after{-webkit-text-fill-color:var(--neon2);animation:glitchB 3.2s infinite steps(1)}
+  @keyframes glitchA{0%,86%,100%{clip-path:inset(0 0 100% 0);transform:none}88%{clip-path:inset(10% 0 55% 0);transform:translate(-3px,-1px)}91%{clip-path:inset(60% 0 8% 0);transform:translate(3px,1px)}94%{clip-path:inset(35% 0 40% 0);transform:translate(-2px,0)}}
+  @keyframes glitchB{0%,86%,100%{clip-path:inset(0 0 100% 0);transform:none}89%{clip-path:inset(55% 0 15% 0);transform:translate(3px,1px)}92%{clip-path:inset(5% 0 70% 0);transform:translate(-3px,-1px)}95%{clip-path:inset(40% 0 30% 0);transform:translate(2px,0)}}
+  @keyframes flicker{0%,19%,21%,23%,55%,57%,100%{opacity:1}20%,22%,56%{opacity:.45}}
+  /* hero emblem */
+  .hero-logo{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:18px}
+  .hero-logo .emblem{width:130px;height:130px;filter:drop-shadow(0 0 20px rgba(0,240,255,.45))}
+  .hero-logo .wm-main{font-size:clamp(2.4rem,7vw,4.2rem);letter-spacing:5px}
+  .hero-logo .wm-tag{font-size:.8rem;letter-spacing:8px;margin-top:10px}
+  .hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    --c:var(--neon1);
+    position:relative;cursor:pointer;border:1px solid var(--c);color:var(--c);
+    background:rgba(0,0,0,.25);padding:10px 20px;border-radius:12px;font-weight:700;font-size:.95rem;letter-spacing:.6px;
+    text-transform:uppercase;transition:.25s;box-shadow:0 0 8px color-mix(in srgb,var(--c) 45%,transparent), inset 0 0 8px color-mix(in srgb,var(--c) 25%,transparent);
+    text-shadow:0 0 6px var(--c);display:inline-flex;align-items:center;gap:8px;white-space:nowrap
+  }
+  .btn:hover:not(:disabled){background:var(--c);color:#05030f;text-shadow:none;box-shadow:0 0 18px var(--c),0 0 40px color-mix(in srgb,var(--c) 60%,transparent)}
+  .btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(.6)}
+  .btn.pink{--c:var(--neon2)} .btn.green{--c:var(--neon3)} .btn.red{--c:var(--err)} .btn.yellow{--c:var(--warn)}
+  .btn.small{padding:6px 12px;font-size:.78rem;border-radius:10px}
+  .btn.icon{padding:8px 11px}
+  .btn.big{padding:14px 34px;font-size:1.1rem;border-radius:14px}
+
+  select,input[type=text]{
+    background:rgba(0,0,0,.35);color:var(--text);border:1px solid var(--glass-b);border-radius:10px;
+    padding:9px 12px;font-size:.95rem;outline:none;transition:.2s;font-family:inherit
+  }
+  select:focus,input[type=text]:focus{border-color:var(--neon1);box-shadow:0 0 10px rgba(0,240,255,.45)}
+  select option{background:#0d0a22}
+
+  /* ---------- layout ---------- */
+  main{width:min(1100px,calc(100% - 24px));margin:22px auto;display:flex;flex-direction:column;gap:20px;flex:1}
+  .card{padding:24px}
+  .card h2{font-size:1.05rem;text-transform:uppercase;letter-spacing:2px;color:var(--neon1);text-shadow:0 0 10px var(--neon1);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .card h2::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--neon1);box-shadow:0 0 10px var(--neon1)}
+
+  /* hero / steps */
+  .hero{text-align:center;padding:40px 24px}
+  .hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;line-height:1.1;margin-bottom:10px}
+  .hero h1 span{color:var(--neon2);text-shadow:0 0 12px var(--neon2),0 0 34px var(--neon2)}
+  .hero p.sub{color:var(--muted);margin-bottom:26px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:28px;text-align:left}
+  .step{padding:18px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);transition:.3s}
+  .step:hover{transform:translateY(-4px);border-color:var(--neon2);box-shadow:0 0 20px rgba(255,0,230,.3)}
+  .step b{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;margin-bottom:8px;
+    border:1px solid var(--neon1);color:var(--neon1);box-shadow:0 0 10px var(--neon1);font-size:.9rem}
+  .step div{color:#cfe3f5;font-size:.95rem}
+
+  /* device info */
+  .device{display:flex;flex-wrap:wrap;gap:12px}
+  .chip{flex:1 1 180px;padding:14px 16px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1)}
+  .chip small{display:block;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+  .chip span{font-weight:700;font-family:ui-monospace,Consolas,monospace;color:var(--neon3);text-shadow:0 0 8px rgba(124,255,0,.5);word-break:break-all}
+
+  /* file rows */
+  .rows{display:flex;flex-direction:column;gap:12px}
+  .row{display:grid;grid-template-columns:150px 1fr auto;gap:12px;align-items:center;padding:12px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);animation:pop .3s ease}
+  @keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+  .row input[type=text]{font-family:ui-monospace,Consolas,monospace;width:100%}
+  .row input.bad{border-color:var(--err);box-shadow:0 0 10px rgba(255,59,107,.5)}
+  .filepick{position:relative;display:flex;align-items:center;gap:10px;min-width:0}
+  .filepick input[type=file]{display:none}
+  .filepick label{cursor:pointer}
+  .fname{color:var(--muted);font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fname.ok{color:var(--text)}
+  .progress{grid-column:1/-1;height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;display:none}
+  .progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--neon1),var(--neon2));box-shadow:0 0 12px var(--neon1);transition:width .15s}
+  .row.flashing .progress{display:block}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-top:18px}
+  .actions .left,.actions .right{display:flex;gap:10px;flex-wrap:wrap}
+
+  /* terminal */
+  .term-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap}
+  .term-head h2{margin:0}
+  .term-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .check{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:.85rem;cursor:pointer;user-select:none}
+  .check input{accent-color:var(--neon2)}
+  #terminal{
+    height:340px;overflow:auto;padding:16px;border-radius:14px;background:rgba(0,0,0,.6);
+    border:1px solid rgba(0,240,255,.25);box-shadow:inset 0 0 30px rgba(0,240,255,.08);
+    font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:.86rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;color:#b9f7ff
+  }
+  #terminal .l-info{color:var(--neon1)} #terminal .l-ok{color:var(--neon3);text-shadow:0 0 6px rgba(124,255,0,.5)}
+  #terminal .l-err{color:var(--err);text-shadow:0 0 6px rgba(255,59,107,.5)} #terminal .l-warn{color:var(--warn)}
+  #terminal .l-dbg{color:#7f8aa3} #terminal .l-dev{color:#e0e0e0}
+  #terminal::-webkit-scrollbar{width:8px} #terminal::-webkit-scrollbar-thumb{background:linear-gradient(var(--neon1),var(--neon2));border-radius:8px}
+  .cursor{display:inline-block;width:8px;height:1em;background:var(--neon1);vertical-align:-2px;animation:blink 1s steps(1) infinite;box-shadow:0 0 8px var(--neon1)}
+  @keyframes blink{50%{opacity:0}}
+
+  /* status pill */
+  .status{display:flex;align-items:center;gap:8px;font-size:.82rem;padding:6px 12px;border-radius:30px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--err);box-shadow:0 0 10px var(--err)}
+  .status.on .dot{background:var(--neon3);box-shadow:0 0 10px var(--neon3);animation:pulse 1.6s infinite}
+  @keyframes pulse{50%{transform:scale(1.5);opacity:.6}}
+
+  /* modal */
+  .modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(0,0,0,.55);backdrop-filter:blur(6px)}
+  .modal.open{display:grid}
+  .modal .box{width:min(440px,calc(100% - 30px));padding:26px;animation:pop .25s}
+  .modal h3{color:var(--neon2);text-shadow:0 0 10px var(--neon2);margin-bottom:18px;letter-spacing:1px}
+  .field{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+  .field label{color:#cfe3f5}
+  .modal .foot{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+
+  /* toast */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);z-index:60;padding:12px 22px;transition:.35s;font-weight:600}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+
+  .banner{padding:16px 20px;border-color:rgba(255,59,107,.6)!important;box-shadow:0 0 20px rgba(255,59,107,.35)!important;display:none}
+  .banner b{color:var(--err)}
+
+  .hidden{display:none!important}
+  footer{text-align:center;color:var(--muted);padding:22px 12px 30px;font-size:.9rem}
+  footer .heart{color:var(--neon2);text-shadow:0 0 10px var(--neon2)}
+  footer .king{color:var(--neon1);font-weight:700;text-shadow:0 0 8px var(--neon1)}
+
+  @media (max-width:640px){
+    .row{grid-template-columns:1fr}
+    .emblem{width:46px;height:46px}
+    .wm-main{font-size:1.35rem}
+    .wm-tag{font-size:.55rem;letter-spacing:3px}
+    header{flex-wrap:wrap;justify-content:center}
+    .card{padding:18px}
+  }
+</style>
+</head>
+<body>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="grid"></div>
+
+<header class="glass">
+  <a class="logo" href="#" title="Esp32King">
+    <svg class="emblem" viewBox="0 0 120 120" aria-hidden="true">
+      <defs>
+        <linearGradient id="gNeon" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#00f0ff"/><stop offset=".55" stop-color="#8a5cff"/><stop offset="1" stop-color="#ff00e6"/>
+        </linearGradient>
+        <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff6a8"/><stop offset=".5" stop-color="#ffd000"/><stop offset="1" stop-color="#ff8a00"/>
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g id="emblemArt">
+      <g filter="url(#glow)" stroke="url(#gNeon)" stroke-width="3" stroke-linecap="round" fill="none">
+        <!-- chip pins -->
+        <path d="M40 30v-9M52 30v-9M68 30v-9M80 30v-9M40 99v-9M52 99v-9M68 99v-9M80 99v-9M30 44h-9M30 56h-9M30 68h-9M30 80h-9M99 44h-9M99 56h-9M99 68h-9M99 80h-9"/>
+        <!-- chip body -->
+        <rect x="30" y="30" width="60" height="60" rx="9" fill="rgba(8,6,25,.85)"/>
+        <rect x="37" y="37" width="46" height="46" rx="5" stroke-width="1.2" opacity=".55"/>
+      </g>
+      <!-- crown -->
+      <g class="crownG" filter="url(#glow)">
+        <path d="M41 72 L38 49 L50 59 L60 43 L70 59 L82 49 L79 72 Z" fill="url(#gGold)" stroke="#fff3b0" stroke-width="1.2" stroke-linejoin="round"/>
+        <rect x="41" y="73.5" width="38" height="5" rx="2" fill="url(#gGold)"/>
+        <circle cx="38" cy="48" r="3" fill="#ff00e6"/><circle cx="60" cy="42" r="3.4" fill="#00f0ff"/><circle cx="82" cy="48" r="3" fill="#ff00e6"/>
+        <circle cx="60" cy="64" r="2.6" fill="#05030f" stroke="#00f0ff" stroke-width="1.2"/>
+      </g>
+      <!-- orbit ring -->
+      <circle class="orbit" cx="60" cy="60" r="55" fill="none" stroke="url(#gNeon)" stroke-width="1.4" stroke-dasharray="6 10" opacity=".7"/>
+      </g>
+    </svg>
+    <div class="wordmark">
+      <div class="wm-main"><span class="wm-esp">ESP32</span><span class="wm-king glitch" data-text="KING">KING</span></div>
+      <div class="wm-tag">⚡ WEB&nbsp;FLASHER ⚡</div>
+    </div>
+  </a>
+  <div class="hdr-right">
+    <div class="status" id="status"><span class="dot"></span><span id="statusText">Disconnected</span></div>
+    <select id="baud" title="Baud rate">
+      <option value="115200" selected>115200</option>
+      <option value="230400">230400</option>
+      <option value="460800">460800</option>
+      <option value="921600">921600</option>
+    </select>
+    <button class="btn icon pink" id="settingsBtn" title="Settings">⚙</button>
+    <button class="btn" id="connectBtn">⚡ Connect</button>
+  </div>
+</header>
+
+<main>
+  <div class="glass banner" id="unsupported">
+    <b>⚠ Browser not supported.</b> Web Serial API is required. Please use <b style="color:var(--neon1)">Chrome, Edge or Opera</b> on desktop, opened over HTTPS (or localhost).
+  </div>
+
+  <!-- Landing -->
+  <section class="glass card hero" id="landing">
+    <div class="hero-logo">
+      <svg class="emblem" viewBox="0 0 120 120" aria-hidden="true"><use href="#emblemArt"/></svg>
+      <div class="wm-main"><span class="wm-esp">ESP32</span><span class="wm-king glitch" data-text="KING">KING</span></div>
+      <div class="wm-tag">THE ROYAL WEB FLASHER</div>
+    </div>
+    <h1>Flash your <span>ESP</span> like a King</h1>
+    <p class="sub">No drivers. No installs. Just your browser + a USB cable.</p>
+    <button class="btn big" id="heroConnect">⚡ Connect Device</button>
+    <div class="steps">
+      <div class="step"><b>1</b><div>Click on <strong>Connect</strong></div></div>
+      <div class="step"><b>2</b><div>Plug in your ESP &amp; select the port</div></div>
+      <div class="step"><b>3</b><div>Add your <strong>.bin</strong> &amp; set the address</div></div>
+      <div class="step"><b>4</b><div>Click <strong>Program</strong> to flash it 😊</div></div>
+    </div>
+  </section>
+
+  <!-- Device -->
+  <section class="glass card hidden" id="deviceCard">
+    <h2>Device</h2>
+    <div class="device">
+      <div class="chip"><small>Chip</small><span id="chipName">—</span></div>
+      <div class="chip"><small>MAC Address</small><span id="chipMac">—</span></div>
+      <div class="chip"><small>Features</small><span id="chipFeat">—</span></div>
+      <div class="chip"><small>Crystal</small><span id="chipXtal">—</span></div>
+    </div>
+  </section>
+
+  <!-- Flash -->
+  <section class="glass card hidden" id="flashCard">
+    <h2>Firmware</h2>
+    <div class="rows" id="rows"></div>
+    <div class="actions">
+      <div class="left">
+        <button class="btn small green" id="addRow">＋ Add file</button>
+        <button class="btn small yellow" id="presetBtn" title="Fill default ESP32 offsets">⚙ ESP32 Preset</button>
+      </div>
+      <div class="right">
+        <button class="btn red" id="eraseBtn">🗑 Erase</button>
+        <button class="btn pink" id="resetBtn">↻ Reset</button>
+        <button class="btn green" id="programBtn">🚀 Program</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terminal -->
+  <section class="glass card">
+    <div class="term-head">
+      <h2>Output</h2>
+      <div class="term-tools">
+        <label class="check"><input type="checkbox" id="autoscroll" checked /> Autoscroll</label>
+        <button class="btn small" id="copyLog">⧉ Copy</button>
+        <button class="btn small pink" id="clearLog">✕ Clear</button>
+      </div>
+    </div>
+    <div id="terminal"><span class="l-dbg">Terminal</span>
+<span class="l-info">Click Connect to start</span>
+<span class="cursor"></span></div>
+  </section>
+</main>
+
+<footer>
+  Made with <span class="heart">❤</span> by <span class="king">ESP32 KING</span> · Powered by Web Serial &amp; esptool-js
+</footer>
+
+<!-- Settings -->
+<div class="modal" id="settings">
+  <div class="glass box">
+    <h3>⚙ Settings</h3>
+    <div class="field"><label for="sBaud">Flash baud rate</label>
+      <select id="sBaud">
+        <option value="115200">115200</option><option value="230400">230400</option>
+        <option value="460800">460800</option><option value="921600">921600</option>
+      </select></div>
+    <div class="field"><label for="sDebug">Debug logging</label><input type="checkbox" id="sDebug" /></div>
+    <div class="field"><label for="sCompress">Compress upload</label><input type="checkbox" id="sCompress" checked /></div>
+    <div class="field"><label for="sEraseAll">Erase all before program</label><input type="checkbox" id="sEraseAll" /></div>
+    <div class="field"><label for="sReset">Hard reset after flash</label><input type="checkbox" id="sReset" checked /></div>
+    <div class="foot">
+      <button class="btn small yellow" id="sDefault">Defaults</button>
+      <button class="btn small green" id="sSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="glass"></div>
+
+<script type="module">
+import { ESPLoader, Transport } from "./esptool.js";
+
+/* ---------------- helpers ---------------- */
+const $ = (id) => document.getElementById(id);
+const term = $("terminal");
+const MAX_ROWS = 6;
+const DEFAULTS = { baud: "115200", debug: false, compress: true, eraseAll: false, reset: true };
+let settings = { ...DEFAULTS, ...JSON.parse(localStorage.getItem("esp32king.settings") || "{}") };
+let transport = null, esploader = null, device = null, busy = false;
+
+function stripCursor(){ const c = term.querySelector(".cursor"); if (c) c.remove(); }
+function addCursor(){ const c = document.createElement("span"); c.className = "cursor"; term.appendChild(c); }
+function log(msg, cls = "l-dev", newline = true){
+  stripCursor();
+  const s = document.createElement("span");
+  s.className = cls;
+  s.textContent = msg + (newline ? "\n" : "");
+  term.appendChild(s);
+  // keep terminal light
+  while (term.childNodes.length > 3000) term.removeChild(term.firstChild);
+  addCursor();
+  if ($("autoscroll").checked) term.scrollTop = term.scrollHeight;
+}
+const espTerminal = {
+  clean(){ term.innerHTML = ""; addCursor(); },
+  writeLine(d){ log(d, "l-dev"); },
+  write(d){ log(d, "l-dev", false); }
+};
+function toast(msg, color = "var(--neon1)"){
+  const t = $("toast");
+  t.textContent = msg; t.style.color = color; t.style.boxShadow = `0 0 20px ${color}`;
+  t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), 2600);
+}
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+/* ---------------- file rows ---------------- */
+function makeRow(addr = "0x0"){
+  const rows = $("rows");
+  if (rows.children.length >= MAX_ROWS) return toast("Max " + MAX_ROWS + " files", "var(--warn)");
+  const id = "f" + Math.random().toString(36).slice(2, 8);
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
+    <input type="text" class="addr" value="${addr}" placeholder="0x1000" spellcheck="false" title="Flash offset (hex)" />
+    <div class="filepick">
+      <input type="file" id="${id}" accept=".bin,.img,application/octet-stream" />
+      <label for="${id}" class="btn small">📁 Choose .bin</label>
+      <span class="fname">No file selected</span>
+    </div>
+    <button class="btn small red icon rm" title="Remove">✕</button>
+    <div class="progress"><i></i></div>`;
+  const addrIn = row.querySelector(".addr");
+  addrIn.addEventListener("input", () => addrIn.classList.toggle("bad", !validAddr(addrIn.value)));
+  row.querySelector("input[type=file]").addEventListener("change", (e) => {
+    const f = e.target.files[0], n = row.querySelector(".fname");
+    if (f){ n.textContent = `${f.name} (${fmtSize(f.size)})`; n.classList.add("ok"); guessAddr(f.name, addrIn); }
+    else { n.textContent = "No file selected"; n.classList.remove("ok"); }
+    refreshButtons();
+  });
+  row.querySelector(".rm").addEventListener("click", () => {
+    if (rows.children.length === 1) return toast("At least one file row needed", "var(--warn)");
+    row.remove(); refreshButtons();
+  });
+  rows.appendChild(row);
+  refreshButtons();
+  return row;
+}
+const validAddr = (v) => /^(0x)?[0-9a-f]+$/i.test(v.trim());
+const parseAddr = (v) => parseInt(v.trim().replace(/^0x/i, ""), 16);
+const fmtSize = (b) => b > 1048576 ? (b/1048576).toFixed(2)+" MB" : b > 1024 ? (b/1024).toFixed(1)+" KB" : b+" B";
+function guessAddr(name, input){
+  const n = name.toLowerCase();
+  const chip = (device?.chip || "").toUpperCase();
+  const bootAddr = /ESP32-(S3|C3|C6|H2|C2|C5|P4)/.test(chip) ? "0x0" : "0x1000";
+  let a = null;
+  if (n.includes("bootloader")) a = bootAddr;
+  else if (n.includes("partition")) a = "0x8000";
+  else if (n.includes("boot_app0")) a = "0xe000";
+  else if (n.includes("merged") || n.includes("factory")) a = "0x0";
+  else if (n.includes("spiffs") || n.includes("littlefs")) a = null;
+  if (a && (input.value === "0x0" || input.value === "")) { input.value = a; input.classList.remove("bad"); }
+}
+function applyPreset(){
+  const chip = (device?.chip || "").toUpperCase();
+  const bootAddr = /ESP32-(S3|C3|C6|H2|C2|C5|P4)/.test(chip) ? "0x0" : "0x1000";
+  $("rows").innerHTML = "";
+  [bootAddr, "0x8000", "0xe000", "0x10000"].forEach(a => makeRow(a));
+  toast("Preset: bootloader / partitions / boot_app0 / app", "var(--warn)");
+}
+
+/* ---------------- UI state ---------------- */
+function refreshButtons(){
+  const connected = !!esploader;
+  const anyFile = [...document.querySelectorAll(".row input[type=file]")].some(i => i.files.length);
+  $("programBtn").disabled = !connected || busy || !anyFile;
+  $("eraseBtn").disabled = !connected || busy;
+  $("resetBtn").disabled = !connected || busy;
+  $("addRow").disabled = busy;
+  $("presetBtn").disabled = busy;
+  $("connectBtn").disabled = busy;
+  $("baud").disabled = connected || busy;
+  document.querySelectorAll(".row input, .row button, .row label").forEach(el => {
+    if (el.tagName === "LABEL") el.style.pointerEvents = busy ? "none" : ""; else el.disabled = busy;
+  });
+}
+function setConnectedUI(on){
+  $("status").classList.toggle("on", on);
+  $("statusText").textContent = on ? (device?.chip || "Connected") : "Disconnected";
+  $("connectBtn").innerHTML = on ? "⏻ Disconnect" : "⚡ Connect";
+  $("connectBtn").classList.toggle("red", on);
+  $("landing").classList.toggle("hidden", on);
+  $("deviceCard").classList.toggle("hidden", !on);
+  $("flashCard").classList.toggle("hidden", !on);
+  if (on && !$("rows").children.length){
+    // default 3 rows: bootloader / partitions / app
+    const chip = (device?.chip || "").toUpperCase();
+    const bootAddr = /ESP32-(S3|C3|C6|H2|C2|C5|P4)/.test(chip) ? "0x0" : "0x1000";
+    [bootAddr, "0x8000", "0x10000"].forEach(a => makeRow(a));
+  }
+  refreshButtons();
+}
+
+/* ---------------- connect / disconnect ---------------- */
+async function connect(){
+  if (!("serial" in navigator)) return toast("Web Serial not supported", "var(--err)");
+  if (esploader) return disconnect();
+  let port;
+  try { port = await navigator.serial.requestPort({}); }
+  catch (e) { log("Port selection cancelled.", "l-warn"); return; }
+
+  busy = true; refreshButtons();
+  $("statusText").textContent = "Connecting…";
+  try {
+    transport = new Transport(port, settings.debug);
+    esploader = new ESPLoader({
+      transport,
+      baudrate: parseInt($("baud").value),
+      romBaudrate: 115200,
+      terminal: espTerminal,
+      debugLogging: settings.debug
+    });
+    log("» Connecting @ " + $("baud").value + " baud…", "l-info");
+    const chip = await esploader.main();
+    device = { chip };
+    try { device.mac = await esploader.chip.readMac(esploader); } catch {}
+    try { device.features = (await esploader.chip.getChipFeatures(esploader)).join(", "); } catch {}
+    try { device.xtal = (await esploader.chip.getCrystalFreq(esploader)) + " MHz"; } catch {}
+    $("chipName").textContent = chip || "Unknown";
+    $("chipMac").textContent = device.mac || "—";
+    $("chipFeat").textContent = device.features || "—";
+    $("chipXtal").textContent = device.xtal || "—";
+    log("✔ Connected to " + chip, "l-ok");
+    toast("👑 Connected: " + chip, "var(--neon3)");
+    busy = false;
+    setConnectedUI(true);
+    port.addEventListener?.("disconnect", () => { log("Device unplugged.", "l-warn"); cleanup(); });
+  } catch (e) {
+    log("✖ Connection failed: " + (e.message || e), "l-err");
+    log("Tip: hold the BOOT button while connecting, or lower the baud rate.", "l-warn");
+    toast("Connection failed", "var(--err)");
+    try { await transport?.disconnect(); } catch {}
+    busy = false; cleanup();
+  }
+}
+async function disconnect(){
+  try { await transport?.disconnect(); } catch {}
+  log("» Disconnected.", "l-info");
+  cleanup();
+}
+function cleanup(){
+  transport = null; esploader = null; device = null; busy = false;
+  setConnectedUI(false);
+}
+
+/* ---------------- actions ---------------- */
+function readFile(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(r.error);
+    r.readAsBinaryString(file);
+  });
+}
+async function program(){
+  const rows = [...document.querySelectorAll(".row")];
+  const items = [];
+  for (const row of rows){
+    const f = row.querySelector("input[type=file]").files[0];
+    const a = row.querySelector(".addr");
+    if (!f) continue;
+    if (!validAddr(a.value)){ a.classList.add("bad"); return toast("Invalid address: " + a.value, "var(--err)"); }
+    items.push({ row, file: f, address: parseAddr(a.value) });
+  }
+  if (!items.length) return toast("Choose at least one .bin file", "var(--warn)");
+  const addrs = items.map(i => i.address);
+  if (new Set(addrs).size !== addrs.length) return toast("Duplicate addresses!", "var(--err)");
+
+  busy = true; refreshButtons();
+  try {
+    const fileArray = [];
+    for (const it of items){
+      fileArray.push({ data: await readFile(it.file), address: it.address });
+      it.row.classList.add("flashing");
+      it.row.querySelector(".progress>i").style.width = "0%";
+      log(`» ${it.file.name} → 0x${it.address.toString(16)} (${fmtSize(it.file.size)})`, "l-info");
+    }
+    const t0 = performance.now();
+    await esploader.writeFlash({
+      fileArray,
+      flashSize: "keep", flashMode: "keep", flashFreq: "keep",
+      eraseAll: settings.eraseAll,
+      compress: settings.compress,
+      reportProgress: (idx, written, total) => {
+        const pct = Math.min(100, (written / total) * 100);
+        const bar = items[idx]?.row.querySelector(".progress>i");
+        if (bar) bar.style.width = pct.toFixed(1) + "%";
+      }
+    });
+    log(`✔ Done! Flashed in ${((performance.now() - t0) / 1000).toFixed(1)}s`, "l-ok");
+    toast("🚀 Flash complete!", "var(--neon3)");
+    if (settings.reset){ await doReset(true); }
+  } catch (e) {
+    log("✖ Flash failed: " + (e.message || e), "l-err");
+    toast("Flash failed", "var(--err)");
+  } finally {
+    busy = false; refreshButtons();
+    setTimeout(() => items.forEach(i => i.row.classList.remove("flashing")), 2500);
+  }
+}
+async function erase(){
+  if (!confirm("Erase the ENTIRE flash? This cannot be undone.")) return;
+  busy = true; refreshButtons();
+  try {
+    log("» Erasing flash… (this may take a while)", "l-warn");
+    const t0 = performance.now();
+    await esploader.eraseFlash();
+    log(`✔ Flash erased in ${((performance.now() - t0) / 1000).toFixed(1)}s`, "l-ok");
+    toast("Flash erased", "var(--neon3)");
+  } catch (e) {
+    log("✖ Erase failed: " + (e.message || e), "l-err");
+  } finally { busy = false; refreshButtons(); }
+}
+async function doReset(quiet){
+  try {
+    if (esploader.hardReset) await esploader.hardReset();
+    else { await transport.setDTR(false); await transport.setRTS(true); await sleep(100); await transport.setRTS(false); }
+    log("↻ Device reset.", "l-info");
+    if (!quiet) toast("Device reset", "var(--neon2)");
+  } catch (e) { log("✖ Reset failed: " + (e.message || e), "l-err"); }
+}
+
+/* ---------------- settings ---------------- */
+function loadSettingsUI(){
+  $("sBaud").value = settings.baud; $("baud").value = settings.baud;
+  $("sDebug").checked = settings.debug; $("sCompress").checked = settings.compress;
+  $("sEraseAll").checked = settings.eraseAll; $("sReset").checked = settings.reset;
+}
+$("settingsBtn").onclick = () => { loadSettingsUI(); $("settings").classList.add("open"); };
+$("settings").onclick = (e) => { if (e.target.id === "settings") $("settings").classList.remove("open"); };
+$("sDefault").onclick = () => { settings = { ...DEFAULTS }; loadSettingsUI(); };
+$("sSave").onclick = () => {
+  settings = { baud: $("sBaud").value, debug: $("sDebug").checked, compress: $("sCompress").checked,
+               eraseAll: $("sEraseAll").checked, reset: $("sReset").checked };
+  localStorage.setItem("esp32king.settings", JSON.stringify(settings));
+  if (!esploader) $("baud").value = settings.baud;
+  $("settings").classList.remove("open");
+  toast("Settings saved", "var(--neon3)");
+};
+$("baud").onchange = () => { settings.baud = $("baud").value; localStorage.setItem("esp32king.settings", JSON.stringify(settings)); };
+
+/* ---------------- wire up ---------------- */
+$("connectBtn").onclick = connect;
+$("heroConnect").onclick = connect;
+$("addRow").onclick = () => makeRow("0x10000");
+$("presetBtn").onclick = applyPreset;
+$("programBtn").onclick = program;
+$("eraseBtn").onclick = erase;
+$("resetBtn").onclick = () => doReset(false);
+$("clearLog").onclick = () => { term.innerHTML = ""; addCursor(); };
+$("copyLog").onclick = async () => {
+  try { await navigator.clipboard.writeText(term.innerText); toast("Log copied", "var(--neon1)"); }
+  catch { toast("Copy failed", "var(--err)"); }
+};
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("settings").classList.remove("open"); });
+
+if (!("serial" in navigator)){
+  $("unsupported").style.display = "block";
+  $("connectBtn").disabled = true; $("heroConnect").disabled = true;
+  log("✖ Web Serial API not available in this browser.", "l-err");
+}
+loadSettingsUI();
+refreshButtons();
+</script>
+</body>
+</html>
