@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f6f5fb" />
+  <title>ShadowImage2Text — Turn Images Into Text. Instantly.</title>
+  <meta name="description" content="ShadowImage2Text is a premium AI-powered OCR platform. Extract text from images in English and Hindi instantly, right in your browser. Fast, private and completely free." />
+  <meta name="keywords" content="image to text, OCR, Hindi OCR, English OCR, extract text from image, ShadowImage2Text, Tesseract" />
+  <meta name="author" content="ShadowImage2Text" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ShadowImage2Text — Turn Images Into Text. Instantly." />
+  <meta property="og:description" content="Extract text from images with powerful OCR technology. English + Hindi support, private on-device processing, completely free." />
+  <meta property="og:site_name" content="ShadowImage2Text" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="ShadowImage2Text — Turn Images Into Text. Instantly." />
+  <meta name="twitter:description" content="Premium AI-powered OCR. Extract text from images in English and Hindi. Fast, private and completely free." />
+
+  <!-- Favicon: unique S2T monogram -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjN2MzYWVkIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2E4NTVmNyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzYwYTVmYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iMzIiIHk9IjQzIiBmb250LWZhbWlseT0iQXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjEiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSItLjUiPlMyVDwvdGV4dD48L3N2Zz4=" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjN2MzYWVkIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iI2E4NTVmNyIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzYwYTVmYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iMzIiIHk9IjQzIiBmb250LWZhbWlseT0iQXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjEiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSItLjUiPlMyVDwvdGV4dD48L3N2Zz4=" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" defer
+          crossorigin="anonymous"
+          onerror="window.__TESS_FAILED__=true"></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#studio">Skip to the OCR studio</a>
+
+  <!-- ══════════ Ambient background ══════════ -->
+  <div class="bg-stage" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="bg-aurora bg-aurora--violet"></div>
+    <div class="bg-aurora bg-aurora--blue"></div>
+    <div class="bg-aurora bg-aurora--plum"></div>
+    <div class="bg-noise"></div>
+  </div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+  <!-- ══════════ Preloader ══════════ -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__mark">
+        <svg viewBox="0 0 44 44" width="44" height="44" fill="none">
+          <rect x="1.25" y="1.25" width="41.5" height="41.5" rx="12" stroke="url(#plGrad)" stroke-width="2.5" />
+          <path d="M12 16.5h9M12 22h6.5M12 27.5h4.5" stroke="#c4b5fd" stroke-width="2.4" stroke-linecap="round" />
+          <path d="M24 27.5l5.5-5.5L24 16.5" stroke="url(#plGrad)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+          <defs>
+            <linearGradient id="plGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#a855f7" /><stop offset=".55" stop-color="#8b5cf6" /><stop offset="1" stop-color="#60a5fa" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <span class="preloader__word">ShadowImage2Text</span>
+      <div class="preloader__bar"><span></span></div>
+    </div>
+  </div>
+
+  <!-- ══════════ Navbar ══════════ -->
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="#top" aria-label="ShadowImage2Text — home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 44 44" width="40" height="40" fill="none">
+            <rect x="1.25" y="1.25" width="41.5" height="41.5" rx="12" stroke="url(#navGrad)" stroke-width="2.5" />
+            <path d="M12 16.5h9M12 22h6.5M12 27.5h4.5" stroke="#c4b5fd" stroke-width="2.4" stroke-linecap="round" />
+            <path d="M24 27.5l5.5-5.5L24 16.5" stroke="url(#navGrad)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+            <defs>
+              <linearGradient id="navGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#a855f7" /><stop offset=".55" stop-color="#8b5cf6" /><stop offset="1" stop-color="#60a5fa" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+        <span class="brand__word">Shadow<span class="grad-text">Image2Text</span></span>
+      </a>
+
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="#studio">Studio</a>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="nav__actions">
+        <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+          <svg class="theme-toggle__sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" />
+          </svg>
+          <svg class="theme-toggle__moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.4 14.2A8.5 8.5 0 0 1 9.8 3.6 8.6 8.6 0 1 0 20.4 14.2Z" />
+          </svg>
+        </button>
+        <a class="btn btn--primary btn--sm nav__cta" href="#studio">Start Extracting</a>
+        <button class="icon-btn nav__burger" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#studio">Studio</a>
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#about">About</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn--primary btn--block" href="#studio">Start Extracting</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ══════════ Hero ══════════ -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <span class="eyebrow reveal">
+            <span class="eyebrow__dot"></span> AI-Powered OCR Platform
+            <span class="eyebrow__tag">v5 Engine</span>
+          </span>
+
+          <h1 class="hero__title reveal">
+            <span class="hero__title-word">Shadow</span>
+            <span class="hero__title-word grad-text">Image2Text</span>
+          </h1>
+
+          <p class="hero__tagline reveal">Turn Images Into Text. <span class="grad-text">Instantly.</span></p>
+
+          <p class="hero__desc reveal">
+            Extract text from images with powerful OCR technology. Fast, simple and completely free.
+            English and Hindi supported — processed privately, right inside your browser.
+          </p>
+
+          <div class="hero__cta reveal">
+            <a class="btn btn--primary btn--lg" href="#studio" id="heroCta">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" />
+              </svg>
+              Start Extracting
+            </a>
+            <a class="btn btn--ghost btn--lg" href="#how-it-works">
+              How it works
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
+
+          <dl class="hero__stats reveal">
+            <div><dt>2+</dt><dd>Languages</dd></div>
+            <div><dt>100%</dt><dd>On-device</dd></div>
+            <div><dt>0</dt><dd>Sign-ups</dd></div>
+            <div><dt>Free</dt><dd>Forever</dd></div>
+          </dl>
+        </div>
+
+        <!-- Decorative product preview -->
+        <div class="hero__visual reveal" aria-hidden="true">
+          <div class="hv-orb"></div>
+          <div class="hv-window">
+            <div class="hv-window__bar">
+              <span class="hv-dot"></span><span class="hv-dot"></span><span class="hv-dot"></span>
+              <span class="hv-window__title">shadowimage2text · studio</span>
+              <span class="hv-live"><i></i>LIVE</span>
+            </div>
+            <div class="hv-window__body">
+              <div class="hv-source">
+                <div class="hv-doc">
+                  <div class="hv-doc__line" style="width:72%"></div>
+                  <div class="hv-doc__line" style="width:88%"></div>
+                  <div class="hv-doc__line" style="width:54%"></div>
+                  <div class="hv-doc__line" style="width:80%"></div>
+                  <div class="hv-doc__line" style="width:64%"></div>
+                  <div class="hv-doc__line" style="width:40%"></div>
+                  <div class="hv-scanline"></div>
+                </div>
+                <span class="hv-tag">image.png</span>
+              </div>
+              <div class="hv-flow">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </div>
+              <div class="hv-output">
+                <div class="hv-output__head"><span>Extracted text</span><span class="hv-pill">99.2%</span></div>
+                <div class="hv-code">
+                  <span class="hv-code__line w1">Where shadows</span>
+                  <span class="hv-code__line w2">become stories —</span>
+                  <span class="hv-code__line w3">turn images into</span>
+                  <span class="hv-code__line w4">text, instantly.<span class="hv-caret"></span></span>
+                </div>
+              </div>
+            </div>
+            <div class="hv-window__foot">
+              <span class="hv-chip">eng + हिन्दी</span>
+              <span class="hv-chip">0.9s</span>
+              <span class="hv-chip hv-chip--ok">On-device</span>
+            </div>
+          </div>
+          <div class="hv-float hv-float--a">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg>
+            Instant extraction
+          </div>
+          <div class="hv-float hv-float--b">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 1 1 8 0v2.5"/></svg>
+            Private by design
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__marquee" aria-hidden="true">
+        <div class="hero__marquee-track">
+          <span>PRIVATE BY DESIGN</span><i>◆</i><span>ENGLISH + हिन्दी</span><i>◆</i><span>NO SIGN-UP</span><i>◆</i><span>RUNS IN YOUR BROWSER</span><i>◆</i><span>FREE FOREVER</span><i>◆</i>
+          <span>PRIVATE BY DESIGN</span><i>◆</i><span>ENGLISH + हिन्दी</span><i>◆</i><span>NO SIGN-UP</span><i>◆</i><span>RUNS IN YOUR BROWSER</span><i>◆</i><span>FREE FOREVER</span><i>◆</i>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ Studio ══════════ -->
+    <section class="section studio" id="studio">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span> The Studio</span>
+          <h2>Extract text in <span class="grad-text">three clicks</span></h2>
+          <p>Drop an image, pick your language, and watch the words appear. Everything happens locally — your files never leave this device.</p>
+        </div>
+
+        <div class="studio__panel reveal">
+          <div class="studio__head">
+            <div class="studio__title">
+              <span class="studio__badge">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5.5A1.5 1.5 0 0 1 5.5 4H7M17 4h1.5A1.5 1.5 0 0 1 20 5.5V7M20 17v1.5a1.5 1.5 0 0 1-1.5 1.5H17M7 20H5.5A1.5 1.5 0 0 1 4 18.5V17"/><path d="M8 9h8M8 12.5h8M8 16h5"/></svg>
+                OCR Workspace
+              </span>
+              <span class="engine-state" id="engineState" data-state="idle">
+                <i class="engine-state__dot"></i><span id="engineLabel">Engine idle</span>
+              </span>
+            </div>
+            <p class="studio__hint">Max 15 MB · JPG, PNG, WEBP, BMP, GIF, TIFF</p>
+          </div>
+
+          <div class="studio__grid">
+            <!-- ── Input column ── -->
+            <div class="studio__col">
+              <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Upload an image: click to browse, or drag and drop a file here">
+                <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/bmp,image/gif,image/tiff" hidden />
+
+                <div class="dropzone__empty" id="dropzoneEmpty">
+                  <div class="dropzone__icon">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="4"/>
+                      <circle cx="9" cy="9" r="1.6"/>
+                      <path d="m21 15-4.5-4.5L7 20"/>
+                    </svg>
+                  </div>
+                  <h3 class="dropzone__title">Drag &amp; drop your image</h3>
+                  <p class="dropzone__sub">or <span class="dropzone__browse">browse files</span> from your device</p>
+                  <div class="dropzone__meta">
+                    <span>PNG</span><span>JPG</span><span>WEBP</span><span>BMP</span><span>TIFF</span>
+                  </div>
+                  <button type="button" class="btn btn--ghost btn--sm dropzone__sample" id="sampleBtn">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+                    Try a sample image
+                  </button>
+                </div>
+
+                <div class="dropzone__preview" id="dropzonePreview" hidden>
+                  <div class="preview-frame">
+                    <img id="previewImage" alt="Selected image preview" />
+                    <div class="preview-scan" id="previewScan" aria-hidden="true"></div>
+                  </div>
+                  <div class="preview-info">
+                    <div class="preview-info__main">
+                      <span class="preview-info__name" id="imgName">image.png</span>
+                      <span class="preview-info__dims" id="imgDims">— × —</span>
+                    </div>
+                    <div class="preview-info__actions">
+                      <button type="button" class="chip-btn" id="changeBtn" aria-label="Change image">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+                        Change
+                      </button>
+                      <button type="button" class="chip-btn chip-btn--danger" id="removeBtn" aria-label="Remove image">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6.5 7l.9 12.1A1.5 1.5 0 0 0 8.9 20h6.2a1.5 1.5 0 0 0 1.5-1.4L17.5 7"/></svg>
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="dropzone__overlay">
+                  <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></svg>
+                  <span>Drop to load image</span>
+                </div>
+              </div>
+
+              <div class="controls">
+                <div class="controls__lang">
+                  <span class="controls__label" id="langLabel">Recognition language</span>
+                  <div class="segmented" role="radiogroup" aria-labelledby="langLabel">
+                    <label class="segmented__item">
+                      <input type="radio" name="lang" value="eng" checked />
+                      <span>English</span>
+                    </label>
+                    <label class="segmented__item">
+                      <input type="radio" name="lang" value="hin" />
+                      <span class="deva">हिन्दी</span>
+                    </label>
+                    <label class="segmented__item">
+                      <input type="radio" name="lang" value="eng+hin" />
+                      <span class="deva">English + हिन्दी</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="controls__actions">
+                  <button type="button" class="btn btn--primary btn--block btn--extract" id="extractBtn" disabled>
+                    <span class="btn__idle">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg>
+                      Extract Text
+                    </span>
+                    <span class="btn__busy">
+                      <span class="spinner"></span>
+                      Extracting…
+                    </span>
+                  </button>
+                  <button type="button" class="btn btn--ghost btn--block" id="resetBtn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 3v6h6"/></svg>
+                    Reset workspace
+                  </button>
+                </div>
+              </div>
+
+              <div class="progress" id="progress" hidden aria-live="polite">
+                <div class="progress__meta">
+                  <span class="progress__status" id="progressStatus">Preparing engine…</span>
+                  <span class="progress__pct" id="progressPct">0%</span>
+                </div>
+                <div class="progress__track"><div class="progress__bar" id="progressBar"></div></div>
+                <p class="progress__note" id="progressNote">First run downloads the language model once — it’s cached for next time.</p>
+              </div>
+            </div>
+
+            <!-- ── Output column ── -->
+            <div class="studio__col">
+              <div class="result">
+                <div class="result__head">
+                  <div class="result__title">
+                    <h3>Extracted text</h3>
+                    <div class="result__badges">
+                      <span class="badge badge--confidence" id="confBadge" hidden>—% confidence</span>
+                      <span class="badge badge--time" id="timeBadge" hidden>0.0s</span>
+                    </div>
+                  </div>
+                  <span class="result__editable">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    Editable
+                  </span>
+                </div>
+
+                <div class="result__body">
+                  <div class="result__empty" id="resultEmpty">
+                    <div class="result__empty-icon">
+                      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/>
+                        <path d="M14 3v5h5M9 13h6M9 17h4"/>
+                      </svg>
+                    </div>
+                    <p class="result__empty-title">Your text will appear here</p>
+                    <p class="result__empty-sub">Upload an image and hit <strong>Extract Text</strong> to get started.</p>
+                  </div>
+                  <textarea id="ocrText" class="result__text" spellcheck="false" aria-label="Extracted text"></textarea>
+                </div>
+
+                <div class="result__foot">
+                  <div class="result__counts">
+                    <span><b id="wordCount">0</b> words</span>
+                    <span><b id="charCount">0</b> chars</span>
+                    <span><b id="lineCount">0</b> lines</span>
+                  </div>
+                  <div class="result__tools">
+                    <button type="button" class="chip-btn" id="copyBtn" disabled>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.4"/><path d="M5 15H4.6A1.6 1.6 0 0 1 3 13.4V4.6A1.6 1.6 0 0 1 4.6 3h8.8A1.6 1.6 0 0 1 15 4.6V5"/></svg>
+                      Copy
+                    </button>
+                    <button type="button" class="chip-btn" id="downloadBtn" disabled>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.5 10l4.5 4.5L16.5 10"/><path d="M4.5 17v2.5A1.5 1.5 0 0 0 6 21h12a1.5 1.5 0 0 0 1.5-1.5V17"/></svg>
+                      Download
+                    </button>
+                    <button type="button" class="chip-btn chip-btn--danger" id="clearTextBtn" disabled>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6.5 7l.9 12.1A1.5 1.5 0 0 0 8.9 20h6.2a1.5 1.5 0 0 0 1.5-1.4L17.5 7"/></svg>
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="privacy-note">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8 7.5 9.5 4.3-1.5 7.5-4.9 7.5-9.5V6Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg>
+                <span><strong>Private by design.</strong> OCR runs locally via WebAssembly — no uploads, no servers, no tracking of your images.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ Features ══════════ -->
+    <section class="section features" id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span> Why ShadowImage2Text</span>
+          <h2>Everything you need to <span class="grad-text">read any image</span></h2>
+          <p>A focused, beautifully engineered OCR workspace — no clutter, no accounts, no compromises.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card reveal">
+            <div class="feature-card__icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/></svg>
+            </div>
+            <h3>Hindi + English</h3>
+            <p>Switch between English, हिन्दी, or recognise both mixed together — ideal for bilingual documents and screenshots.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-card__icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg>
+            </div>
+            <h3>Instant extraction</h3>
+            <p>A neural OCR engine runs directly in your browser. Typical images are read in seconds, with live progress feedback.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-card__icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8 7.5 9.5 4.3-1.5 7.5-4.9 7.5-9.5V6Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg>
+            </div>
+            <h3>100% private</h3>
+            <p>Your images are never uploaded. All processing happens on-device with WebAssembly — private by architecture.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-card__icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.4"/><path d="M5 15H4.6A1.6 1.6 0 0 1 3 13.4V4.6A1.6 1.6 0 0 1 4.6 3h8.8A1.6 1.6 0 0 1 15 4.6V5"/></svg>
+            </div>
+            <h3>Copy &amp; download</h3>
+            <p>Edit the recognised text inline, then copy it with one click or download a clean <code>.txt</code> file instantly.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-card__icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="1.6"/><path d="m21 15-4.5-4.5L7 20"/></svg>
+            </div>
+            <h3>Pixel-perfect preview</h3>
+            <p>See your image with dimensions and file size before extracting, plus an animated scan while the engine reads it.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <div class="feature-card__icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 14.2A8.5 8.5 0 0 1 9.8 3.6 8.6 8.6 0 1 0 20.4 14.2Z"/></svg>
+            </div>
+            <h3>Dark &amp; light</h3>
+            <p>A refined dark-first interface with a polished light theme. Your preference is remembered across visits.</p>
+          </article>
+        </div>
+
+        <div class="feature-strip reveal">
+          <div class="feature-strip__item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            No sign-up required
+          </div>
+          <div class="feature-strip__item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Unlimited extractions
+          </div>
+          <div class="feature-strip__item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Works on mobile
+          </div>
+          <div class="feature-strip__item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Free forever
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ How it works ══════════ -->
+    <section class="section how" id="how-it-works">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span> How it works</span>
+          <h2>From image to text in <span class="grad-text">seconds</span></h2>
+          <p>No installs, no accounts. Just three simple steps in a workspace built for focus.</p>
+        </div>
+
+        <ol class="steps">
+          <li class="step reveal">
+            <div class="step__num">01</div>
+            <div class="step__card">
+              <div class="step__icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16"/></svg>
+              </div>
+              <h3>Upload your image</h3>
+              <p>Drag &amp; drop a screenshot, photo or scanned page — or pick a file from your device.</p>
+            </div>
+            <div class="step__link" aria-hidden="true"></div>
+          </li>
+
+          <li class="step reveal">
+            <div class="step__num">02</div>
+            <div class="step__card">
+              <div class="step__icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 4 4-4 4"/><path d="M12 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/><path d="M13.5 9.5A2.4 2.4 0 0 0 11.4 8H10a2 2 0 0 0 0 4h1.8a2.2 2.2 0 0 1 0 4H10a2.4 2.4 0 0 1-2.1-1.5"/></svg>
+              </div>
+              <h3>Choose a language</h3>
+              <p>Select English, Hindi, or both. The engine loads only what it needs and caches it.</p>
+            </div>
+            <div class="step__link" aria-hidden="true"></div>
+          </li>
+
+          <li class="step reveal">
+            <div class="step__num">03</div>
+            <div class="step__card">
+              <div class="step__icon">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+              </div>
+              <h3>Extract, copy, done</h3>
+              <p>Hit Extract Text, refine the result if needed, then copy it or download a .txt file.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ══════════ About ══════════ -->
+    <section class="section about" id="about">
+      <div class="container about__grid">
+        <!-- Brand illustration -->
+        <div class="about__visual reveal" aria-hidden="true">
+          <div class="about-illustration">
+            <span class="about-ring about-ring--1"></span>
+            <span class="about-ring about-ring--2"></span>
+
+            <div class="about-plate">
+              <span class="about-plate__corner about-plate__corner--tl"></span>
+              <span class="about-plate__corner about-plate__corner--tr"></span>
+              <span class="about-plate__corner about-plate__corner--bl"></span>
+              <span class="about-plate__corner about-plate__corner--br"></span>
+              <span class="about-plate__scan"></span>
+              <div class="about-plate__glyph">
+                <span class="about-plate__s2t">S2T</span>
+                <span class="about-plate__label">Image → Text</span>
+              </div>
+            </div>
+
+            <div class="about-chip about-chip--1">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/></svg>
+              Instant OCR
+            </div>
+            <div class="about-chip about-chip--2">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8 7.5 9.5 4.3-1.5 7.5-4.9 7.5-9.5V6Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg>
+              100% private
+            </div>
+            <div class="about-chip about-chip--3">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/></svg>
+              eng + हिन्दी
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy -->
+        <div class="about__copy reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span> About us</span>
+
+          <h2 class="about__heading">About <span class="grad-text">ShadowImage2Text</span></h2>
+          <p class="about__subhead">Making Text Extraction Simple for Everyone.</p>
+
+          <div class="about__body">
+            <p>ShadowImage2Text is a simple, powerful and user-friendly online <strong>Image to Text converter</strong> designed to make text extraction easier for everyone.</p>
+            <p>Our goal is to help users convert images into editable text quickly, without complicated software, expensive subscriptions or unnecessary registration.</p>
+            <p>Powered by browser-based OCR technology, ShadowImage2Text helps you extract text from images, edit the results, copy content and download your extracted text with ease.</p>
+            <p>We believe useful digital tools should be simple, accessible and free.</p>
+          </div>
+
+          <div class="about-highlights">
+            <div class="about-highlight">
+              <span class="about-highlight__icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 4 4-4 4"/><path d="M12 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/><path d="M13.5 9.5A2.4 2.4 0 0 0 11.4 8H10a2 2 0 0 0 0 4h1.8a2.2 2.2 0 0 1 0 4H10a2.4 2.4 0 0 1-2.1-1.5"/></svg>
+              </span>
+              <span class="about-highlight__text">
+                <strong>Simple to Use</strong>
+                <span>Easy image upload and text extraction.</span>
+              </span>
+            </div>
+
+            <div class="about-highlight">
+              <span class="about-highlight__icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.2a3.2 3.2 0 1 0 0 5.6"/><path d="M12 3v2M12 19v2"/></svg>
+              </span>
+              <span class="about-highlight__text">
+                <strong>Free Access</strong>
+                <span>No subscription required for basic features.</span>
+              </span>
+            </div>
+
+            <div class="about-highlight">
+              <span class="about-highlight__icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8 7.5 9.5 4.3-1.5 7.5-4.9 7.5-9.5V6Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg>
+              </span>
+              <span class="about-highlight__text">
+                <strong>Privacy Focused</strong>
+                <span>OCR processing happens locally in the browser.</span>
+              </span>
+            </div>
+
+            <div class="about-highlight">
+              <span class="about-highlight__icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="13" height="10" rx="2"/><rect x="15.5" y="9.5" width="6" height="10" rx="1.6"/><path d="M6 20h5"/></svg>
+              </span>
+              <span class="about-highlight__text">
+                <strong>Made for Everyone</strong>
+                <span>Designed for desktop and mobile users.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ FAQ ══════════ -->
+    <section class="section faq" id="faq">
+      <div class="container faq__grid">
+        <div class="faq__intro reveal">
+          <span class="eyebrow"><span class="eyebrow__dot"></span> FAQ</span>
+          <h2>Questions, <span class="grad-text">answered</span></h2>
+          <p>Everything you should know about how ShadowImage2Text works with your images and your privacy.</p>
+          <div class="faq__hint">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 0 1 4.9.7c0 1.7-2.5 2.1-2.5 3.6"/><path d="M12 17.2h.01"/></svg>
+            <span>Still curious? The OCR studio above is the best way to see it in action.</span>
+          </div>
+        </div>
+
+        <div class="faq__list reveal">
+          <details class="faq-item" open>
+            <summary>
+              <span>Is ShadowImage2Text really free?</span>
+              <i class="faq-item__icon" aria-hidden="true"></i>
+            </summary>
+            <div class="faq-item__body"><p>Yes — fully free, with no accounts, no extraction limits and no watermarks. It’s built on the open-source Tesseract OCR engine running in your browser.</p></div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Are my images uploaded to a server?</span>
+              <i class="faq-item__icon" aria-hidden="true"></i>
+            </summary>
+            <div class="faq-item__body"><p>No. ShadowImage2Text performs recognition locally in your browser using WebAssembly. Your image never leaves your device, which makes it safe for confidential documents, IDs and personal notes.</p></div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Does it support Hindi?</span>
+              <i class="faq-item__icon" aria-hidden="true"></i>
+            </summary>
+            <div class="faq-item__body"><p>Yes. Choose <strong>हिन्दी</strong> for Devanagari text, or <strong>English + हिन्दी</strong> for documents that mix both languages. English-only mode is fastest for pure Latin text.</p></div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Which file types and sizes can I use?</span>
+              <i class="faq-item__icon" aria-hidden="true"></i>
+            </summary>
+            <div class="faq-item__body"><p>JPG, PNG, WEBP, BMP, GIF and TIFF up to 15&nbsp;MB. For the cleanest results, use sharp, well-lit images where text is straight and reasonably large.</p></div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>Why is the first extraction slower?</span>
+              <i class="faq-item__icon" aria-hidden="true"></i>
+            </summary>
+            <div class="faq-item__body"><p>The first run downloads the OCR core and language model (a few megabytes). They’re then cached by your browser, so later extractions start almost instantly.</p></div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span>How can I get the best accuracy?</span>
+              <i class="faq-item__icon" aria-hidden="true"></i>
+            </summary>
+            <div class="faq-item__body"><p>Crop to the text region, keep the image straight, avoid heavy shadows or glare, and pick the correct language. Higher-resolution screenshots read noticeably better than photographed text.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ CTA ══════════ -->
+    <section class="cta-band">
+      <div class="container">
+        <div class="cta-card reveal">
+          <div class="cta-card__glow" aria-hidden="true"></div>
+          <h2>Ready to turn images into text?</h2>
+          <p>Join everyone extracting text from screenshots, scans and photos — privately, instantly, free.</p>
+          <div class="cta-card__actions">
+            <a class="btn btn--primary btn--lg" href="#studio">Start Extracting</a>
+            <a class="btn btn--ghost btn--lg" href="#features">Explore features</a>
+          </div>
+          <span class="cta-card__meta">No upload · No sign-up · No limits</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══════════ Footer ══════════ -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="#top" aria-label="ShadowImage2Text — back to top">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 44 44" width="36" height="36" fill="none">
+              <rect x="1.25" y="1.25" width="41.5" height="41.5" rx="12" stroke="url(#footGrad)" stroke-width="2.5" />
+              <path d="M12 16.5h9M12 22h6.5M12 27.5h4.5" stroke="#c4b5fd" stroke-width="2.4" stroke-linecap="round" />
+              <path d="M24 27.5l5.5-5.5L24 16.5" stroke="url(#footGrad)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+              <defs>
+                <linearGradient id="footGrad" x1="4" y1="4" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#a855f7" /><stop offset=".55" stop-color="#8b5cf6" /><stop offset="1" stop-color="#60a5fa" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </span>
+          <span class="brand__word">Shadow<span class="grad-text">Image2Text</span></span>
+        </a>
+        <p class="footer__tagline">Turn Images Into Text. Instantly.</p>
+        <p class="footer__blurb">A premium, privacy-first OCR workspace. Built with HTML, CSS, vanilla JavaScript and Tesseract.js — free for everyone.</p>
+        <span class="footer__chip"><i></i> Runs entirely in your browser</span>
+      </div>
+
+      <nav class="footer__col" aria-label="Product">
+        <h3>Product</h3>
+        <a href="#studio">OCR Studio</a>
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#about">About</a>
+        <a href="#" data-dialog="privacyDialog">Privacy by design</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Resources">
+        <h3>Resources</h3>
+        <a href="README.md">Documentation</a>
+        <a href="https://github.com/naptha/tesseract.js" target="_blank" rel="noopener noreferrer">Tesseract.js</a>
+        <a href="https://tesseract.projectnaptha.com/" target="_blank" rel="noopener noreferrer">OCR engine</a>
+        <a href="#studio">Supported languages</a>
+      </nav>
+
+      <nav class="footer__col" aria-label="Legal">
+        <h3>Legal</h3>
+        <a href="#" data-dialog="privacyDialog">Privacy</a>
+        <a href="#" data-dialog="termsDialog">Terms</a>
+        <a href="/cdn-cgi/l/email-protection#3d55585151527d4e555c59524a54505c5a580f49584549135c4d4d">Contact</a>
+      </nav>
+    </div>
+
+    <div class="container footer__bottom">
+      <p class="footer__made">Crafted with <span aria-hidden="true">♥</span> for the open web · Powered by Tesseract.js</p>
+      <button class="chip-btn footer__top" id="toTop" type="button" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M6 11l6-6 6 6"/></svg>
+        Top
+      </button>
+    </div>
+
+    <div class="container footer__credit">
+      <p>
+        <span class="credit-copy">© <span id="year">2026</span></span>
+        <strong class="credit-name"><span>God</span><span style="color:#EF4444;">X</span><span>Shadow</span></strong>
+        <span class="credit-dash" aria-hidden="true">—</span>
+        <span class="credit-by">by <strong class="credit-author">Krishna UPX61</strong></span>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Toasts -->
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Legal dialogs -->
+  <dialog class="modal" id="privacyDialog" aria-labelledby="privacyTitle">
+    <div class="modal__head">
+      <h2 id="privacyTitle">Privacy</h2>
+      <button class="icon-btn modal__close" type="button" data-close-dialog aria-label="Close privacy dialog">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p><strong>The short version: your images never leave your device.</strong></p>
+      <p>ShadowImage2Text performs optical character recognition entirely in your browser using WebAssembly. Images you load are held in memory only for the duration of your session and are never transmitted to any server.</p>
+      <p>Extracted text stays in your browser until you clear it or close the tab. Your theme preference is saved in local storage; nothing else is stored, and there are no analytics or tracking cookies on this site.</p>
+      <p>Language models and the OCR engine are fetched from public CDNs (jsDelivr and the Tesseract data host) and cached by your browser for speed.</p>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="termsDialog" aria-labelledby="termsTitle">
+    <div class="modal__head">
+      <h2 id="termsTitle">Terms of use</h2>
+      <button class="icon-btn modal__close" type="button" data-close-dialog aria-label="Close terms dialog">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <p>ShadowImage2Text is provided free of charge, “as is”, without warranty of any kind. OCR is inherently imperfect — always review recognised text before relying on it for legal, financial or safety-critical purposes.</p>
+      <p>You are responsible for the content you process. Only extract text from images you have the right to use, and respect applicable copyright and privacy laws.</p>
+      <p>By using this site you agree that the authors are not liable for any loss or damage arising from its use. This project is powered by the open-source <a href="https://github.com/naptha/tesseract.js" target="_blank" rel="noopener noreferrer">Tesseract.js</a> engine.</p>
+    </div>
+  </dialog>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","spa":2}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5a53755af618a7c',t:'MTc5NDY1MDkxOQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5a53755af618a7c',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
